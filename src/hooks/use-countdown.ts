@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface CountdownOptions {
   onComplete?: () => void;
@@ -13,10 +13,7 @@ interface CountdownOptions {
  * @param options - Countdown configuration options
  * @returns Object with countdown state and control functions
  */
-export function useCountdown(
-  initialTime: number,
-  options: CountdownOptions = {},
-) {
+export function useCountdown(initialTime: number, options: CountdownOptions = {}) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [isRunning, setIsRunning] = useState(options.autoStart || false);
   const [isComplete, setIsComplete] = useState(false);
@@ -106,13 +103,11 @@ export function useCountdown(
     const seconds = Math.floor((ms % (1000 * 60)) / 1000);
 
     if (hours > 0) {
-      return `${hours.toString().padStart(2, "0")}:${minutes
+      return `${hours.toString().padStart(2, '0')}:${minutes
         .toString()
-        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
   return {

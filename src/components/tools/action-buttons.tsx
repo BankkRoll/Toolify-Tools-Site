@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { RefreshCw, RotateCcw, Save, Share2, Trash2 } from "lucide-react";
-import { CopyButton } from "./copy-button";
-import { DownloadButton } from "./download-button";
+import { Button } from '@/components/ui/button';
+import { RefreshCw, RotateCcw, Save, Share2, Trash2 } from 'lucide-react';
+import { CopyButton } from './copy-button';
+import { DownloadButton } from './download-button';
 
 /**
  * Props for the ActionButtons component
@@ -44,9 +44,9 @@ interface ActionButtonsProps {
   /** Label for save button */
   saveLabel?: string;
   /** Button variant */
-  variant?: "default" | "outline" | "ghost";
+  variant?: 'default' | 'outline' | 'ghost';
   /** Button size */
-  size?: "default" | "sm" | "lg" | "icon";
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   /** Additional CSS classes */
   className?: string;
   /** Whether buttons are disabled */
@@ -66,24 +66,24 @@ export function ActionButtons({
   downloadMimeType,
   onDownload,
   onReset,
-  resetLabel = "Reset",
+  resetLabel = 'Reset',
   onClear,
-  clearLabel = "Clear",
+  clearLabel = 'Clear',
   onGenerate,
-  generateLabel = "Generate",
+  generateLabel = 'Generate',
   isGenerating = false,
   onShare,
-  shareLabel = "Share",
+  shareLabel = 'Share',
   onSave,
-  saveLabel = "Save",
-  variant = "outline",
-  size = "sm",
+  saveLabel = 'Save',
+  variant = 'outline',
+  size = 'sm',
   className,
   disabled = false,
   showSuccessStates = true,
 }: ActionButtonsProps) {
   return (
-    <div className={`flex flex-wrap gap-2 ${className || ""}`}>
+    <div className={`flex flex-wrap gap-2 ${className || ''}`}>
       {onGenerate && (
         <Button
           onClick={onGenerate}
@@ -91,9 +91,7 @@ export function ActionButtons({
           variant={variant}
           size={size}
         >
-          <RefreshCw
-            className={`h-4 w-4 mr-1 ${isGenerating ? "animate-spin" : ""}`}
-          />
+          <RefreshCw className={`h-4 w-4 mr-1 ${isGenerating ? 'animate-spin' : ''}`} />
           {generateLabel}
         </Button>
       )}
@@ -127,37 +125,22 @@ export function ActionButtons({
       )}
 
       {onSave && (
-        <Button
-          onClick={onSave}
-          disabled={disabled}
-          variant={variant}
-          size={size}
-        >
-          <Save className="h-4 w-4 mr-1" />
+        <Button onClick={onSave} disabled={disabled} variant={variant} size={size}>
+          <Save className='h-4 w-4 mr-1' />
           {saveLabel}
         </Button>
       )}
 
       {onShare && (
-        <Button
-          onClick={onShare}
-          disabled={disabled}
-          variant={variant}
-          size={size}
-        >
-          <Share2 className="h-4 w-4 mr-1" />
+        <Button onClick={onShare} disabled={disabled} variant={variant} size={size}>
+          <Share2 className='h-4 w-4 mr-1' />
           {shareLabel}
         </Button>
       )}
 
       {onReset && (
-        <Button
-          onClick={onReset}
-          disabled={disabled}
-          variant={variant}
-          size={size}
-        >
-          <RotateCcw className="h-4 w-4 mr-1" />
+        <Button onClick={onReset} disabled={disabled} variant={variant} size={size}>
+          <RotateCcw className='h-4 w-4 mr-1' />
           {resetLabel}
         </Button>
       )}
@@ -168,9 +151,9 @@ export function ActionButtons({
           disabled={disabled}
           variant={variant}
           size={size}
-          className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
+          className='hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20'
         >
-          <Trash2 className="h-4 w-4 mr-1" />
+          <Trash2 className='h-4 w-4 mr-1' />
           {clearLabel}
         </Button>
       )}

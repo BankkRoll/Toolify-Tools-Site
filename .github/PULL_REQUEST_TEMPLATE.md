@@ -6,7 +6,8 @@ Brief description of changes made in this pull request.
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to
+      not work as expected)
 - [ ] Documentation update
 - [ ] Performance improvement
 - [ ] Security enhancement
@@ -23,7 +24,8 @@ Brief description of changes made in this pull request.
 
 ## Screenshots
 
-If this PR includes UI changes, please add screenshots or GIFs to show the changes.
+If this PR includes UI changes, please add screenshots or GIFs to show the
+changes.
 
 ## Checklist
 
@@ -42,5 +44,4 @@ Any additional information that reviewers should know about this PR.
 
 ## Related Issues
 
-Closes #[issue number]
-Related to #[issue number]
+Closes #[issue number] Related to #[issue number]

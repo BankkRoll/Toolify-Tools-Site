@@ -1,14 +1,11 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ToolCard } from "@/components/tools/tool-card";
-import { Badge } from "@/components/ui/badge";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import {
-  getActiveToolsByCategory,
-  getToolsByCategory,
-} from "@/lib/tools-config";
-import { useAnimations } from "@/stores/settings-store";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ToolCard } from '@/components/tools/tool-card';
+import { Badge } from '@/components/ui/badge';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { getActiveToolsByCategory, getToolsByCategory } from '@/lib/tools-config';
+import { useAnimations } from '@/stores/settings-store';
 import {
   Beaker,
   Clock,
@@ -25,9 +22,9 @@ import {
   Thermometer,
   Weight,
   Zap,
-} from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef } from "react";
+} from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef } from 'react';
 
 /**
  * Icon mapping for unit converter tools
@@ -54,12 +51,12 @@ const iconMap = {
  * Unit converters tools page
  */
 export default function UnitToolsPage() {
-  const unitTools = getToolsByCategory("units");
-  const activeTools = getActiveToolsByCategory("units");
+  const unitTools = getToolsByCategory('units');
+  const activeTools = getActiveToolsByCategory('units');
   const animationsEnabled = useAnimations();
 
   // Local storage for user preferences
-  const [recentlyUsed] = useLocalStorage<string[]>("units-recently-used", []);
+  const [recentlyUsed] = useLocalStorage<string[]>('units-recently-used', []);
 
   // Refs for motion animations
   const headerRef = useRef(null);
@@ -96,39 +93,31 @@ export default function UnitToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   return (
-    <ToolLayout toolId="units">
+    <ToolLayout toolId='units'>
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex items-center justify-between"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='flex items-center justify-between'
         >
           <div>
-            <h2 className="text-2xl font-bold">Unit Converters</h2>
-            <p className="text-muted-foreground">
+            <h2 className='text-2xl font-bold'>Unit Converters</h2>
+            <p className='text-muted-foreground'>
               Comprehensive unit conversion tools for all measurement systems
             </p>
           </div>
-          <Badge variant="outline" className="text-sm">
+          <Badge variant='outline' className='text-sm'>
             {activeTools.length}/{unitTools.length} Available
           </Badge>
         </MotionDiv>
@@ -136,11 +125,9 @@ export default function UnitToolsPage() {
         <MotionDiv
           ref={toolsRef}
           variants={animationsEnabled ? staggerContainer : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-          }
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
         >
           {unitTools.map((tool, index) => (
             <ToolCard

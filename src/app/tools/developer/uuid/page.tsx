@@ -1,25 +1,19 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Hash, RefreshCw } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Hash, RefreshCw } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * UUID generator tool page
@@ -27,15 +21,12 @@ import { toast } from "sonner";
 export default function UuidGeneratorPage() {
   const [uuids, setUuids] = useState<string[]>([]);
   const [count, setCount] = useState(5);
-  const [version, setVersion] = useState("v4");
+  const [version, setVersion] = useState('v4');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "uuid-generator-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('uuid-generator-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -71,23 +62,17 @@ export default function UuidGeneratorPage() {
         let uuid: string;
 
         switch (version) {
-          case "v1":
+          case 'v1':
             uuid = generateUUIDv1();
             break;
-          case "v3":
-            uuid = generateUUIDv3(
-              "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-              `namespace-${i}`,
-            );
+          case 'v3':
+            uuid = generateUUIDv3('6ba7b810-9dad-11d1-80b4-00c04fd430c8', `namespace-${i}`);
             break;
-          case "v4":
+          case 'v4':
             uuid = generateUUIDv4();
             break;
-          case "v5":
-            uuid = generateUUIDv5(
-              "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
-              `namespace-${i}`,
-            );
+          case 'v5':
+            uuid = generateUUIDv5('6ba7b810-9dad-11d1-80b4-00c04fd430c8', `namespace-${i}`);
             break;
           default:
             uuid = generateUUIDv4();
@@ -99,17 +84,13 @@ export default function UuidGeneratorPage() {
       setUuids(newUuids);
       setIsComplete(true);
       setHistory(
-        [
-          `Generated ${count} UUID${count !== 1 ? "s" : ""} (${version})`,
-          ...history,
-        ].slice(0, 10),
+        [`Generated ${count} UUID${count !== 1 ? 's' : ''} (${version})`, ...history].slice(0, 10),
       );
-      toast.success(`Generated ${count} UUID${count !== 1 ? "s" : ""}`);
+      toast.success(`Generated ${count} UUID${count !== 1 ? 's' : ''}`);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to generate UUIDs";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to generate UUIDs';
       setError(errorMessage);
-      toast.error("Failed to generate UUIDs");
+      toast.error('Failed to generate UUIDs');
     } finally {
       setIsProcessing(false);
     }
@@ -129,12 +110,12 @@ export default function UuidGeneratorPage() {
     const timeHigh = ((timestamp >> 48) & 0x0fff) | 0x1000;
 
     return [
-      timeLow.toString(16).padStart(8, "0"),
-      timeMid.toString(16).padStart(4, "0"),
-      timeHigh.toString(16).padStart(4, "0"),
-      clockSeq.toString(16).padStart(4, "0"),
-      node.toString(16).padStart(12, "0"),
-    ].join("-");
+      timeLow.toString(16).padStart(8, '0'),
+      timeMid.toString(16).padStart(4, '0'),
+      timeHigh.toString(16).padStart(4, '0'),
+      clockSeq.toString(16).padStart(4, '0'),
+      node.toString(16).padStart(12, '0'),
+    ].join('-');
   };
 
   /**
@@ -150,32 +131,25 @@ export default function UuidGeneratorPage() {
       hash = hash & hash; // Convert to 32-bit integer
     }
 
-    const hashHex = Math.abs(hash).toString(16).padStart(8, "0");
+    const hashHex = Math.abs(hash).toString(16).padStart(8, '0');
     return [
       hashHex.substring(0, 8),
       hashHex.substring(8, 12),
-      ((parseInt(hashHex.substring(12, 16), 16) & 0x0fff) | 0x3000)
-        .toString(16)
-        .padStart(4, "0"),
-      ((parseInt(hashHex.substring(16, 20), 16) & 0x3fff) | 0x8000)
-        .toString(16)
-        .padStart(4, "0"),
+      ((parseInt(hashHex.substring(12, 16), 16) & 0x0fff) | 0x3000).toString(16).padStart(4, '0'),
+      ((parseInt(hashHex.substring(16, 20), 16) & 0x3fff) | 0x8000).toString(16).padStart(4, '0'),
       hashHex.substring(20, 32),
-    ].join("-");
+    ].join('-');
   };
 
   /**
    * Generates UUID v4 (random)
    */
   const generateUUIDv4 = (): string => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      },
-    );
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   };
 
   /**
@@ -191,18 +165,14 @@ export default function UuidGeneratorPage() {
       hash = hash & hash; // Convert to 32-bit integer
     }
 
-    const hashHex = Math.abs(hash).toString(16).padStart(8, "0");
+    const hashHex = Math.abs(hash).toString(16).padStart(8, '0');
     return [
       hashHex.substring(0, 8),
       hashHex.substring(8, 12),
-      ((parseInt(hashHex.substring(12, 16), 16) & 0x0fff) | 0x5000)
-        .toString(16)
-        .padStart(4, "0"),
-      ((parseInt(hashHex.substring(16, 20), 16) & 0x3fff) | 0x8000)
-        .toString(16)
-        .padStart(4, "0"),
+      ((parseInt(hashHex.substring(12, 16), 16) & 0x0fff) | 0x5000).toString(16).padStart(4, '0'),
+      ((parseInt(hashHex.substring(16, 20), 16) & 0x3fff) | 0x8000).toString(16).padStart(4, '0'),
       hashHex.substring(20, 32),
-    ].join("-");
+    ].join('-');
   };
 
   /**
@@ -218,8 +188,7 @@ export default function UuidGeneratorPage() {
    * Validates UUID format
    */
   const validateUuid = (uuid: string): boolean => {
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     return uuidRegex.test(uuid);
   };
 
@@ -227,7 +196,7 @@ export default function UuidGeneratorPage() {
    * Gets copy text for all UUIDs
    */
   const getCopyText = () => {
-    return uuids.join("\n");
+    return uuids.join('\n');
   };
 
   const containerVariants = {
@@ -246,110 +215,79 @@ export default function UuidGeneratorPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="dev-uuid">
+    <ToolLayout toolId='dev-uuid'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={optionsSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? optionsSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (optionsSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Hash className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Hash className='h-5 w-5' />
                 UUID Generator Options
               </CardTitle>
-              <CardDescription>
-                Configure UUID version and generation count
-              </CardDescription>
+              <CardDescription>Configure UUID version and generation count</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="version">UUID Version</Label>
-                  <Tabs
-                    value={version}
-                    onValueChange={setVersion}
-                    className="w-full"
-                  >
-                    <TabsList className="grid w-full grid-cols-4">
-                      <TabsTrigger value="v1">v1</TabsTrigger>
-                      <TabsTrigger value="v3">v3</TabsTrigger>
-                      <TabsTrigger value="v4">v4</TabsTrigger>
-                      <TabsTrigger value="v5">v5</TabsTrigger>
+            <CardContent className='space-y-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='version'>UUID Version</Label>
+                  <Tabs value={version} onValueChange={setVersion} className='w-full'>
+                    <TabsList className='grid w-full grid-cols-4'>
+                      <TabsTrigger value='v1'>v1</TabsTrigger>
+                      <TabsTrigger value='v3'>v3</TabsTrigger>
+                      <TabsTrigger value='v4'>v4</TabsTrigger>
+                      <TabsTrigger value='v5'>v5</TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="count">Count</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='count'>Count</Label>
                   <Input
-                    id="count"
-                    type="number"
-                    min="1"
-                    max="100"
+                    id='count'
+                    type='number'
+                    min='1'
+                    max='100'
                     value={count}
-                    onChange={(e) =>
-                      setCount(
-                        Math.max(
-                          1,
-                          Math.min(100, parseInt(e.target.value) || 1),
-                        ),
-                      )
+                    onChange={e =>
+                      setCount(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))
                     }
-                    className="w-full"
+                    className='w-full'
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className='space-y-2'>
                 <Label>Version Information</Label>
-                <div className="p-3 bg-muted rounded-lg text-sm">
-                  {version === "v1" && (
-                    <p>Time-based UUID using timestamp and node identifier</p>
+                <div className='p-3 bg-muted rounded-lg text-sm'>
+                  {version === 'v1' && <p>Time-based UUID using timestamp and node identifier</p>}
+                  {version === 'v3' && <p>Namespace-based UUID using MD5 hash (deterministic)</p>}
+                  {version === 'v4' && (
+                    <p>Random UUID using cryptographically secure random numbers</p>
                   )}
-                  {version === "v3" && (
-                    <p>Namespace-based UUID using MD5 hash (deterministic)</p>
-                  )}
-                  {version === "v4" && (
-                    <p>
-                      Random UUID using cryptographically secure random numbers
-                    </p>
-                  )}
-                  {version === "v5" && (
-                    <p>Namespace-based UUID using SHA-1 hash (deterministic)</p>
-                  )}
+                  {version === 'v5' && <p>Namespace-based UUID using SHA-1 hash (deterministic)</p>}
                 </div>
               </div>
 
               <ActionButtons
                 onGenerate={generateUUID}
-                generateLabel="Generate UUIDs"
+                generateLabel='Generate UUIDs'
                 onReset={clearUuids}
-                resetLabel="Clear All"
-                variant="outline"
-                size="sm"
+                resetLabel='Clear All'
+                variant='outline'
+                size='sm'
                 disabled={isProcessing}
                 isGenerating={isProcessing}
               />
@@ -360,88 +298,56 @@ export default function UuidGeneratorPage() {
         <MotionDiv
           ref={outputSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? outputSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (outputSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <RefreshCw className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <RefreshCw className='h-5 w-5' />
                 Generated UUIDs
                 {uuids.length > 0 && (
-                  <Badge variant="secondary">
-                    {uuids.length} UUID{uuids.length !== 1 ? "s" : ""}
+                  <Badge variant='secondary'>
+                    {uuids.length} UUID{uuids.length !== 1 ? 's' : ''}
                   </Badge>
                 )}
               </CardTitle>
-              <CardDescription>
-                Copy individual UUIDs or all at once
-              </CardDescription>
+              <CardDescription>Copy individual UUIDs or all at once</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className='space-y-4'>
               {uuids.length > 0 ? (
                 <MotionDiv
-                  className="space-y-3"
-                  initial={
-                    animationsEnabled ? { opacity: 0, y: 10 } : undefined
-                  }
+                  className='space-y-3'
+                  initial={animationsEnabled ? { opacity: 0, y: 10 } : undefined}
                   animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
                   transition={animationsEnabled ? { duration: 0.3 } : undefined}
                 >
                   {uuids.map((uuid, index) => (
                     <MotionDiv
                       key={index}
-                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                      initial={
-                        animationsEnabled ? { opacity: 0, x: -10 } : undefined
-                      }
-                      animate={
-                        animationsEnabled ? { opacity: 1, x: 0 } : undefined
-                      }
-                      transition={
-                        animationsEnabled ? { delay: index * 0.1 } : undefined
-                      }
+                      className='flex items-center justify-between p-3 bg-muted rounded-lg'
+                      initial={animationsEnabled ? { opacity: 0, x: -10 } : undefined}
+                      animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
+                      transition={animationsEnabled ? { delay: index * 0.1 } : undefined}
                     >
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <span className="text-sm font-medium">
-                          #{index + 1}
-                        </span>
-                        <code className="font-mono text-sm truncate">
-                          {uuid}
-                        </code>
+                      <div className='flex items-center gap-3 min-w-0 flex-1'>
+                        <span className='text-sm font-medium'>#{index + 1}</span>
+                        <code className='font-mono text-sm truncate'>{uuid}</code>
                       </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <Badge
-                          variant={
-                            validateUuid(uuid) ? "default" : "destructive"
-                          }
-                        >
-                          {validateUuid(uuid) ? "Valid" : "Invalid"}
+                      <div className='flex items-center gap-2 flex-shrink-0'>
+                        <Badge variant={validateUuid(uuid) ? 'default' : 'destructive'}>
+                          {validateUuid(uuid) ? 'Valid' : 'Invalid'}
                         </Badge>
-                        <ActionButtons
-                          copyText={uuid}
-                          variant="outline"
-                          size="sm"
-                        />
+                        <ActionButtons copyText={uuid} variant='outline' size='sm' />
                       </div>
                     </MotionDiv>
                   ))}
 
-                  <ActionButtons
-                    copyText={getCopyText()}
-                    variant="outline"
-                    size="sm"
-                  />
+                  <ActionButtons copyText={getCopyText()} variant='outline' size='sm' />
                 </MotionDiv>
               ) : (
-                <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
+                <div className='flex items-center justify-center h-32 border-2 border-dashed rounded-lg'>
+                  <p className='text-muted-foreground'>
                     Click "Generate UUIDs" to create new UUIDs
                   </p>
                 </div>
@@ -453,41 +359,34 @@ export default function UuidGeneratorPage() {
         <MotionDiv
           ref={aboutRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (aboutInView ? "visible" : "hidden") : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (aboutInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
               <CardTitle>About UUIDs</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
                 <MotionDiv
-                  initial={
-                    animationsEnabled ? { opacity: 0, x: -20 } : undefined
-                  }
+                  initial={animationsEnabled ? { opacity: 0, x: -20 } : undefined}
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.1 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">What are UUIDs?</h4>
-                  <p className="text-muted-foreground">
-                    UUIDs (Universally Unique Identifiers) are 128-bit
-                    identifiers that are unique across space and time. They are
-                    commonly used in software development for database keys, API
-                    identifiers, and distributed systems.
+                  <h4 className='font-medium mb-2'>What are UUIDs?</h4>
+                  <p className='text-muted-foreground'>
+                    UUIDs (Universally Unique Identifiers) are 128-bit identifiers that are unique
+                    across space and time. They are commonly used in software development for
+                    database keys, API identifiers, and distributed systems.
                   </p>
                 </MotionDiv>
                 <MotionDiv
-                  initial={
-                    animationsEnabled ? { opacity: 0, x: 20 } : undefined
-                  }
+                  initial={animationsEnabled ? { opacity: 0, x: 20 } : undefined}
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.2 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">UUID Versions:</h4>
-                  <ul className="text-muted-foreground space-y-1">
+                  <h4 className='font-medium mb-2'>UUID Versions:</h4>
+                  <ul className='text-muted-foreground space-y-1'>
                     <li>• v1: Time-based with node identifier</li>
                     <li>• v3: Namespace-based with MD5 hash</li>
                     <li>• v4: Random (most commonly used)</li>
@@ -505,9 +404,9 @@ export default function UuidGeneratorPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearUuids}
-            processingText="Generating UUIDs..."
-            completeText="UUID generation complete!"
-            errorText="UUID generation failed"
+            processingText='Generating UUIDs...'
+            completeText='UUID generation complete!'
+            errorText='UUID generation failed'
           />
         </MotionDiv>
       </MotionDiv>

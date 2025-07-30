@@ -1,6 +1,7 @@
 # Contributing to Toolify
 
-Thank you for your interest in contributing to Toolify! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to Toolify! This document provides
+guidelines and information for contributors.
 
 ## Table of Contents
 
@@ -16,7 +17,9 @@ Thank you for your interest in contributing to Toolify! This document provides g
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+This project adheres to the
+[Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating,
+you are expected to uphold this code.
 
 ## Getting Started
 
@@ -52,8 +55,8 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
    pnpm dev
    ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+4. **Open your browser** Navigate to
+   [http://localhost:3000](http://localhost:3000)
 
 ## Adding New Tools
 
@@ -64,6 +67,7 @@ Add your tool definition in `src/lib/tools-config.ts`:
 ```typescript
 {
   id: "your-tool-id",
+  authorGithubUsername: "your-github-username",
   name: "Your Tool Name",
   description: "Brief description of what your tool does",
   href: "/tools/category/your-tool-name",
@@ -204,7 +208,6 @@ Test your tool thoroughly:
 
 - Use strict TypeScript configuration
 - Define proper interfaces for all data structures
-- Avoid `any` type - use proper typing
 - Use utility types when appropriate
 
 ### React
@@ -212,7 +215,6 @@ Test your tool thoroughly:
 - Use functional components with hooks
 - Follow React best practices
 - Use proper dependency arrays in useEffect
-- Memoize expensive computations with useMemo/useCallback
 
 ### Styling
 
@@ -233,8 +235,8 @@ src/app/tools/[category]/[tool-name]/
 
 ### Naming Conventions
 
-- Files: kebab-case (`my-tool-name.tsx`)
-- Components: PascalCase (`MyToolComponent`)
+- Files/Folders: kebab-case (`tool-name.tsx`/`tool-category`)
+- Components: PascalCase (`ToolComponent`)
 - Functions: camelCase (`processData`)
 - Constants: UPPER_SNAKE_CASE (`MAX_FILE_SIZE`)
 - Types/Interfaces: PascalCase (`ToolConfig`)
@@ -251,14 +253,6 @@ src/app/tools/[category]/[tool-name]/
 - [ ] Dark Mode - Proper contrast and visibility
 - [ ] Error States - Clear error messages and recovery options
 
-### Automated Testing
-
-While we don't have comprehensive test coverage yet, consider adding:
-
-- Unit tests for utility functions
-- Integration tests for complex workflows
-- E2E tests for critical user journeys
-
 ## Pull Request Process
 
 ### Before Submitting
@@ -271,7 +265,6 @@ While we don't have comprehensive test coverage yet, consider adding:
    ```
 
 2. **Test thoroughly**
-
    - Test on multiple browsers
    - Test on mobile devices
    - Test accessibility features

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 // File utility functions
 const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) return '0 Bytes';
   const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 const getFileExtension = (filename: string): string => {
-  return filename.slice(((filename.lastIndexOf(".") - 1) >>> 0) + 2);
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
 };
 
 interface UseFileUploadOptions {
@@ -44,25 +44,18 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         const fileArray = Array.from(fileList);
 
         if (options.maxSize) {
-          const oversizedFiles = fileArray.filter(
-            (file) => file.size > options.maxSize!,
-          );
+          const oversizedFiles = fileArray.filter(file => file.size > options.maxSize!);
           if (oversizedFiles.length > 0) {
-            throw new Error(
-              `File size exceeds ${formatFileSize(options.maxSize)}`,
-            );
+            throw new Error(`File size exceeds ${formatFileSize(options.maxSize)}`);
           }
         }
 
         if (options.accept) {
-          const acceptedTypes = options.accept
-            .split(",")
-            .map((type) => type.trim());
-          const invalidFiles = fileArray.filter((file) => {
+          const acceptedTypes = options.accept.split(',').map(type => type.trim());
+          const invalidFiles = fileArray.filter(file => {
             const fileExtension = `.${getFileExtension(file.name)}`;
             return !acceptedTypes.some(
-              (type) =>
-                type === file.type || type === fileExtension || type === "*",
+              type => type === file.type || type === fileExtension || type === '*',
             );
           });
           if (invalidFiles.length > 0) {
@@ -72,7 +65,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
 
         setFiles(options.multiple ? fileArray : [fileArray[0]]);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Upload failed");
+        setError(err instanceof Error ? err.message : 'Upload failed');
       } finally {
         setIsUploading(false);
       }

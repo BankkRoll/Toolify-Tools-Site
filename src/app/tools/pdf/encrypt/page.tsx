@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Download, Eye, EyeOff, Lock } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Download, Eye, EyeOff, Lock } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * PDF encryption tool page
  */
 export default function EncryptPdfPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [permissions, setPermissions] = useState({
     printing: true,
@@ -38,10 +32,7 @@ export default function EncryptPdfPage() {
   const [encryptedPdf, setEncryptedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-encrypt-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-encrypt-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -82,12 +73,12 @@ export default function EncryptPdfPage() {
     if (!selectedFile || !password) return;
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error('Passwords do not match');
       return;
     }
 
     if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
+      toast.error('Password must be at least 6 characters long');
       return;
     }
 
@@ -105,9 +96,9 @@ export default function EncryptPdfPage() {
       setEncryptedPdf(pdfBytes);
       setHistory([selectedFile.name, ...history].slice(0, 10));
 
-      toast.success("PDF encrypted successfully");
+      toast.success('PDF encrypted successfully');
     } catch (error) {
-      toast.error("Failed to encrypt PDF");
+      toast.error('Failed to encrypt PDF');
     } finally {
       setIsProcessing(false);
     }
@@ -119,11 +110,11 @@ export default function EncryptPdfPage() {
   const downloadEncryptedPdf = () => {
     if (!encryptedPdf) return;
 
-    const blob = new Blob([encryptedPdf], { type: "application/pdf" });
+    const blob = new Blob([encryptedPdf], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `encrypted-${selectedFile?.name || "document.pdf"}`;
+    a.download = `encrypted-${selectedFile?.name || 'document.pdf'}`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -144,35 +135,23 @@ export default function EncryptPdfPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-encrypt">
+    <ToolLayout toolId='pdf-encrypt'>
       <MotionDiv
         ref={containerRef}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        className='grid grid-cols-1 lg:grid-cols-2 gap-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
-          className="space-y-6"
+          className='space-y-6'
           variants={animationsEnabled ? containerVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
             <Card>
@@ -183,13 +162,13 @@ export default function EncryptPdfPage() {
               <CardContent>
                 <FileUploadZone
                   onFilesSelected={handleFileSelect}
-                  accept=".pdf,application/pdf"
+                  accept='.pdf,application/pdf'
                   multiple={false}
                   files={selectedFile ? [selectedFile] : []}
                   onRemoveFile={() => {
                     setEncryptedPdf(null);
-                    setPassword("");
-                    setConfirmPassword("");
+                    setPassword('');
+                    setConfirmPassword('');
                     setShowPassword(false);
                     setSelectedFile(null);
                     setIsProcessing(false);
@@ -203,140 +182,124 @@ export default function EncryptPdfPage() {
             <MotionDiv
               ref={settingsSectionRef}
               variants={animationsEnabled ? cardVariants : undefined}
-              initial={animationsEnabled ? "hidden" : undefined}
+              initial={animationsEnabled ? 'hidden' : undefined}
               animate={
-                animationsEnabled
-                  ? settingsSectionInView
-                    ? "visible"
-                    : "hidden"
-                  : undefined
+                animationsEnabled ? (settingsSectionInView ? 'visible' : 'hidden') : undefined
               }
             >
               <Card>
                 <CardHeader>
                   <CardTitle>Encryption Settings</CardTitle>
-                  <CardDescription>
-                    Set password and permissions
-                  </CardDescription>
+                  <CardDescription>Set password and permissions</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <div className="relative">
+                <CardContent className='space-y-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='password'>Password</Label>
+                    <div className='relative'>
                       <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
+                        id='password'
+                        type={showPassword ? 'text' : 'password'}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter password"
+                        onChange={e => setPassword(e.target.value)}
+                        placeholder='Enter password'
                       />
                       <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-0 top-0 h-full px-3"
+                        type='button'
+                        variant='ghost'
+                        size='icon'
+                        className='absolute right-0 top-0 h-full px-3'
                         onClick={() => setShowPassword(!showPassword)}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
+                          <EyeOff className='h-4 w-4' />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Eye className='h-4 w-4' />
                         )}
                       </Button>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='confirmPassword'>Confirm Password</Label>
                     <Input
-                      id="confirmPassword"
-                      type={showPassword ? "text" : "password"}
+                      id='confirmPassword'
+                      type={showPassword ? 'text' : 'password'}
                       value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm password"
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder='Confirm password'
                     />
                   </div>
 
                   <MotionDiv
-                    className="space-y-3"
-                    initial={
-                      animationsEnabled ? { opacity: 0, height: 0 } : undefined
-                    }
-                    animate={
-                      animationsEnabled
-                        ? { opacity: 1, height: "auto" }
-                        : undefined
-                    }
-                    transition={
-                      animationsEnabled ? { duration: 0.3 } : undefined
-                    }
+                    className='space-y-3'
+                    initial={animationsEnabled ? { opacity: 0, height: 0 } : undefined}
+                    animate={animationsEnabled ? { opacity: 1, height: 'auto' } : undefined}
+                    transition={animationsEnabled ? { duration: 0.3 } : undefined}
                   >
                     <Label>Permissions</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
+                    <div className='space-y-2'>
+                      <div className='flex items-center space-x-2'>
                         <Checkbox
-                          id="printing"
+                          id='printing'
                           checked={permissions.printing}
-                          onCheckedChange={(checked) =>
-                            setPermissions((prev) => ({
+                          onCheckedChange={checked =>
+                            setPermissions(prev => ({
                               ...prev,
                               printing: checked as boolean,
                             }))
                           }
                         />
-                        <Label htmlFor="printing">Allow Printing</Label>
+                        <Label htmlFor='printing'>Allow Printing</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className='flex items-center space-x-2'>
                         <Checkbox
-                          id="copying"
+                          id='copying'
                           checked={permissions.copying}
-                          onCheckedChange={(checked) =>
-                            setPermissions((prev) => ({
+                          onCheckedChange={checked =>
+                            setPermissions(prev => ({
                               ...prev,
                               copying: checked as boolean,
                             }))
                           }
                         />
-                        <Label htmlFor="copying">Allow Copying Text</Label>
+                        <Label htmlFor='copying'>Allow Copying Text</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className='flex items-center space-x-2'>
                         <Checkbox
-                          id="modifying"
+                          id='modifying'
                           checked={permissions.modifying}
-                          onCheckedChange={(checked) =>
-                            setPermissions((prev) => ({
+                          onCheckedChange={checked =>
+                            setPermissions(prev => ({
                               ...prev,
                               modifying: checked as boolean,
                             }))
                           }
                         />
-                        <Label htmlFor="modifying">Allow Modifying</Label>
+                        <Label htmlFor='modifying'>Allow Modifying</Label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className='flex items-center space-x-2'>
                         <Checkbox
-                          id="annotating"
+                          id='annotating'
                           checked={permissions.annotating}
-                          onCheckedChange={(checked) =>
-                            setPermissions((prev) => ({
+                          onCheckedChange={checked =>
+                            setPermissions(prev => ({
                               ...prev,
                               annotating: checked as boolean,
                             }))
                           }
                         />
-                        <Label htmlFor="annotating">Allow Annotations</Label>
+                        <Label htmlFor='annotating'>Allow Annotations</Label>
                       </div>
                     </div>
                   </MotionDiv>
 
                   <Button
                     onClick={encryptPdf}
-                    className="w-full"
-                    disabled={
-                      isProcessing || !password || password !== confirmPassword
-                    }
+                    className='w-full'
+                    disabled={isProcessing || !password || password !== confirmPassword}
                   >
-                    <Lock className="h-4 w-4 mr-2" />
-                    {isProcessing ? "Encrypting..." : "Encrypt PDF"}
+                    <Lock className='h-4 w-4 mr-2' />
+                    {isProcessing ? 'Encrypting...' : 'Encrypt PDF'}
                   </Button>
                 </CardContent>
               </Card>
@@ -347,26 +310,16 @@ export default function EncryptPdfPage() {
         <MotionDiv
           ref={resultSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? resultSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (resultSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
+              <CardTitle className='flex items-center justify-between'>
                 Encrypted PDF
                 {encryptedPdf && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={downloadEncryptedPdf}
-                  >
-                    <Download className="h-4 w-4 mr-1" />
+                  <Button variant='outline' size='sm' onClick={downloadEncryptedPdf}>
+                    <Download className='h-4 w-4 mr-1' />
                     Download
                   </Button>
                 )}
@@ -375,30 +328,22 @@ export default function EncryptPdfPage() {
             <CardContent>
               {encryptedPdf ? (
                 <MotionDiv
-                  className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg bg-green-50"
-                  initial={
-                    animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined
-                  }
-                  animate={
-                    animationsEnabled ? { opacity: 1, scale: 1 } : undefined
-                  }
+                  className='flex items-center justify-center h-32 border-2 border-dashed rounded-lg bg-green-50'
+                  initial={animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined}
+                  animate={animationsEnabled ? { opacity: 1, scale: 1 } : undefined}
                   transition={animationsEnabled ? { duration: 0.3 } : undefined}
                 >
-                  <div className="text-center">
-                    <Lock className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                    <p className="text-sm font-medium">
-                      PDF Encrypted Successfully
-                    </p>
-                    <p className="text-xs text-muted-foreground">
+                  <div className='text-center'>
+                    <Lock className='h-8 w-8 mx-auto mb-2 text-green-600' />
+                    <p className='text-sm font-medium'>PDF Encrypted Successfully</p>
+                    <p className='text-xs text-muted-foreground'>
                       Password protected and ready for download
                     </p>
                   </div>
                 </MotionDiv>
               ) : (
-                <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
-                    Encrypted PDF will appear here
-                  </p>
+                <div className='flex items-center justify-center h-32 border-2 border-dashed rounded-lg'>
+                  <p className='text-muted-foreground'>Encrypted PDF will appear here</p>
                 </div>
               )}
             </CardContent>

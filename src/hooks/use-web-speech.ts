@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 // Type declarations for Web Speech API
 declare global {
@@ -32,14 +32,14 @@ export function useWebSpeech() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const [transcript, setTranscript] = useState("");
+  const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   // Check browser support
   useEffect(() => {
-    const speechSupported = "speechSynthesis" in window;
+    const speechSupported = 'speechSynthesis' in window;
     const recognitionSupported =
-      "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
+      'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     setIsSupported(speechSupported && recognitionSupported);
 
     if (speechSupported) {
@@ -62,7 +62,7 @@ export function useWebSpeech() {
   const speak = useCallback(
     (text: string, options: SpeechOptions = {}) => {
       if (!isSupported) {
-        setError("Speech synthesis not supported");
+        setError('Speech synthesis not supported');
         return;
       }
 
@@ -70,7 +70,7 @@ export function useWebSpeech() {
         window.speechSynthesis.cancel(); // Stop any current speech
 
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.voice = voices.find((v) => v.name === options.voice) || null;
+        utterance.voice = voices.find(v => v.name === options.voice) || null;
         utterance.rate = options.rate || 1;
         utterance.pitch = options.pitch || 1;
         utterance.volume = options.volume || 1;
@@ -85,7 +85,7 @@ export function useWebSpeech() {
         window.speechSynthesis.speak(utterance);
         setError(null);
       } catch (err) {
-        setError("Failed to speak text");
+        setError('Failed to speak text');
       }
     },
     [isSupported, voices],
@@ -106,18 +106,17 @@ export function useWebSpeech() {
   const startListening = useCallback(
     (options: RecognitionOptions = {}) => {
       if (!isSupported) {
-        setError("Speech recognition not supported");
+        setError('Speech recognition not supported');
         return;
       }
 
       try {
-        const SpeechRecognition =
-          window.SpeechRecognition || window.webkitSpeechRecognition;
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
 
         recognition.continuous = options.continuous || false;
         recognition.interimResults = options.interimResults || false;
-        recognition.lang = options.lang || "en-US";
+        recognition.lang = options.lang || 'en-US';
 
         recognition.onstart = () => {
           setIsListening(true);
@@ -127,7 +126,7 @@ export function useWebSpeech() {
         recognition.onresult = (event: any) => {
           const transcript = Array.from(event.results)
             .map((result: any) => result[0].transcript)
-            .join("");
+            .join('');
           setTranscript(transcript);
         };
 
@@ -142,7 +141,7 @@ export function useWebSpeech() {
 
         recognition.start();
       } catch (err) {
-        setError("Failed to start speech recognition");
+        setError('Failed to start speech recognition');
       }
     },
     [isSupported],
@@ -153,8 +152,7 @@ export function useWebSpeech() {
    */
   const stopListening = useCallback(() => {
     if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       // Note: We can't directly stop recognition without a reference to the instance
       // This is a limitation of the Web Speech API
       setIsListening(false);
@@ -165,7 +163,7 @@ export function useWebSpeech() {
    * Clears current transcript
    */
   const clearTranscript = useCallback(() => {
-    setTranscript("");
+    setTranscript('');
   }, []);
 
   return {

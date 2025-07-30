@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { cn } from "@/lib/utils";
-import * as React from "react";
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { cn } from '@/lib/utils';
+import * as React from 'react';
 import {
   Dialog,
   DialogClose,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./dialog";
+} from './dialog';
 import {
   Drawer,
   DrawerClose,
@@ -22,8 +22,8 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "./drawer";
-import { ScrollArea } from "./scroll-area";
+} from './drawer';
+import { ScrollArea } from './scroll-area';
 
 interface BaseProps {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ interface CredenzaProps extends BaseProps {
   asChild?: true;
 }
 
-const desktop = "(min-width: 768px)";
+const desktop = '(min-width: 768px)';
 
 const Credenza = ({ children, ...props }: RootCredenzaProps) => {
   const [isMounted, setIsMounted] = React.useState(false);
@@ -111,11 +111,7 @@ const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
   );
 };
 
-const CredenzaDescription = ({
-  className,
-  children,
-  ...props
-}: CredenzaProps) => {
+const CredenzaDescription = ({ className, children, ...props }: CredenzaProps) => {
   const isDesktop = useMediaQuery(desktop);
   const Component = isDesktop ? DialogDescription : DrawerDescription;
 
@@ -150,7 +146,7 @@ const CredenzaTitle = ({ className, children, ...props }: CredenzaProps) => {
 
 const CredenzaBody = ({ className, children, ...props }: CredenzaProps) => {
   return (
-    <ScrollArea className={cn("px-4 md:px-0", className)} {...props}>
+    <ScrollArea className={cn('px-4 md:px-0', className)} {...props}>
       {children}
     </ScrollArea>
   );

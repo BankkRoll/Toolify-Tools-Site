@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
 interface RGB {
   r: number;
@@ -30,7 +30,7 @@ interface CMYK {
   k: number;
 }
 
-type ColorFormat = "hex" | "rgb" | "hsl" | "hsv" | "cmyk";
+type ColorFormat = 'hex' | 'rgb' | 'hsl' | 'hsv' | 'cmyk';
 
 /**
  * Hook for converting colors between different formats
@@ -51,14 +51,11 @@ export function useColorConverter() {
    * @returns RGB color object
    */
   const hexToRgb = useCallback((hex: string): RGB => {
-    const cleanHex = hex.replace("#", "");
+    const cleanHex = hex.replace('#', '');
     const r = parseInt(cleanHex.substr(0, 2), 16);
     const g = parseInt(cleanHex.substr(2, 2), 16);
     const b = parseInt(cleanHex.substr(4, 2), 16);
-    const a =
-      cleanHex.length === 8
-        ? parseInt(cleanHex.substr(6, 2), 16) / 255
-        : undefined;
+    const a = cleanHex.length === 8 ? parseInt(cleanHex.substr(6, 2), 16) / 255 : undefined;
 
     return { r, g, b, a };
   }, []);
@@ -69,15 +66,15 @@ export function useColorConverter() {
    * @returns Hex color string
    */
   const rgbToHex = useCallback((rgb: RGB): string => {
-    const r = Math.round(rgb.r).toString(16).padStart(2, "0");
-    const g = Math.round(rgb.g).toString(16).padStart(2, "0");
-    const b = Math.round(rgb.b).toString(16).padStart(2, "0");
+    const r = Math.round(rgb.r).toString(16).padStart(2, '0');
+    const g = Math.round(rgb.g).toString(16).padStart(2, '0');
+    const b = Math.round(rgb.b).toString(16).padStart(2, '0');
     const a =
       rgb.a !== undefined
         ? Math.round(rgb.a * 255)
             .toString(16)
-            .padStart(2, "0")
-        : "";
+            .padStart(2, '0')
+        : '';
 
     return `#${r}${g}${b}${a}`;
   }, []);
@@ -316,9 +313,7 @@ export function useColorConverter() {
    */
   const parseColor = useCallback(
     (color: string): RGB | null => {
-      const hexMatch = color.match(
-        /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$/,
-      );
+      const hexMatch = color.match(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{8})$/);
       if (hexMatch) {
         return hexToRgb(color);
       }
@@ -332,9 +327,7 @@ export function useColorConverter() {
         };
       }
 
-      const rgbaMatch = color.match(
-        /^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/,
-      );
+      const rgbaMatch = color.match(/^rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)$/);
       if (rgbaMatch) {
         return {
           r: parseInt(rgbaMatch[1]),
@@ -368,7 +361,7 @@ export function useColorConverter() {
     (input: string): Record<ColorFormat, string> => {
       const rgb = parseColor(input);
       if (!rgb) {
-        throw new Error("Invalid color format");
+        throw new Error('Invalid color format');
       }
 
       const hsl = rgbToHsl(rgb);
@@ -383,7 +376,7 @@ export function useColorConverter() {
         cmyk: `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)`,
       };
 
-      setConversionHistory((prev) => [
+      setConversionHistory(prev => [
         { input, output: result, timestamp: new Date() },
         ...prev.slice(0, 9),
       ]);

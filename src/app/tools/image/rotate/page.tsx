@@ -1,24 +1,18 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Download, FileImage, RotateCw } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Download, FileImage, RotateCw } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Image rotation tool page
@@ -31,10 +25,7 @@ export default function ImageRotatePage() {
   const [isComplete, setIsComplete] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-rotate-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-rotate-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -68,7 +59,7 @@ export default function ImageRotatePage() {
       setRotatedImage(null);
       setError(null);
       setIsComplete(false);
-      toast.success("Image loaded successfully");
+      toast.success('Image loaded successfully');
     }
   };
 
@@ -77,16 +68,16 @@ export default function ImageRotatePage() {
    */
   const rotateImage = async () => {
     if (!selectedFile) {
-      toast.error("Please select an image file");
+      toast.error('Please select an image file');
       return;
     }
     setIsProcessing(true);
     setError(null);
     setIsComplete(false);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to get canvas context");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Failed to get canvas context');
 
       const img = new Image();
       img.onload = () => {
@@ -110,22 +101,21 @@ export default function ImageRotatePage() {
         // Draw image centered
         ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
-        const rotatedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        const rotatedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         setRotatedImage(rotatedDataUrl);
         setIsComplete(true);
         setHistory([selectedFile.name, ...history].slice(0, 10));
-        toast.success("Image rotated successfully");
+        toast.success('Image rotated successfully');
         setIsProcessing(false);
       };
 
       img.onerror = () => {
-        throw new Error("Failed to load image");
+        throw new Error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(selectedFile);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to rotate image";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to rotate image';
       setError(errorMessage);
       toast.error(errorMessage);
       setIsProcessing(false);
@@ -137,11 +127,11 @@ export default function ImageRotatePage() {
    */
   const downloadRotatedImage = () => {
     if (!rotatedImage) return;
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = rotatedImage;
-    link.download = `rotated-${selectedFile?.name || "image.jpg"}`;
+    link.download = `rotated-${selectedFile?.name || 'image.jpg'}`;
     link.click();
-    toast.success("Rotated image downloaded successfully");
+    toast.success('Rotated image downloaded successfully');
   };
 
   /**
@@ -168,39 +158,27 @@ export default function ImageRotatePage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-rotate">
+    <ToolLayout toolId='image-rotate'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileImage className='h-5 w-5' />
                 Upload Image
               </CardTitle>
               <CardDescription>Select an image to rotate</CardDescription>
@@ -208,7 +186,7 @@ export default function ImageRotatePage() {
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept="image/*"
+                accept='image/*'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -221,72 +199,60 @@ export default function ImageRotatePage() {
           <MotionDiv
             ref={configSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? configSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (configSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <RotateCw className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <RotateCw className='h-5 w-5' />
                   Rotation Settings
                 </CardTitle>
-                <CardDescription>
-                  Set the rotation angle in degrees
-                </CardDescription>
+                <CardDescription>Set the rotation angle in degrees</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="rotation-angle">
-                    Rotation Angle (degrees)
-                  </Label>
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='rotation-angle'>Rotation Angle (degrees)</Label>
                   <Input
-                    id="rotation-angle"
-                    type="number"
-                    min="-360"
-                    max="360"
+                    id='rotation-angle'
+                    type='number'
+                    min='-360'
+                    max='360'
                     value={rotationAngle}
-                    onChange={(e) =>
-                      setRotationAngle(parseFloat(e.target.value) || 0)
-                    }
-                    placeholder="0"
-                    className="w-full"
+                    onChange={e => setRotationAngle(parseFloat(e.target.value) || 0)}
+                    placeholder='0'
+                    className='w-full'
                   />
                 </div>
 
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <ActionButtons
                     onGenerate={() => setRotationAngle(90)}
-                    generateLabel="90°"
-                    variant="outline"
-                    size="sm"
+                    generateLabel='90°'
+                    variant='outline'
+                    size='sm'
                   />
                   <ActionButtons
                     onGenerate={() => setRotationAngle(180)}
-                    generateLabel="180°"
-                    variant="outline"
-                    size="sm"
+                    generateLabel='180°'
+                    variant='outline'
+                    size='sm'
                   />
                   <ActionButtons
                     onGenerate={() => setRotationAngle(270)}
-                    generateLabel="270°"
-                    variant="outline"
-                    size="sm"
+                    generateLabel='270°'
+                    variant='outline'
+                    size='sm'
                   />
                 </div>
 
                 <ActionButtons
                   onGenerate={rotateImage}
-                  generateLabel="Rotate Image"
+                  generateLabel='Rotate Image'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -299,34 +265,28 @@ export default function ImageRotatePage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Rotated Image
                 </CardTitle>
                 <CardDescription>Download your rotated image</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <img
                   src={rotatedImage}
-                  alt="Rotated"
-                  className="max-w-full h-auto rounded-lg border"
+                  alt='Rotated'
+                  className='max-w-full h-auto rounded-lg border'
                 />
                 <ActionButtons
                   onGenerate={downloadRotatedImage}
-                  generateLabel="Download Rotated Image"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download Rotated Image'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -339,9 +299,9 @@ export default function ImageRotatePage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Rotating image..."
-            completeText="Image rotated successfully!"
-            errorText="Failed to rotate image"
+            processingText='Rotating image...'
+            completeText='Image rotated successfully!'
+            errorText='Failed to rotate image'
           />
         </MotionDiv>
       </MotionDiv>

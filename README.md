@@ -10,9 +10,13 @@
 
 **144+ Tools • 100% Browser-Based**
 
-A comprehensive browser-based developer toolkit providing professional tools for developers, designers, and content creators. No downloads, no installations - just powerful tools that work instantly in your browser.
+A comprehensive browser-based developer toolkit providing professional tools for
+developers, designers, and content creators. No downloads, no installations -
+just powerful tools that work instantly in your browser.
 
-[Live Demo](https://toolify.dev) • [Documentation](https://toolify.dev/docs) • [Report Bug](https://github.com/BankkRoll/Toolify-Tools-Site/issues) • [Request Feature](https://github.com/BankkRoll/Toolify-Tools-Site/issues)
+[Live Demo](https://toolify.dev) • [Documentation](https://toolify.dev/docs) •
+[Report Bug](https://github.com/BankkRoll/Toolify-Tools-Site/issues) •
+[Request Feature](https://github.com/BankkRoll/Toolify-Tools-Site/issues)
 
 ## Core Capabilities
 
@@ -20,8 +24,10 @@ A comprehensive browser-based developer toolkit providing professional tools for
 - **100% Browser-Based** - No server processing required
 - **Real-time Processing** - Instant results with live preview
 - **Responsive Design** - Works seamlessly on desktop and mobile
-- **Dark Mode Support** - Built-in theme switching with system preference detection
-- **Advanced Search & Filter** - Quick tool discovery with intelligent categorization
+- **Dark Mode Support** - Built-in theme switching with system preference
+  detection
+- **Advanced Search & Filter** - Quick tool discovery with intelligent
+  categorization
 - **One-Click Copy** - Instant clipboard integration
 - **Local Storage** - Persistent user preferences and history
 - **Professional UI** - Modern, accessible design system
@@ -56,8 +62,8 @@ pnpm install
 pnpm dev
 ```
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+4. **Open your browser** Navigate to
+   [http://localhost:3000](http://localhost:3000)
 
 ### Production Build
 
@@ -85,7 +91,7 @@ pnpm start
 src/
 ├── app/                    # Next.js App Router
 │   ├── (marketing)/        # Marketing pages
-│   └── tools/              # Main application routes
+│   └── tools/              # Tool application routes
 ├── components/             # Reusable UI components
 │   ├── ui/                 # Shadcn/ui components
 │   ├── layout/             # Layout components
@@ -205,7 +211,8 @@ export default function ToolNamePage() {
 ### Adding New Tools
 
 1. **Update Configuration** - Add tool definition in `src/lib/tools-config.ts`
-2. **Create Tool Page** - Add new page in `src/app/tools/[category]/[tool-name]/page.tsx`
+2. **Create Tool Page** - Add new page in
+   `src/app/tools/[category]/[tool-name]/page.tsx`
 3. **Implement Features** - Follow the established pattern above
 4. **Test Thoroughly** - Ensure all functionality works correctly
 
@@ -221,7 +228,8 @@ export default function ToolNamePage() {
 
 ## Contributing
 
-We welcome contributions from the community. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+We welcome contributions from the community. Please see
+[CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ### Ways to Contribute
 
@@ -238,4 +246,5 @@ We welcome contributions from the community. Please see [CONTRIBUTING.md](CONTRI
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.

@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Download, FileImage, Sun } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Slider } from '@/components/ui/slider';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Download, FileImage, Sun } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Brightness/contrast configuration interface
@@ -41,10 +35,7 @@ export default function ImageBrightnessPage() {
     contrast: 0,
   });
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-brightness-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-brightness-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -78,7 +69,7 @@ export default function ImageBrightnessPage() {
       setAdjustedImage(null);
       setError(null);
       setIsComplete(false);
-      toast.success("Image loaded successfully");
+      toast.success('Image loaded successfully');
     }
   };
 
@@ -86,7 +77,7 @@ export default function ImageBrightnessPage() {
    * Updates brightness/contrast configuration
    */
   const updateConfig = (key: keyof BrightnessConfig, value: number) => {
-    setBrightnessConfig((prev) => ({ ...prev, [key]: value }));
+    setBrightnessConfig(prev => ({ ...prev, [key]: value }));
   };
 
   /**
@@ -94,16 +85,16 @@ export default function ImageBrightnessPage() {
    */
   const adjustImage = async () => {
     if (!selectedFile) {
-      toast.error("Please select an image file");
+      toast.error('Please select an image file');
       return;
     }
     setIsProcessing(true);
     setError(null);
     setIsComplete(false);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to get canvas context");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Failed to get canvas context');
 
       const img = new Image();
       img.onload = () => {
@@ -127,33 +118,26 @@ export default function ImageBrightnessPage() {
 
           // Apply contrast
           data[i] = Math.max(0, Math.min(255, factor * (data[i] - 128) + 128));
-          data[i + 1] = Math.max(
-            0,
-            Math.min(255, factor * (data[i + 1] - 128) + 128),
-          );
-          data[i + 2] = Math.max(
-            0,
-            Math.min(255, factor * (data[i + 2] - 128) + 128),
-          );
+          data[i + 1] = Math.max(0, Math.min(255, factor * (data[i + 1] - 128) + 128));
+          data[i + 2] = Math.max(0, Math.min(255, factor * (data[i + 2] - 128) + 128));
         }
 
         ctx.putImageData(imageData, 0, 0);
-        const adjustedDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        const adjustedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         setAdjustedImage(adjustedDataUrl);
         setIsComplete(true);
         setHistory([selectedFile.name, ...history].slice(0, 10));
-        toast.success("Image adjusted successfully");
+        toast.success('Image adjusted successfully');
         setIsProcessing(false);
       };
 
       img.onerror = () => {
-        throw new Error("Failed to load image");
+        throw new Error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(selectedFile);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to adjust image";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to adjust image';
       setError(errorMessage);
       toast.error(errorMessage);
       setIsProcessing(false);
@@ -165,11 +149,11 @@ export default function ImageBrightnessPage() {
    */
   const downloadAdjustedImage = () => {
     if (!adjustedImage) return;
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = adjustedImage;
-    link.download = `adjusted-${selectedFile?.name || "image.jpg"}`;
+    link.download = `adjusted-${selectedFile?.name || 'image.jpg'}`;
     link.click();
-    toast.success("Adjusted image downloaded successfully");
+    toast.success('Adjusted image downloaded successfully');
   };
 
   /**
@@ -196,49 +180,35 @@ export default function ImageBrightnessPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-brightness">
+    <ToolLayout toolId='image-brightness'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileImage className='h-5 w-5' />
                 Upload Image
               </CardTitle>
-              <CardDescription>
-                Select an image to adjust brightness and contrast
-              </CardDescription>
+              <CardDescription>Select an image to adjust brightness and contrast</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept="image/*"
+                accept='image/*'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -251,65 +221,53 @@ export default function ImageBrightnessPage() {
           <MotionDiv
             ref={configSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? configSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (configSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sun className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Sun className='h-5 w-5' />
                   Brightness & Contrast
                 </CardTitle>
-                <CardDescription>
-                  Adjust the brightness and contrast of your image
-                </CardDescription>
+                <CardDescription>Adjust the brightness and contrast of your image</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
+              <CardContent className='space-y-6'>
+                <div className='space-y-2'>
+                  <div className='flex justify-between'>
                     <span>Brightness: {brightnessConfig.brightness}</span>
                   </div>
                   <Slider
                     value={[brightnessConfig.brightness]}
-                    onValueChange={(value) =>
-                      updateConfig("brightness", value[0])
-                    }
+                    onValueChange={value => updateConfig('brightness', value[0])}
                     min={-100}
                     max={100}
                     step={1}
-                    className="w-full"
+                    className='w-full'
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex justify-between">
+                <div className='space-y-2'>
+                  <div className='flex justify-between'>
                     <span>Contrast: {brightnessConfig.contrast}</span>
                   </div>
                   <Slider
                     value={[brightnessConfig.contrast]}
-                    onValueChange={(value) =>
-                      updateConfig("contrast", value[0])
-                    }
+                    onValueChange={value => updateConfig('contrast', value[0])}
                     min={-100}
                     max={100}
                     step={1}
-                    className="w-full"
+                    className='w-full'
                   />
                 </div>
 
                 <ActionButtons
                   onGenerate={adjustImage}
-                  generateLabel="Apply Adjustments"
+                  generateLabel='Apply Adjustments'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -322,36 +280,30 @@ export default function ImageBrightnessPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Adjusted Image
                 </CardTitle>
                 <CardDescription>
                   Download your brightness and contrast adjusted image
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <img
                   src={adjustedImage}
-                  alt="Adjusted"
-                  className="max-w-full h-auto rounded-lg border"
+                  alt='Adjusted'
+                  className='max-w-full h-auto rounded-lg border'
                 />
                 <ActionButtons
                   onGenerate={downloadAdjustedImage}
-                  generateLabel="Download Adjusted Image"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download Adjusted Image'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -364,9 +316,9 @@ export default function ImageBrightnessPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Adjusting image..."
-            completeText="Image adjusted successfully!"
-            errorText="Failed to adjust image"
+            processingText='Adjusting image...'
+            completeText='Image adjusted successfully!'
+            errorText='Failed to adjust image'
           />
         </MotionDiv>
       </MotionDiv>

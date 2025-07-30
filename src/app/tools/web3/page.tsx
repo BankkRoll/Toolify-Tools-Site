@@ -1,25 +1,13 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ToolCard } from "@/components/tools/tool-card";
-import { Badge } from "@/components/ui/badge";
-import {
-  getActiveToolsByCategory,
-  getToolsByCategory,
-} from "@/lib/tools-config";
-import { useAnimations } from "@/stores/settings-store";
-import {
-  ChartAreaIcon,
-  CheckCircle,
-  Coins,
-  Hash,
-  Key,
-  Search,
-  Wallet,
-  Zap,
-} from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef } from "react";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ToolCard } from '@/components/tools/tool-card';
+import { Badge } from '@/components/ui/badge';
+import { getActiveToolsByCategory, getToolsByCategory } from '@/lib/tools-config';
+import { useAnimations } from '@/stores/settings-store';
+import { ChartAreaIcon, CheckCircle, Coins, Hash, Key, Search, Wallet, Zap } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef } from 'react';
 
 /**
  * Icon mapping for Web3 tools
@@ -39,8 +27,8 @@ const iconMap = {
  * Web3 tools overview page
  */
 export default function Web3ToolsPage() {
-  const web3Tools = getToolsByCategory("web3");
-  const activeTools = getActiveToolsByCategory("web3");
+  const web3Tools = getToolsByCategory('web3');
+  const activeTools = getActiveToolsByCategory('web3');
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -78,39 +66,31 @@ export default function Web3ToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   return (
-    <ToolLayout toolId="web3">
+    <ToolLayout toolId='web3'>
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex items-center justify-between"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='flex items-center justify-between'
         >
           <div>
-            <h2 className="text-2xl font-bold">Web3 & Crypto Tools</h2>
-            <p className="text-muted-foreground">
+            <h2 className='text-2xl font-bold'>Web3 & Crypto Tools</h2>
+            <p className='text-muted-foreground'>
               Blockchain, cryptocurrency, and Web3 development tools
             </p>
           </div>
-          <Badge variant="outline" className="text-sm">
+          <Badge variant='outline' className='text-sm'>
             {activeTools.length}/{web3Tools.length} Available
           </Badge>
         </MotionDiv>
@@ -118,11 +98,9 @@ export default function Web3ToolsPage() {
         <MotionDiv
           ref={toolsRef}
           variants={animationsEnabled ? staggerContainer : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-          }
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
         >
           {web3Tools.map((tool, index) => (
             <ToolCard

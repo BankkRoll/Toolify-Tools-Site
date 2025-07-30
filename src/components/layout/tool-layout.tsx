@@ -1,17 +1,13 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { getCategoryById, getToolById } from "@/lib/tools-config";
-import { cn } from "@/lib/utils";
-import {
-  useAnimations,
-  useCompactMode,
-  useSettingsStore,
-} from "@/stores/settings-store";
-import { ArrowLeft, Share2, Star, Zap } from "lucide-react";
-import { m, useInView } from "motion/react";
-import Link from "next/link";
-import { useRef, type ReactNode } from "react";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { getCategoryById, getToolById } from '@/lib/tools-config';
+import { cn } from '@/lib/utils';
+import { useAnimations, useCompactMode, useSettingsStore } from '@/stores/settings-store';
+import { ArrowLeft, Share2, Star, Zap } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import Link from 'next/link';
+import { useRef, type ReactNode } from 'react';
 
 interface ToolLayoutProps {
   toolId: string; // Required - can be either tool ID or category ID
@@ -22,7 +18,7 @@ interface ToolLayoutProps {
   category?: string;
   popular?: boolean;
   featured?: boolean;
-  status?: "active" | "beta" | "inactive";
+  status?: 'active' | 'beta' | 'inactive';
 }
 
 export function ToolLayout({
@@ -60,8 +56,8 @@ export function ToolLayout({
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   // Try to get tool data first, then category data
   const toolData = getToolById(toolId);
@@ -72,15 +68,12 @@ export function ToolLayout({
   const data = toolData || categoryData;
 
   // Use config data with optional overrides
-  const finalTitle = title || data?.name || "Tool";
-  const finalDescription = description || data?.description || "";
-  const finalCategory =
-    category || toolData?.category || categoryData?.id || "general";
-  const finalPopular =
-    popular !== undefined ? popular : toolData?.popular || false;
-  const finalFeatured =
-    featured !== undefined ? featured : toolData?.featured || false;
-  const finalStatus = status || toolData?.status || "active";
+  const finalTitle = title || data?.name || 'Tool';
+  const finalDescription = description || data?.description || '';
+  const finalCategory = category || toolData?.category || categoryData?.id || 'general';
+  const finalPopular = popular !== undefined ? popular : toolData?.popular || false;
+  const finalFeatured = featured !== undefined ? featured : toolData?.featured || false;
+  const finalStatus = status || toolData?.status || 'active';
 
   const handleToggleFavorite = () => {
     if (toolData) {
@@ -97,7 +90,7 @@ export function ToolLayout({
           url: window.location.href,
         });
       } catch (error) {
-        console.log("Share cancelled");
+        console.log('Share cancelled');
       }
     } else {
       // Fallback to clipboard
@@ -107,39 +100,26 @@ export function ToolLayout({
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className='space-y-4 sm:space-y-6'>
       {/* Header */}
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-3 sm:space-y-4"
+        className='space-y-3 sm:space-y-4'
       >
         {/* Back Navigation */}
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex items-center gap-2"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='flex items-center gap-2'
         >
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            className="h-8 sm:h-9 px-2 sm:px-3"
-          >
-            <Link href="/tools">
-              <ArrowLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="text-xs sm:text-sm">Back to Tools</span>
+          <Button variant='ghost' size='sm' asChild className='h-8 sm:h-9 px-2 sm:px-3'>
+            <Link href='/tools'>
+              <ArrowLeft className='mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4' />
+              <span className='text-xs sm:text-sm'>Back to Tools</span>
             </Link>
           </Button>
         </MotionDiv>
@@ -147,58 +127,49 @@ export function ToolLayout({
         {/* Title and Meta */}
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="space-y-3 sm:space-y-4"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='space-y-3 sm:space-y-4'
         >
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-            <div className="space-y-2 sm:space-y-3 flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight truncate">
+          <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4'>
+            <div className='space-y-2 sm:space-y-3 flex-1 min-w-0'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3'>
+                <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight truncate'>
                   {finalTitle}
                 </h1>
-                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                  <Badge
-                    variant="secondary"
-                    className="capitalize text-xs sm:text-sm"
-                  >
+                <div className='flex flex-wrap items-center gap-1 sm:gap-2'>
+                  <Badge variant='secondary' className='capitalize text-xs sm:text-sm'>
                     {finalCategory}
                   </Badge>
                   {!isCategoryPage && finalPopular && (
                     <Badge
-                      variant="secondary"
-                      className="bg-orange-100 text-orange-800 text-xs sm:text-sm"
+                      variant='secondary'
+                      className='bg-orange-100 text-orange-800 text-xs sm:text-sm'
                     >
-                      <Star className="mr-1 h-3 w-3" />
+                      <Star className='mr-1 h-3 w-3' />
                       Popular
                     </Badge>
                   )}
                   {!isCategoryPage && finalFeatured && (
                     <Badge
-                      variant="secondary"
-                      className="bg-primary/10 text-primary text-xs sm:text-sm"
+                      variant='secondary'
+                      className='bg-primary/10 text-primary text-xs sm:text-sm'
                     >
-                      <Zap className="mr-1 h-3 w-3" />
+                      <Zap className='mr-1 h-3 w-3' />
                       Featured
                     </Badge>
                   )}
-                  {!isCategoryPage && finalStatus !== "active" && (
-                    <Badge variant="outline" className="text-xs sm:text-sm">
-                      {finalStatus === "beta" ? "Beta" : "Coming Soon"}
+                  {!isCategoryPage && finalStatus !== 'active' && (
+                    <Badge variant='outline' className='text-xs sm:text-sm'>
+                      {finalStatus === 'beta' ? 'Beta' : 'Coming Soon'}
                     </Badge>
                   )}
                 </div>
               </div>
               <p
                 className={cn(
-                  "text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed",
-                  compactMode ? "max-w-2xl" : "max-w-3xl xl:max-w-4xl",
+                  'text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed',
+                  compactMode ? 'max-w-2xl' : 'max-w-3xl xl:max-w-4xl',
                 )}
               >
                 {finalDescription}
@@ -207,36 +178,36 @@ export function ToolLayout({
 
             {/* Action Buttons */}
             {!isCategoryPage && toolData && (
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className='flex items-center gap-2 flex-shrink-0'>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   onClick={handleToggleFavorite}
                   className={cn(
-                    "h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm",
+                    'h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm',
                     isFavorite(toolId)
-                      ? "text-yellow-500 border-yellow-200 hover:bg-yellow-50"
-                      : "",
+                      ? 'text-yellow-500 border-yellow-200 hover:bg-yellow-50'
+                      : '',
                   )}
                 >
                   <Star
                     className={cn(
-                      "mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4",
-                      isFavorite(toolId) ? "fill-current" : "",
+                      'mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4',
+                      isFavorite(toolId) ? 'fill-current' : '',
                     )}
                   />
-                  <span className="hidden sm:inline">
-                    {isFavorite(toolId) ? "Favorited" : "Favorite"}
+                  <span className='hidden sm:inline'>
+                    {isFavorite(toolId) ? 'Favorited' : 'Favorite'}
                   </span>
                 </Button>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   onClick={handleShare}
-                  className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
+                  className='h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm'
                 >
-                  <Share2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Share</span>
+                  <Share2 className='mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4' />
+                  <span className='hidden sm:inline'>Share</span>
                 </Button>
               </div>
             )}
@@ -244,52 +215,48 @@ export function ToolLayout({
         </MotionDiv>
       </MotionSection>
 
-      <Separator className="w-full my-4 sm:my-6" />
+      <Separator className='w-full my-4 sm:my-6' />
 
       {/* Main Content */}
       <MotionSection
         ref={contentRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (contentInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-4 sm:space-y-6"
+        className='space-y-4 sm:space-y-6'
       >
         {children}
       </MotionSection>
 
       {/* Footer */}
-      <Separator className="my-4 sm:my-6" />
+      <Separator className='my-4 sm:my-6' />
       <MotionDiv
         variants={animationsEnabled ? itemVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
-        }
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground"
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (contentInView ? 'visible' : 'hidden') : undefined}
+        className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground'
       >
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className='flex items-center gap-2 sm:gap-4'>
           <span>
             {toolData?.name} - {toolData?.description}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <span>
-            Created by:{" "}
+            Created by:{' '}
             <a
               href={
                 toolData?.authorGithubUsername
-                  ? toolData.authorGithubUsername === "Toolify"
-                    ? "https://toolify-tools-site.vercel.app"
+                  ? toolData.authorGithubUsername === 'Toolify'
+                    ? 'https://toolify-tools-site.vercel.app'
                     : `https://github.com/${toolData?.authorGithubUsername}`
-                  : "https://toolify-tools-site.vercel.app"
+                  : 'https://toolify-tools-site.vercel.app'
               }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary"
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-primary'
             >
-              {toolData?.authorGithubUsername || "Toolify"}
+              {toolData?.authorGithubUsername || 'Toolify'}
             </a>
           </span>
         </div>

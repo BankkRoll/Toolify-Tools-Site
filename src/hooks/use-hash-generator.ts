@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
+import { useCallback, useState } from 'react';
 
-type HashAlgorithm = "MD5" | "SHA1" | "SHA256" | "SHA512";
+type HashAlgorithm = 'MD5' | 'SHA1' | 'SHA256' | 'SHA512';
 
 interface HashResult {
   algorithm: HashAlgorithm;
@@ -25,12 +25,9 @@ export function useHashGenerator() {
    * @returns Promise resolving to hash string
    */
   const generateHash = useCallback(
-    async (
-      input: string,
-      algorithm: HashAlgorithm = "SHA256",
-    ): Promise<string> => {
+    async (input: string, algorithm: HashAlgorithm = 'SHA256'): Promise<string> => {
       if (!input.trim()) {
-        throw new Error("Input cannot be empty");
+        throw new Error('Input cannot be empty');
       }
 
       try {
@@ -40,25 +37,23 @@ export function useHashGenerator() {
         let hashBuffer: ArrayBuffer;
 
         switch (algorithm) {
-          case "SHA1":
-            hashBuffer = await crypto.subtle.digest("SHA-1", data);
+          case 'SHA1':
+            hashBuffer = await crypto.subtle.digest('SHA-1', data);
             break;
-          case "SHA256":
-            hashBuffer = await crypto.subtle.digest("SHA-256", data);
+          case 'SHA256':
+            hashBuffer = await crypto.subtle.digest('SHA-256', data);
             break;
-          case "SHA512":
-            hashBuffer = await crypto.subtle.digest("SHA-512", data);
+          case 'SHA512':
+            hashBuffer = await crypto.subtle.digest('SHA-512', data);
             break;
-          case "MD5":
-            throw new Error("MD5 not supported in Web Crypto API");
+          case 'MD5':
+            throw new Error('MD5 not supported in Web Crypto API');
           default:
             throw new Error(`Unsupported algorithm: ${algorithm}`);
         }
 
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join("");
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         return hashHex;
       } catch (error) {
@@ -76,14 +71,14 @@ export function useHashGenerator() {
   const generateAllHashes = useCallback(
     async (input: string): Promise<HashResult[]> => {
       if (!input.trim()) {
-        throw new Error("Input cannot be empty");
+        throw new Error('Input cannot be empty');
       }
 
       setIsGenerating(true);
       const results: HashResult[] = [];
 
       try {
-        const algorithms: HashAlgorithm[] = ["SHA1", "SHA256", "SHA512"];
+        const algorithms: HashAlgorithm[] = ['SHA1', 'SHA256', 'SHA512'];
 
         for (const algorithm of algorithms) {
           try {
@@ -91,7 +86,7 @@ export function useHashGenerator() {
             results.push({
               algorithm,
               hash,
-              input: input.length > 50 ? input.substring(0, 50) + "..." : input,
+              input: input.length > 50 ? input.substring(0, 50) + '...' : input,
             });
           } catch (error) {
             console.error(`Failed to generate ${algorithm} hash:`, error);
@@ -114,34 +109,29 @@ export function useHashGenerator() {
    * @returns Promise resolving to hash string
    */
   const generateFileHash = useCallback(
-    async (
-      file: File,
-      algorithm: HashAlgorithm = "SHA256",
-    ): Promise<string> => {
+    async (file: File, algorithm: HashAlgorithm = 'SHA256'): Promise<string> => {
       try {
         const arrayBuffer = await file.arrayBuffer();
         let hashBuffer: ArrayBuffer;
 
         switch (algorithm) {
-          case "SHA1":
-            hashBuffer = await crypto.subtle.digest("SHA-1", arrayBuffer);
+          case 'SHA1':
+            hashBuffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
             break;
-          case "SHA256":
-            hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+          case 'SHA256':
+            hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
             break;
-          case "SHA512":
-            hashBuffer = await crypto.subtle.digest("SHA-512", arrayBuffer);
+          case 'SHA512':
+            hashBuffer = await crypto.subtle.digest('SHA-512', arrayBuffer);
             break;
-          case "MD5":
-            throw new Error("MD5 not supported in Web Crypto API");
+          case 'MD5':
+            throw new Error('MD5 not supported in Web Crypto API');
           default:
             throw new Error(`Unsupported algorithm: ${algorithm}`);
         }
 
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
-          .map((b) => b.toString(16).padStart(2, "0"))
-          .join("");
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         return hashHex;
       } catch (error) {
@@ -169,13 +159,13 @@ export function useHashGenerator() {
     async (
       input: string,
       expectedHash: string,
-      algorithm: HashAlgorithm = "SHA256",
+      algorithm: HashAlgorithm = 'SHA256',
     ): Promise<boolean> => {
       try {
         const actualHash = await generateHash(input, algorithm);
         return actualHash.toLowerCase() === expectedHash.toLowerCase();
       } catch (error) {
-        console.error("Hash verification failed:", error);
+        console.error('Hash verification failed:', error);
         return false;
       }
     },

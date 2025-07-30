@@ -1,13 +1,10 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ToolCard } from "@/components/tools/tool-card";
-import { Badge } from "@/components/ui/badge";
-import {
-  getActiveToolsByCategory,
-  getToolsByCategory,
-} from "@/lib/tools-config";
-import { useAnimations } from "@/stores/settings-store";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ToolCard } from '@/components/tools/tool-card';
+import { Badge } from '@/components/ui/badge';
+import { getActiveToolsByCategory, getToolsByCategory } from '@/lib/tools-config';
+import { useAnimations } from '@/stores/settings-store';
 import {
   Archive,
   Barcode,
@@ -28,9 +25,9 @@ import {
   TestTube,
   Type,
   Volume2,
-} from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef } from "react";
+} from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef } from 'react';
 
 /**
  * Icon mapping for general tools
@@ -61,8 +58,8 @@ const iconMap = {
  * General tools overview page
  */
 export default function GeneralToolsPage() {
-  const generalTools = getToolsByCategory("general");
-  const activeTools = getActiveToolsByCategory("general");
+  const generalTools = getToolsByCategory('general');
+  const activeTools = getActiveToolsByCategory('general');
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -100,39 +97,31 @@ export default function GeneralToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   return (
-    <ToolLayout toolId="general">
+    <ToolLayout toolId='general'>
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex items-center justify-between"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='flex items-center justify-between'
         >
           <div>
-            <h2 className="text-2xl font-bold">General Tools</h2>
-            <p className="text-muted-foreground">
+            <h2 className='text-2xl font-bold'>General Tools</h2>
+            <p className='text-muted-foreground'>
               Useful utilities for various everyday tasks and workflows
             </p>
           </div>
-          <Badge variant="outline" className="text-sm">
+          <Badge variant='outline' className='text-sm'>
             {activeTools.length}/{generalTools.length} Available
           </Badge>
         </MotionDiv>
@@ -140,11 +129,9 @@ export default function GeneralToolsPage() {
         <MotionDiv
           ref={toolsRef}
           variants={animationsEnabled ? staggerContainer : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-          }
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
         >
           {generalTools.map((tool, index) => (
             <ToolCard

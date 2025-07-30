@@ -1,48 +1,39 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { DownloadButton } from "@/components/tools/download-button";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { DownloadButton } from '@/components/tools/download-button';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Image conversion tool page
  */
 export default function ConvertImagePage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [outputFormat, setOutputFormat] = useState("png");
+  const [outputFormat, setOutputFormat] = useState('png');
   const [quality, setQuality] = useState(90);
   const [convertedImage, setConvertedImage] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-convert-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-convert-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -88,17 +79,17 @@ export default function ConvertImagePage() {
     setIsComplete(false);
 
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = document.createElement("img");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = document.createElement('img');
 
       img.onload = () => {
         canvas.width = img.width;
         canvas.height = img.height;
 
         // Handle transparency for JPEG
-        if (outputFormat === "jpeg") {
-          ctx!.fillStyle = "#FFFFFF";
+        if (outputFormat === 'jpeg') {
+          ctx!.fillStyle = '#FFFFFF';
           ctx!.fillRect(0, 0, canvas.width, canvas.height);
         }
 
@@ -110,26 +101,21 @@ export default function ConvertImagePage() {
         setIsComplete(true);
         setIsProcessing(false);
 
-        setHistory(
-          [
-            `Image converted to ${outputFormat.toUpperCase()}`,
-            ...history,
-          ].slice(0, 10),
-        );
+        setHistory([`Image converted to ${outputFormat.toUpperCase()}`, ...history].slice(0, 10));
         toast.success(`Image converted to ${outputFormat.toUpperCase()}`);
       };
 
       img.onerror = () => {
         setIsProcessing(false);
-        setError("Failed to load image");
-        toast.error("Failed to load image");
+        setError('Failed to load image');
+        toast.error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(file);
     } catch (error) {
       setIsProcessing(false);
-      setError("Failed to convert image");
-      toast.error("Failed to convert image");
+      setError('Failed to convert image');
+      toast.error('Failed to convert image');
     }
   };
 
@@ -151,7 +137,7 @@ export default function ConvertImagePage() {
 
     // Convert data URL to blob
     const response = fetch(convertedImage);
-    return response.then((res) => res.blob());
+    return response.then(res => res.blob());
   };
 
   /**
@@ -159,7 +145,7 @@ export default function ConvertImagePage() {
    */
   const getDownloadFilename = () => {
     if (selectedFiles.length === 0) return `converted.${outputFormat}`;
-    const fileName = selectedFiles[0].name.replace(/\.[^/.]+$/, "");
+    const fileName = selectedFiles[0].name.replace(/\.[^/.]+$/, '');
     return `${fileName}.${outputFormat}`;
   };
 
@@ -167,7 +153,7 @@ export default function ConvertImagePage() {
    * Gets file extension from filename
    */
   const getFileExtension = (filename: string) => {
-    return filename.split(".").pop()?.toLowerCase() || "";
+    return filename.split('.').pop()?.toLowerCase() || '';
   };
 
   const containerVariants = {
@@ -186,54 +172,38 @@ export default function ConvertImagePage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-convert">
+    <ToolLayout toolId='image-convert'>
       <MotionDiv
         ref={containerRef}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        className='grid grid-cols-1 lg:grid-cols-2 gap-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
-          className="space-y-6"
+          className='space-y-6'
           variants={animationsEnabled ? containerVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
             <Card>
               <CardHeader>
                 <CardTitle>Upload Image</CardTitle>
-                <CardDescription>
-                  Select an image file to convert
-                </CardDescription>
+                <CardDescription>Select an image file to convert</CardDescription>
               </CardHeader>
               <CardContent>
                 <FileUploadZone
                   onFilesSelected={handleFilesSelect}
-                  accept="image/*"
+                  accept='image/*'
                   multiple={false}
                   files={selectedFiles}
-                  onRemoveFile={(index) => {
-                    setSelectedFiles(
-                      selectedFiles.filter((_, i) => i !== index),
-                    );
+                  onRemoveFile={index => {
+                    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
                     setConvertedImage(null);
                     setError(null);
                     setIsComplete(false);
@@ -249,64 +219,42 @@ export default function ConvertImagePage() {
                 <CardHeader>
                   <CardTitle>Conversion Settings</CardTitle>
                   <CardDescription>
-                    Current format:{" "}
-                    {getFileExtension(selectedFiles[0].name).toUpperCase()}
+                    Current format: {getFileExtension(selectedFiles[0].name).toUpperCase()}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="format">Output Format</Label>
-                    <Select
-                      value={outputFormat}
-                      onValueChange={setOutputFormat}
-                    >
+                <CardContent className='space-y-4'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='format'>Output Format</Label>
+                    <Select value={outputFormat} onValueChange={setOutputFormat}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="png">
-                          PNG (Lossless, supports transparency)
-                        </SelectItem>
-                        <SelectItem value="jpeg">
-                          JPEG (Compressed, smaller file size)
-                        </SelectItem>
-                        <SelectItem value="webp">
-                          WebP (Modern format, good compression)
-                        </SelectItem>
-                        <SelectItem value="bmp">
-                          BMP (Uncompressed bitmap)
-                        </SelectItem>
+                        <SelectItem value='png'>PNG (Lossless, supports transparency)</SelectItem>
+                        <SelectItem value='jpeg'>JPEG (Compressed, smaller file size)</SelectItem>
+                        <SelectItem value='webp'>WebP (Modern format, good compression)</SelectItem>
+                        <SelectItem value='bmp'>BMP (Uncompressed bitmap)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
-                  {(outputFormat === "jpeg" || outputFormat === "webp") && (
+                  {(outputFormat === 'jpeg' || outputFormat === 'webp') && (
                     <MotionDiv
-                      className="space-y-2"
-                      initial={
-                        animationsEnabled
-                          ? { opacity: 0, height: 0 }
-                          : undefined
-                      }
-                      animate={
-                        animationsEnabled
-                          ? { opacity: 1, height: "auto" }
-                          : undefined
-                      }
-                      transition={
-                        animationsEnabled ? { duration: 0.3 } : undefined
-                      }
+                      className='space-y-2'
+                      initial={animationsEnabled ? { opacity: 0, height: 0 } : undefined}
+                      animate={animationsEnabled ? { opacity: 1, height: 'auto' } : undefined}
+                      transition={animationsEnabled ? { duration: 0.3 } : undefined}
                     >
-                      <Label htmlFor="quality">Quality: {quality}%</Label>
+                      <Label htmlFor='quality'>Quality: {quality}%</Label>
                       <Input
-                        id="quality"
-                        type="range"
-                        min="1"
-                        max="100"
+                        id='quality'
+                        type='range'
+                        min='1'
+                        max='100'
                         value={quality}
-                        onChange={(e) => setQuality(Number(e.target.value))}
+                        onChange={e => setQuality(Number(e.target.value))}
                       />
-                      <p className="text-xs text-muted-foreground">
+                      <p className='text-xs text-muted-foreground'>
                         Higher quality = larger file size
                       </p>
                     </MotionDiv>
@@ -314,11 +262,11 @@ export default function ConvertImagePage() {
 
                   <ActionButtons
                     onGenerate={convertImage}
-                    generateLabel="Convert Image"
+                    generateLabel='Convert Image'
                     onReset={clearAll}
-                    resetLabel="Clear All"
-                    variant="outline"
-                    size="sm"
+                    resetLabel='Clear All'
+                    variant='outline'
+                    size='sm'
                     disabled={selectedFiles.length === 0 || isProcessing}
                     isGenerating={isProcessing}
                   />
@@ -333,9 +281,9 @@ export default function ConvertImagePage() {
               isComplete={isComplete}
               error={error}
               onReset={clearAll}
-              processingText="Converting image..."
-              completeText="Image converted successfully!"
-              errorText="Conversion failed"
+              processingText='Converting image...'
+              completeText='Image converted successfully!'
+              errorText='Conversion failed'
             />
           </MotionDiv>
         </MotionDiv>
@@ -343,44 +291,32 @@ export default function ConvertImagePage() {
         <MotionDiv
           ref={outputSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? outputSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (outputSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
               <CardTitle>Converted Image</CardTitle>
-              <CardDescription>
-                Preview and download your converted image
-              </CardDescription>
+              <CardDescription>Preview and download your converted image</CardDescription>
             </CardHeader>
             <CardContent>
               {convertedImage ? (
                 <MotionDiv
-                  className="space-y-4"
-                  initial={
-                    animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined
-                  }
-                  animate={
-                    animationsEnabled ? { opacity: 1, scale: 1 } : undefined
-                  }
+                  className='space-y-4'
+                  initial={animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined}
+                  animate={animationsEnabled ? { opacity: 1, scale: 1 } : undefined}
                   transition={animationsEnabled ? { duration: 0.3 } : undefined}
                 >
-                  <div className="border rounded-lg overflow-hidden">
+                  <div className='border rounded-lg overflow-hidden'>
                     <img
                       src={convertedImage}
-                      alt="Converted"
-                      className="w-full h-auto max-h-96 object-contain"
+                      alt='Converted'
+                      className='w-full h-auto max-h-96 object-contain'
                     />
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className='text-sm text-muted-foreground'>
                     Format: {outputFormat.toUpperCase()}
-                    {(outputFormat === "jpeg" || outputFormat === "webp") &&
+                    {(outputFormat === 'jpeg' || outputFormat === 'webp') &&
                       ` • Quality: ${quality}%`}
                   </div>
 
@@ -388,18 +324,18 @@ export default function ConvertImagePage() {
                     data={convertedImage}
                     filename={getDownloadFilename()}
                     mimeType={`image/${outputFormat}`}
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                   >
                     Download Converted Image
                   </DownloadButton>
                 </MotionDiv>
               ) : (
-                <div className="flex items-center justify-center h-64 border-2 border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
+                <div className='flex items-center justify-center h-64 border-2 border-dashed rounded-lg'>
+                  <p className='text-muted-foreground'>
                     {selectedFiles.length > 0
                       ? "Click 'Convert Image' to process"
-                      : "Upload an image to get started"}
+                      : 'Upload an image to get started'}
                   </p>
                 </div>
               )}

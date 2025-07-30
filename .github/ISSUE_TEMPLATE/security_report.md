@@ -1,9 +1,9 @@
 ---
 name: Security Report
 about: Report a security vulnerability
-title: "[SECURITY] "
-labels: ["security", "high-priority"]
-assignees: ""
+title: '[SECURITY] '
+labels: ['security', 'high-priority']
+assignees: ''
 ---
 
 ## Security Issue Description

@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Copy, FileImage, Palette } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Copy, FileImage, Palette } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Color information interface
@@ -39,10 +33,7 @@ export default function ImagePalettePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-palette-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-palette-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -106,7 +97,7 @@ export default function ImagePalettePage() {
       setColorPalette([]);
       setError(null);
       setIsComplete(false);
-      toast.success("Image loaded successfully");
+      toast.success('Image loaded successfully');
     }
   };
 
@@ -115,16 +106,16 @@ export default function ImagePalettePage() {
    */
   const extractPalette = async () => {
     if (!selectedFile) {
-      toast.error("Please select an image file");
+      toast.error('Please select an image file');
       return;
     }
     setIsProcessing(true);
     setError(null);
     setIsComplete(false);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to get canvas context");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Failed to get canvas context');
 
       const img = new Image();
       img.onload = () => {
@@ -154,7 +145,7 @@ export default function ImagePalettePage() {
           const quantizedG = Math.round(g / 16) * 16;
           const quantizedB = Math.round(b / 16) * 16;
 
-          const hex = `#${quantizedR.toString(16).padStart(2, "0")}${quantizedG.toString(16).padStart(2, "0")}${quantizedB.toString(16).padStart(2, "0")}`;
+          const hex = `#${quantizedR.toString(16).padStart(2, '0')}${quantizedG.toString(16).padStart(2, '0')}${quantizedB.toString(16).padStart(2, '0')}`;
           colorCount[hex] = (colorCount[hex] || 0) + 1;
         }
 
@@ -178,18 +169,17 @@ export default function ImagePalettePage() {
         setColorPalette(palette);
         setIsComplete(true);
         setHistory([selectedFile.name, ...history].slice(0, 10));
-        toast.success("Color palette extracted successfully");
+        toast.success('Color palette extracted successfully');
         setIsProcessing(false);
       };
 
       img.onerror = () => {
-        throw new Error("Failed to load image");
+        throw new Error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(selectedFile);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to extract color palette";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to extract color palette';
       setError(errorMessage);
       toast.error(errorMessage);
       setIsProcessing(false);
@@ -209,14 +199,14 @@ export default function ImagePalettePage() {
    */
   const downloadPalette = () => {
     const dataStr = JSON.stringify(colorPalette, null, 2);
-    const blob = new Blob([dataStr], { type: "application/json" });
+    const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `palette-${selectedFile?.name.replace(/\.[^/.]+$/, "") || "image"}.json`;
+    a.download = `palette-${selectedFile?.name.replace(/\.[^/.]+$/, '') || 'image'}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Palette downloaded successfully");
+    toast.success('Palette downloaded successfully');
   };
 
   /**
@@ -243,49 +233,35 @@ export default function ImagePalettePage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-palette">
+    <ToolLayout toolId='image-palette'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileImage className='h-5 w-5' />
                 Upload Image
               </CardTitle>
-              <CardDescription>
-                Select an image to extract color palette
-              </CardDescription>
+              <CardDescription>Select an image to extract color palette</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept="image/*"
+                accept='image/*'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -298,22 +274,20 @@ export default function ImagePalettePage() {
           <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Palette className='h-5 w-5' />
                   Extract Palette
                 </CardTitle>
-                <CardDescription>
-                  Extract the dominant colors from your image
-                </CardDescription>
+                <CardDescription>Extract the dominant colors from your image</CardDescription>
               </CardHeader>
               <CardContent>
                 <ActionButtons
                   onGenerate={extractPalette}
-                  generateLabel="Extract Palette"
+                  generateLabel='Extract Palette'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -326,80 +300,68 @@ export default function ImagePalettePage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Palette className='h-5 w-5' />
                   Color Palette
                 </CardTitle>
-                <CardDescription>
-                  Dominant colors extracted from your image
-                </CardDescription>
+                <CardDescription>Dominant colors extracted from your image</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <CardContent className='space-y-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                   {colorPalette.map((color, index) => (
                     <div
                       key={index}
-                      className="border rounded-lg p-4 space-y-2"
+                      className='border rounded-lg p-4 space-y-2'
                       style={{ borderColor: color.hex }}
                     >
                       <div
-                        className="w-full h-16 rounded-md border"
+                        className='w-full h-16 rounded-md border'
                         style={{ backgroundColor: color.hex }}
                       />
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">
-                            Color {index + 1}
-                          </span>
-                          <Badge variant="secondary">
-                            {color.percentage.toFixed(1)}%
-                          </Badge>
+                      <div className='space-y-1'>
+                        <div className='flex items-center justify-between'>
+                          <span className='text-sm font-medium'>Color {index + 1}</span>
+                          <Badge variant='secondary'>{color.percentage.toFixed(1)}%</Badge>
                         </div>
-                        <div className="space-y-1 text-xs">
-                          <div className="flex items-center justify-between">
+                        <div className='space-y-1 text-xs'>
+                          <div className='flex items-center justify-between'>
                             <span>HEX:</span>
-                            <div className="flex items-center gap-1">
-                              <span className="font-mono">{color.hex}</span>
+                            <div className='flex items-center gap-1'>
+                              <span className='font-mono'>{color.hex}</span>
                               <button
-                                onClick={() => copyColor(color.hex, "HEX")}
-                                className="p-1 hover:bg-gray-100 rounded"
+                                onClick={() => copyColor(color.hex, 'HEX')}
+                                className='p-1 hover:bg-gray-100 rounded'
                               >
-                                <Copy className="h-3 w-3" />
+                                <Copy className='h-3 w-3' />
                               </button>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className='flex items-center justify-between'>
                             <span>RGB:</span>
-                            <div className="flex items-center gap-1">
-                              <span className="font-mono">{color.rgb}</span>
+                            <div className='flex items-center gap-1'>
+                              <span className='font-mono'>{color.rgb}</span>
                               <button
-                                onClick={() => copyColor(color.rgb, "RGB")}
-                                className="p-1 hover:bg-gray-100 rounded"
+                                onClick={() => copyColor(color.rgb, 'RGB')}
+                                className='p-1 hover:bg-gray-100 rounded'
                               >
-                                <Copy className="h-3 w-3" />
+                                <Copy className='h-3 w-3' />
                               </button>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className='flex items-center justify-between'>
                             <span>HSL:</span>
-                            <div className="flex items-center gap-1">
-                              <span className="font-mono">{color.hsl}</span>
+                            <div className='flex items-center gap-1'>
+                              <span className='font-mono'>{color.hsl}</span>
                               <button
-                                onClick={() => copyColor(color.hsl, "HSL")}
-                                className="p-1 hover:bg-gray-100 rounded"
+                                onClick={() => copyColor(color.hsl, 'HSL')}
+                                className='p-1 hover:bg-gray-100 rounded'
                               >
-                                <Copy className="h-3 w-3" />
+                                <Copy className='h-3 w-3' />
                               </button>
                             </div>
                           </div>
@@ -410,9 +372,9 @@ export default function ImagePalettePage() {
                 </div>
                 <ActionButtons
                   onGenerate={downloadPalette}
-                  generateLabel="Download Palette"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download Palette'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -425,9 +387,9 @@ export default function ImagePalettePage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Extracting color palette..."
-            completeText="Color palette extracted successfully!"
-            errorText="Failed to extract color palette"
+            processingText='Extracting color palette...'
+            completeText='Color palette extracted successfully!'
+            errorText='Failed to extract color palette'
           />
         </MotionDiv>
       </MotionDiv>

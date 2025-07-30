@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useAnalytics } from "@/stores/settings-store";
-import { Analytics } from "@vercel/analytics/react";
+import { useAnalytics } from '@/stores/settings-store';
+import { Analytics } from '@vercel/analytics/react';
 
 interface AnalyticsProviderProps {
   children: React.ReactNode;

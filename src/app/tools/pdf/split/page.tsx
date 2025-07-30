@@ -1,32 +1,26 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { FileText, Scissors } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { FileText, Scissors } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Interface for split file information
@@ -42,19 +36,16 @@ interface SplitFile {
  */
 export default function SplitPdfPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [splitMethod, setSplitMethod] = useState("pages");
+  const [splitMethod, setSplitMethod] = useState('pages');
   const [pagesPerFile, setPagesPerFile] = useState(1);
-  const [customRanges, setCustomRanges] = useState("1-5,6-10");
+  const [customRanges, setCustomRanges] = useState('1-5,6-10');
   const [totalPages, setTotalPages] = useState(0);
   const [splitFiles, setSplitFiles] = useState<SplitFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-split-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-split-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -93,10 +84,10 @@ export default function SplitPdfPage() {
         const arrayBuffer = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         setTotalPages(pdfDoc.getPageCount());
-        toast.success("PDF loaded successfully");
+        toast.success('PDF loaded successfully');
       } catch (error) {
-        setError("Failed to load PDF file");
-        toast.error("Failed to load PDF file");
+        setError('Failed to load PDF file');
+        toast.error('Failed to load PDF file');
       }
     }
   };
@@ -106,19 +97,14 @@ export default function SplitPdfPage() {
    */
   const parsePageRanges = (ranges: string): number[][] => {
     const rangeGroups: number[][] = [];
-    const parts = ranges.split(",");
+    const parts = ranges.split(',');
 
     for (const part of parts) {
       const trimmed = part.trim();
-      if (trimmed.includes("-")) {
-        const [start, end] = trimmed
-          .split("-")
-          .map((n) => Number.parseInt(n.trim()));
+      if (trimmed.includes('-')) {
+        const [start, end] = trimmed.split('-').map(n => Number.parseInt(n.trim()));
         if (start && end && start <= end && start >= 1 && end <= totalPages) {
-          const pages = Array.from(
-            { length: end - start + 1 },
-            (_, i) => start + i - 1,
-          ); // Convert to 0-based
+          const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i - 1); // Convert to 0-based
           rangeGroups.push(pages);
         }
       } else {
@@ -137,7 +123,7 @@ export default function SplitPdfPage() {
    */
   const splitPdf = async () => {
     if (!selectedFile) {
-      toast.error("Please select a PDF file");
+      toast.error('Please select a PDF file');
       return;
     }
 
@@ -152,18 +138,18 @@ export default function SplitPdfPage() {
 
       let pageGroups: number[][] = [];
 
-      if (splitMethod === "pages") {
+      if (splitMethod === 'pages') {
         // Split by number of pages per file
         for (let i = 0; i < totalPages; i += pagesPerFile) {
           const endPage = Math.min(i + pagesPerFile, totalPages);
           const pages = Array.from({ length: endPage - i }, (_, j) => i + j);
           pageGroups.push(pages);
         }
-      } else if (splitMethod === "ranges") {
+      } else if (splitMethod === 'ranges') {
         // Split by custom page ranges
         pageGroups = parsePageRanges(customRanges);
         if (pageGroups.length === 0) {
-          throw new Error("No valid page ranges specified");
+          throw new Error('No valid page ranges specified');
         }
       }
 
@@ -182,7 +168,7 @@ export default function SplitPdfPage() {
 
         files.push({
           name: fileName,
-          pages: pages.map((p) => p + 1), // Convert back to 1-based for display
+          pages: pages.map(p => p + 1), // Convert back to 1-based for display
           data: pdfBytes,
         });
       }
@@ -192,8 +178,7 @@ export default function SplitPdfPage() {
       setHistory([selectedFile.name, ...history].slice(0, 10));
       toast.success(`PDF split into ${files.length} files`);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to split PDF";
+      const errorMessage = error instanceof Error ? error.message : 'Failed to split PDF';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -205,9 +190,9 @@ export default function SplitPdfPage() {
    * Downloads a specific split file
    */
   const downloadFile = (file: SplitFile) => {
-    const blob = new Blob([file.data], { type: "application/pdf" });
+    const blob = new Blob([file.data], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
     a.download = file.name;
     a.click();
@@ -219,7 +204,7 @@ export default function SplitPdfPage() {
    * Downloads all split files as a zip
    */
   const downloadAllFiles = () => {
-    splitFiles.forEach((file) => downloadFile(file));
+    splitFiles.forEach(file => downloadFile(file));
   };
 
   /**
@@ -227,9 +212,9 @@ export default function SplitPdfPage() {
    */
   const clearAll = () => {
     setSelectedFile(null);
-    setSplitMethod("pages");
+    setSplitMethod('pages');
     setPagesPerFile(1);
-    setCustomRanges("1-5,6-10");
+    setCustomRanges('1-5,6-10');
     setTotalPages(0);
     setSplitFiles([]);
     setError(null);
@@ -253,49 +238,35 @@ export default function SplitPdfPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-split">
+    <ToolLayout toolId='pdf-split'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Scissors className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Scissors className='h-5 w-5' />
                 Upload PDF
               </CardTitle>
-              <CardDescription>
-                Select a PDF file to split into multiple files
-              </CardDescription>
+              <CardDescription>Select a PDF file to split into multiple files</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={() => {
@@ -307,9 +278,7 @@ export default function SplitPdfPage() {
                 }}
               />
               {totalPages > 0 && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  Total pages: {totalPages}
-                </p>
+                <p className='text-sm text-muted-foreground mt-2'>Total pages: {totalPages}</p>
               )}
             </CardContent>
           </Card>
@@ -318,74 +287,65 @@ export default function SplitPdfPage() {
         <MotionDiv
           ref={settingsSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? settingsSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (settingsSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
               <CardTitle>Split Settings</CardTitle>
               <CardDescription>Choose how to split the PDF</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="splitMethod">Split Method</Label>
+            <CardContent className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='splitMethod'>Split Method</Label>
                 <Select value={splitMethod} onValueChange={setSplitMethod}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="pages">Pages per file</SelectItem>
-                    <SelectItem value="ranges">Custom ranges</SelectItem>
+                    <SelectItem value='pages'>Pages per file</SelectItem>
+                    <SelectItem value='ranges'>Custom ranges</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              {splitMethod === "pages" && (
-                <div className="space-y-2">
-                  <Label htmlFor="pagesPerFile">Pages per file</Label>
+              {splitMethod === 'pages' && (
+                <div className='space-y-2'>
+                  <Label htmlFor='pagesPerFile'>Pages per file</Label>
                   <Input
-                    id="pagesPerFile"
-                    type="number"
-                    min="1"
+                    id='pagesPerFile'
+                    type='number'
+                    min='1'
                     max={totalPages}
                     value={pagesPerFile}
-                    onChange={(e) =>
-                      setPagesPerFile(Number.parseInt(e.target.value) || 1)
-                    }
+                    onChange={e => setPagesPerFile(Number.parseInt(e.target.value) || 1)}
                   />
                 </div>
               )}
 
-              {splitMethod === "ranges" && (
-                <div className="space-y-2">
-                  <Label htmlFor="customRanges">Page ranges</Label>
+              {splitMethod === 'ranges' && (
+                <div className='space-y-2'>
+                  <Label htmlFor='customRanges'>Page ranges</Label>
                   <Input
-                    id="customRanges"
+                    id='customRanges'
                     value={customRanges}
-                    onChange={(e) => setCustomRanges(e.target.value)}
-                    placeholder="1-5,6-10,11-15"
-                    className="font-mono"
+                    onChange={e => setCustomRanges(e.target.value)}
+                    placeholder='1-5,6-10,11-15'
+                    className='font-mono'
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Enter page ranges separated by commas. Use hyphens for
-                    ranges.
+                  <p className='text-xs text-muted-foreground'>
+                    Enter page ranges separated by commas. Use hyphens for ranges.
                   </p>
                 </div>
               )}
 
               <ActionButtons
                 onGenerate={splitPdf}
-                generateLabel="Split PDF"
+                generateLabel='Split PDF'
                 onReset={clearAll}
-                resetLabel="Clear All"
-                variant="outline"
-                size="sm"
+                resetLabel='Clear All'
+                variant='outline'
+                size='sm'
                 disabled={!selectedFile || isProcessing}
                 isGenerating={isProcessing}
               />
@@ -397,45 +357,37 @@ export default function SplitPdfPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
                 <CardTitle>Split Files</CardTitle>
-                <CardDescription>
-                  {splitFiles.length} files created successfully
-                </CardDescription>
+                <CardDescription>{splitFiles.length} files created successfully</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2 max-h-64 overflow-y-auto">
+              <CardContent className='space-y-4'>
+                <div className='space-y-2 max-h-64 overflow-y-auto'>
                   {splitFiles.map((file, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className='flex items-center justify-between p-3 border rounded-lg'
                     >
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
+                      <div className='flex items-center gap-3'>
+                        <FileText className='h-4 w-4 text-muted-foreground' />
                         <div>
-                          <p className="text-sm font-medium">{file.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Pages: {file.pages.join(", ")}
+                          <p className='text-sm font-medium'>{file.name}</p>
+                          <p className='text-xs text-muted-foreground'>
+                            Pages: {file.pages.join(', ')}
                           </p>
                         </div>
                       </div>
                       <ActionButtons
                         downloadData={file.data}
                         downloadFilename={file.name}
-                        downloadMimeType="application/pdf"
+                        downloadMimeType='application/pdf'
                         onDownload={() => downloadFile(file)}
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                       />
                     </div>
                   ))}
@@ -443,9 +395,9 @@ export default function SplitPdfPage() {
 
                 <ActionButtons
                   onGenerate={downloadAllFiles}
-                  generateLabel="Download All"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download All'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -458,9 +410,9 @@ export default function SplitPdfPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Splitting PDF..."
-            completeText="PDF split successfully!"
-            errorText="Failed to split PDF"
+            processingText='Splitting PDF...'
+            completeText='PDF split successfully!'
+            errorText='Failed to split PDF'
           />
         </MotionDiv>
       </MotionDiv>

@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { ArrowDown, ArrowUp, FileText, GripVertical } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { ArrowDown, ArrowUp, FileText, GripVertical } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Interface for page information
@@ -38,10 +32,7 @@ export default function ReorderPagesPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-reorder-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-reorder-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -81,18 +72,15 @@ export default function ReorderPagesPage() {
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         const pageCount = pdfDoc.getPageCount();
 
-        const pageList: PageInfo[] = Array.from(
-          { length: pageCount },
-          (_, i) => ({
-            index: i,
-            originalIndex: i,
-          }),
-        );
+        const pageList: PageInfo[] = Array.from({ length: pageCount }, (_, i) => ({
+          index: i,
+          originalIndex: i,
+        }));
         setPages(pageList);
-        toast.success("PDF loaded successfully");
+        toast.success('PDF loaded successfully');
       } catch (error) {
-        setError("Failed to load PDF file");
-        toast.error("Failed to load PDF file");
+        setError('Failed to load PDF file');
+        toast.error('Failed to load PDF file');
       }
     }
   };
@@ -130,7 +118,7 @@ export default function ReorderPagesPage() {
    */
   const reorderPages = async () => {
     if (!selectedFile) {
-      toast.error("Please select a PDF file");
+      toast.error('Please select a PDF file');
       return;
     }
 
@@ -145,9 +133,7 @@ export default function ReorderPagesPage() {
 
       // Add pages in the new order
       for (const pageInfo of pages) {
-        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [
-          pageInfo.originalIndex,
-        ]);
+        const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageInfo.originalIndex]);
         newPdfDoc.addPage(copiedPage);
       }
 
@@ -155,10 +141,9 @@ export default function ReorderPagesPage() {
       setReorderedPdf(pdfBytes);
       setIsComplete(true);
       setHistory([selectedFile.name, ...history].slice(0, 10));
-      toast.success("Pages reordered successfully");
+      toast.success('Pages reordered successfully');
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to reorder pages";
+      const errorMessage = error instanceof Error ? error.message : 'Failed to reorder pages';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -172,14 +157,14 @@ export default function ReorderPagesPage() {
   const downloadReorderedPdf = () => {
     if (!reorderedPdf) return;
 
-    const blob = new Blob([reorderedPdf], { type: "application/pdf" });
+    const blob = new Blob([reorderedPdf], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `reordered-${selectedFile?.name || "pages"}.pdf`;
+    a.download = `reordered-${selectedFile?.name || 'pages'}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("PDF downloaded successfully");
+    toast.success('PDF downloaded successfully');
   };
 
   /**
@@ -204,7 +189,7 @@ export default function ReorderPagesPage() {
    * Gets download filename for the reordered PDF
    */
   const getDownloadFilename = () => {
-    return `reordered-${selectedFile?.name || "pages"}.pdf`;
+    return `reordered-${selectedFile?.name || 'pages'}.pdf`;
   };
 
   // Motion variants
@@ -224,49 +209,35 @@ export default function ReorderPagesPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-reorder">
+    <ToolLayout toolId='pdf-reorder'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileText className='h-5 w-5' />
                 Upload PDF
               </CardTitle>
-              <CardDescription>
-                Select a PDF file to reorder its pages
-              </CardDescription>
+              <CardDescription>Select a PDF file to reorder its pages</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={() => {
@@ -278,9 +249,7 @@ export default function ReorderPagesPage() {
                 }}
               />
               {pages.length > 0 && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  Total pages: {pages.length}
-                </p>
+                <p className='text-sm text-muted-foreground mt-2'>Total pages: {pages.length}</p>
               )}
             </CardContent>
           </Card>
@@ -290,49 +259,39 @@ export default function ReorderPagesPage() {
           <MotionDiv
             ref={pagesSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? pagesSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (pagesSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
                 <CardTitle>Page Order</CardTitle>
-                <CardDescription>
-                  Drag and drop or use arrows to reorder pages
-                </CardDescription>
+                <CardDescription>Drag and drop or use arrows to reorder pages</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2 max-h-96 overflow-y-auto">
+              <CardContent className='space-y-4'>
+                <div className='space-y-2 max-h-96 overflow-y-auto'>
                   {pages.map((page, index) => (
                     <div
                       key={page.originalIndex}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className='flex items-center justify-between p-3 border rounded-lg'
                     >
-                      <div className="flex items-center gap-3">
-                        <GripVertical className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">
-                          Page {page.originalIndex + 1}
-                        </span>
+                      <div className='flex items-center gap-3'>
+                        <GripVertical className='h-4 w-4 text-muted-foreground' />
+                        <span className='text-sm font-medium'>Page {page.originalIndex + 1}</span>
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className='flex items-center gap-1'>
                         <button
                           onClick={() => movePageUp(index)}
                           disabled={index === 0}
-                          className="p-1 hover:bg-muted rounded disabled:opacity-50"
+                          className='p-1 hover:bg-muted rounded disabled:opacity-50'
                         >
-                          <ArrowUp className="h-3 w-3" />
+                          <ArrowUp className='h-3 w-3' />
                         </button>
                         <button
                           onClick={() => movePageDown(index)}
                           disabled={index === pages.length - 1}
-                          className="p-1 hover:bg-muted rounded disabled:opacity-50"
+                          className='p-1 hover:bg-muted rounded disabled:opacity-50'
                         >
-                          <ArrowDown className="h-3 w-3" />
+                          <ArrowDown className='h-3 w-3' />
                         </button>
                       </div>
                     </div>
@@ -341,11 +300,11 @@ export default function ReorderPagesPage() {
 
                 <ActionButtons
                   onGenerate={reorderPages}
-                  generateLabel="Reorder Pages"
+                  generateLabel='Reorder Pages'
                   onReset={clearAll}
-                  resetLabel="Clear All"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear All'
+                  variant='outline'
+                  size='sm'
                   disabled={!selectedFile || isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -358,30 +317,22 @@ export default function ReorderPagesPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
                 <CardTitle>Reordered PDF</CardTitle>
-                <CardDescription>
-                  Your reordered PDF is ready for download
-                </CardDescription>
+                <CardDescription>Your reordered PDF is ready for download</CardDescription>
               </CardHeader>
               <CardContent>
                 <ActionButtons
                   downloadData={getDownloadData()}
                   downloadFilename={getDownloadFilename()}
-                  downloadMimeType="application/pdf"
+                  downloadMimeType='application/pdf'
                   onDownload={downloadReorderedPdf}
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -394,9 +345,9 @@ export default function ReorderPagesPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Reordering pages..."
-            completeText="Pages reordered successfully!"
-            errorText="Failed to reorder pages"
+            processingText='Reordering pages...'
+            completeText='Pages reordered successfully!'
+            errorText='Failed to reorder pages'
           />
         </MotionDiv>
       </MotionDiv>

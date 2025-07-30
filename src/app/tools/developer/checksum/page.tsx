@@ -1,45 +1,42 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Checksum generation tool for creating various hash values from text input
  */
 export default function ChecksumPage() {
   const animationsEnabled = useAnimations();
-  const [input, setInput] = useLocalStorage("checksum-input", "");
-  const [algorithm, setAlgorithm] = useLocalStorage(
-    "checksum-algorithm",
-    "md5",
-  );
+  const [input, setInput] = useLocalStorage('checksum-input', '');
+  const [algorithm, setAlgorithm] = useLocalStorage('checksum-algorithm', 'md5');
   const [checksums, setChecksums] = useState<Record<string, string>>({});
   const [isProcessing, setIsProcessing] = useState(false);
   const [history, setHistory] = useLocalStorage<
     Array<{ input: string; algorithm: string; hash: string; timestamp: number }>
-  >("checksum-history", []);
+  >('checksum-history', []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true });
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   /**
    * Generate SHA-256 hash
@@ -47,9 +44,9 @@ export default function ChecksumPage() {
   const generateSHA256 = async (text: string): Promise<string> => {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   };
 
   /**
@@ -58,9 +55,9 @@ export default function ChecksumPage() {
   const generateSHA1 = async (text: string): Promise<string> => {
     const encoder = new TextEncoder();
     const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   };
 
   /**
@@ -75,7 +72,7 @@ export default function ChecksumPage() {
       hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
-    return Math.abs(hash).toString(16).padStart(8, "0").repeat(4);
+    return Math.abs(hash).toString(16).padStart(8, '0').repeat(4);
   };
 
   /**
@@ -89,7 +86,7 @@ export default function ChecksumPage() {
         crc = crc & 1 ? 0xedb88320 ^ (crc >>> 1) : crc >>> 1;
       }
     }
-    return (crc ^ 0xffffffff).toString(16).padStart(8, "0");
+    return (crc ^ 0xffffffff).toString(16).padStart(8, '0');
   };
 
   /**
@@ -97,46 +94,46 @@ export default function ChecksumPage() {
    */
   const generateChecksum = async () => {
     if (!input.trim()) {
-      toast.error("Please enter some text to generate checksum");
+      toast.error('Please enter some text to generate checksum');
       return;
     }
 
     setIsProcessing(true);
     try {
-      let hash = "";
+      let hash = '';
 
       switch (algorithm) {
-        case "md5":
+        case 'md5':
           hash = generateMD5(input);
           break;
-        case "sha1":
+        case 'sha1':
           hash = await generateSHA1(input);
           break;
-        case "sha256":
+        case 'sha256':
           hash = await generateSHA256(input);
           break;
-        case "crc32":
+        case 'crc32':
           hash = generateCRC32(input);
           break;
         default:
           hash = await generateSHA256(input);
       }
 
-      setChecksums((prev) => ({ ...prev, [algorithm]: hash }));
+      setChecksums(prev => ({ ...prev, [algorithm]: hash }));
 
       // Add to history
       const newEntry = {
-        input: input.length > 50 ? input.substring(0, 50) + "..." : input,
+        input: input.length > 50 ? input.substring(0, 50) + '...' : input,
         algorithm,
         hash,
         timestamp: Date.now(),
       };
-      setHistory((prev) => [newEntry, ...prev.slice(0, 9)]);
+      setHistory(prev => [newEntry, ...prev.slice(0, 9)]);
 
-      toast.success("Checksum generated successfully");
+      toast.success('Checksum generated successfully');
     } catch (error) {
-      toast.error("Failed to generate checksum");
-      console.error("Checksum generation error:", error);
+      toast.error('Failed to generate checksum');
+      console.error('Checksum generation error:', error);
     } finally {
       setIsProcessing(false);
     }
@@ -147,17 +144,17 @@ export default function ChecksumPage() {
    */
   const copyChecksum = (hash: string) => {
     navigator.clipboard.writeText(hash);
-    toast.success("Checksum copied to clipboard");
+    toast.success('Checksum copied to clipboard');
   };
 
   /**
    * Clear all data
    */
   const clearAll = () => {
-    setInput("");
+    setInput('');
     setChecksums({});
     setHistory([]);
-    toast.success("All data cleared");
+    toast.success('All data cleared');
   };
 
   const variants = {
@@ -166,38 +163,38 @@ export default function ChecksumPage() {
   };
 
   return (
-    <ToolLayout toolId="dev-checksum">
-      <div ref={containerRef} className="space-y-6">
+    <ToolLayout toolId='dev-checksum'>
+      <div ref={containerRef} className='space-y-6'>
         <MotionDiv
           variants={variants}
-          initial="hidden"
-          animate={isInView && animationsEnabled ? "visible" : "hidden"}
+          initial='hidden'
+          animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
           transition={{ duration: 0.5 }}
-          className="space-y-4"
+          className='space-y-4'
         >
-          <div className="space-y-2">
-            <Label htmlFor="input">Input Text</Label>
+          <div className='space-y-2'>
+            <Label htmlFor='input'>Input Text</Label>
             <textarea
-              id="input"
+              id='input'
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Enter text to generate checksum..."
-              className="w-full min-h-[120px] p-3 border rounded-md resize-none"
+              onChange={e => setInput(e.target.value)}
+              placeholder='Enter text to generate checksum...'
+              className='w-full min-h-[120px] p-3 border rounded-md resize-none'
               rows={5}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="algorithm">Algorithm</Label>
+          <div className='space-y-2'>
+            <Label htmlFor='algorithm'>Algorithm</Label>
             <Select value={algorithm} onValueChange={setAlgorithm}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="md5">MD5</SelectItem>
-                <SelectItem value="sha1">SHA-1</SelectItem>
-                <SelectItem value="sha256">SHA-256</SelectItem>
-                <SelectItem value="crc32">CRC32</SelectItem>
+                <SelectItem value='md5'>MD5</SelectItem>
+                <SelectItem value='sha1'>SHA-1</SelectItem>
+                <SelectItem value='sha256'>SHA-256</SelectItem>
+                <SelectItem value='crc32'>CRC32</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -205,8 +202,8 @@ export default function ChecksumPage() {
           <ActionButtons
             onGenerate={generateChecksum}
             onClear={clearAll}
-            generateLabel="Generate Checksum"
-            clearLabel="Clear All"
+            generateLabel='Generate Checksum'
+            clearLabel='Clear All'
             isGenerating={isProcessing}
           />
         </MotionDiv>
@@ -220,30 +217,30 @@ export default function ChecksumPage() {
         {Object.keys(checksums).length > 0 && (
           <MotionDiv
             variants={variants}
-            initial="hidden"
-            animate={isInView && animationsEnabled ? "visible" : "hidden"}
+            initial='hidden'
+            animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-4"
+            className='space-y-4'
           >
-            <h3 className="text-lg font-semibold">Generated Checksums</h3>
-            <div className="grid gap-4">
+            <h3 className='text-lg font-semibold'>Generated Checksums</h3>
+            <div className='grid gap-4'>
               {Object.entries(checksums).map(([algo, hash]) => (
                 <Card key={algo}>
                   <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <Badge variant="secondary" className="uppercase">
+                    <CardTitle className='flex items-center justify-between'>
+                      <Badge variant='secondary' className='uppercase'>
                         {algo}
                       </Badge>
                       <button
                         onClick={() => copyChecksum(hash)}
-                        className="text-sm text-blue-600 hover:text-blue-800"
+                        className='text-sm text-blue-600 hover:text-blue-800'
                       >
                         Copy
                       </button>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <code className="block p-3 bg-gray-100 rounded text-sm break-all font-mono">
+                    <code className='block p-3 bg-gray-100 rounded text-sm break-all font-mono'>
                       {hash}
                     </code>
                   </CardContent>
@@ -256,32 +253,32 @@ export default function ChecksumPage() {
         {history.length > 0 && (
           <MotionDiv
             variants={variants}
-            initial="hidden"
-            animate={isInView && animationsEnabled ? "visible" : "hidden"}
+            initial='hidden'
+            animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            className='space-y-4'
           >
-            <h3 className="text-lg font-semibold">Recent History</h3>
-            <div className="space-y-2">
+            <h3 className='text-lg font-semibold'>Recent History</h3>
+            <div className='space-y-2'>
               {history.map((entry, index) => (
                 <Card key={index}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{entry.input}</p>
-                        <p className="text-gray-500">
-                          {entry.algorithm.toUpperCase()} •{" "}
+                  <CardContent className='p-4'>
+                    <div className='flex items-center justify-between text-sm'>
+                      <div className='flex-1 min-w-0'>
+                        <p className='font-medium truncate'>{entry.input}</p>
+                        <p className='text-gray-500'>
+                          {entry.algorithm.toUpperCase()} •{' '}
                           {new Date(entry.timestamp).toLocaleString()}
                         </p>
                       </div>
                       <button
                         onClick={() => copyChecksum(entry.hash)}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
+                        className='ml-2 text-blue-600 hover:text-blue-800'
                       >
                         Copy
                       </button>
                     </div>
-                    <code className="block mt-2 p-2 bg-gray-100 rounded text-xs break-all font-mono">
+                    <code className='block mt-2 p-2 bg-gray-100 rounded text-xs break-all font-mono'>
                       {entry.hash}
                     </code>
                   </CardContent>

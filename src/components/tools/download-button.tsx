@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Check, Download, Loader2, X } from "lucide-react";
-import { useState } from "react";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Check, Download, Loader2, X } from 'lucide-react';
+import { useState } from 'react';
 
 /**
  * Props for the DownloadButton component
@@ -18,9 +18,9 @@ interface DownloadButtonProps {
   /** Callback when download action is triggered */
   onDownload?: () => void;
   /** Button variant */
-  variant?: "default" | "outline" | "ghost";
+  variant?: 'default' | 'outline' | 'ghost';
   /** Button size */
-  size?: "default" | "sm" | "lg" | "icon";
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   /** Whether button is disabled */
   disabled?: boolean;
   /** Additional CSS classes */
@@ -37,10 +37,10 @@ interface DownloadButtonProps {
 export function DownloadButton({
   data,
   filename,
-  mimeType = "application/octet-stream",
+  mimeType = 'application/octet-stream',
   onDownload,
-  variant = "outline",
-  size = "sm",
+  variant = 'outline',
+  size = 'sm',
   disabled = false,
   className,
   children,
@@ -59,7 +59,7 @@ export function DownloadButton({
     try {
       let blob: Blob;
 
-      if (typeof data === "string") {
+      if (typeof data === 'string') {
         blob = new Blob([data], { type: mimeType });
       } else if (data instanceof Blob) {
         blob = data;
@@ -68,7 +68,7 @@ export function DownloadButton({
       }
 
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
@@ -89,8 +89,8 @@ export function DownloadButton({
         }, 3000);
       }
     } catch (err) {
-      setError("Failed to download file");
-      console.error("Download failed:", err);
+      setError('Failed to download file');
+      console.error('Download failed:', err);
     } finally {
       setIsDownloading(false);
     }
@@ -98,26 +98,26 @@ export function DownloadButton({
 
   const getIcon = () => {
     if (isDownloading) {
-      return <Loader2 className="h-4 w-4 mr-1 animate-spin" />;
+      return <Loader2 className='h-4 w-4 mr-1 animate-spin' />;
     }
     if (isDownloaded && showSuccessState) {
-      return <Check className="h-4 w-4 mr-1 text-green-500" />;
+      return <Check className='h-4 w-4 mr-1 text-green-500' />;
     }
     if (error) {
-      return <X className="h-4 w-4 mr-1 text-red-500" />;
+      return <X className='h-4 w-4 mr-1 text-red-500' />;
     }
-    return <Download className="h-4 w-4 mr-1" />;
+    return <Download className='h-4 w-4 mr-1' />;
   };
 
   const getButtonText = () => {
-    if (isDownloading) return "Downloading...";
-    if (isDownloaded && showSuccessState) return "Downloaded!";
-    if (error) return "Error";
-    return children || "Download";
+    if (isDownloading) return 'Downloading...';
+    if (isDownloaded && showSuccessState) return 'Downloaded!';
+    if (error) return 'Error';
+    return children || 'Download';
   };
 
   return (
-    <div className="relative">
+    <div className='relative'>
       <Button
         variant={variant}
         size={size}
@@ -126,8 +126,8 @@ export function DownloadButton({
         className={cn(
           isDownloaded &&
             showSuccessState &&
-            "bg-green-50 border-green-200 text-green-700 hover:bg-green-100",
-          error && "bg-red-50 border-red-200 text-red-700 hover:bg-red-100",
+            'bg-green-50 border-green-200 text-green-700 hover:bg-green-100',
+          error && 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100',
           className,
         )}
       >
@@ -136,7 +136,7 @@ export function DownloadButton({
       </Button>
 
       {error && (
-        <div className="absolute -bottom-8 left-0 text-xs text-red-500 bg-red-50 px-2 py-1 rounded border border-red-200 whitespace-nowrap">
+        <div className='absolute -bottom-8 left-0 text-xs text-red-500 bg-red-50 px-2 py-1 rounded border border-red-200 whitespace-nowrap'>
           {error}
         </div>
       )}

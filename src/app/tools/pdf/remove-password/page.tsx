@@ -1,41 +1,32 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Download, FileText, ShieldX } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Download, FileText, ShieldX } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * PDF password removal tool page
  */
 export default function PdfRemovePasswordPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [unlockedPdf, setUnlockedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-remove-password-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-remove-password-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -67,10 +58,10 @@ export default function PdfRemovePasswordPage() {
     if (file) {
       setSelectedFile(file);
       setUnlockedPdf(null);
-      setPassword("");
+      setPassword('');
       setError(null);
       setIsComplete(false);
-      toast.success("PDF loaded successfully");
+      toast.success('PDF loaded successfully');
     }
   };
 
@@ -79,11 +70,11 @@ export default function PdfRemovePasswordPage() {
    */
   const removePassword = async () => {
     if (!selectedFile) {
-      toast.error("Please select a PDF file");
+      toast.error('Please select a PDF file');
       return;
     }
     if (!password.trim()) {
-      toast.error("Please enter the password");
+      toast.error('Please enter the password');
       return;
     }
     setIsProcessing(true);
@@ -96,18 +87,17 @@ export default function PdfRemovePasswordPage() {
       // Create a new PDF without password protection
       const newPdfDoc = await PDFDocument.create();
       const pages = await newPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
-      pages.forEach((page) => newPdfDoc.addPage(page));
+      pages.forEach(page => newPdfDoc.addPage(page));
 
       const pdfBytes = await newPdfDoc.save();
       setUnlockedPdf(pdfBytes);
       setIsComplete(true);
       setHistory([selectedFile.name, ...history].slice(0, 10));
-      toast.success("Password removed successfully");
+      toast.success('Password removed successfully');
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to remove password";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to remove password';
       setError(errorMessage);
-      toast.error("Incorrect password or failed to remove protection");
+      toast.error('Incorrect password or failed to remove protection');
     } finally {
       setIsProcessing(false);
     }
@@ -118,14 +108,14 @@ export default function PdfRemovePasswordPage() {
    */
   const downloadUnlockedPdf = () => {
     if (!unlockedPdf) return;
-    const blob = new Blob([unlockedPdf], { type: "application/pdf" });
+    const blob = new Blob([unlockedPdf], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `unlocked-${selectedFile?.name || "document.pdf"}`;
+    a.download = `unlocked-${selectedFile?.name || 'document.pdf'}`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("PDF downloaded successfully");
+    toast.success('PDF downloaded successfully');
   };
 
   /**
@@ -133,7 +123,7 @@ export default function PdfRemovePasswordPage() {
    */
   const clearAll = () => {
     setSelectedFile(null);
-    setPassword("");
+    setPassword('');
     setUnlockedPdf(null);
     setError(null);
     setIsComplete(false);
@@ -153,49 +143,35 @@ export default function PdfRemovePasswordPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-remove-password">
+    <ToolLayout toolId='pdf-remove-password'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileText className='h-5 w-5' />
                 Upload Protected PDF
               </CardTitle>
-              <CardDescription>
-                Select a password-protected PDF file
-              </CardDescription>
+              <CardDescription>Select a password-protected PDF file</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -208,44 +184,36 @@ export default function PdfRemovePasswordPage() {
           <MotionDiv
             ref={passwordSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? passwordSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (passwordSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShieldX className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <ShieldX className='h-5 w-5' />
                   Enter Password
                 </CardTitle>
-                <CardDescription>
-                  Provide the password to unlock the PDF
-                </CardDescription>
+                <CardDescription>Provide the password to unlock the PDF</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <Label htmlFor='password'>Password</Label>
                   <Input
-                    id="password"
-                    type="password"
+                    id='password'
+                    type='password'
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter PDF password..."
-                    className="w-full"
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder='Enter PDF password...'
+                    className='w-full'
                   />
                 </div>
                 <ActionButtons
                   onGenerate={removePassword}
-                  generateLabel="Remove Password"
+                  generateLabel='Remove Password'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={!password.trim() || isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -258,37 +226,25 @@ export default function PdfRemovePasswordPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Unlocked PDF
                 </CardTitle>
-                <CardDescription>
-                  Download your unlocked PDF file
-                </CardDescription>
+                <CardDescription>Download your unlocked PDF file</CardDescription>
               </CardHeader>
               <CardContent>
                 <ActionButtons
                   downloadData={unlockedPdf}
-                  downloadFilename={
-                    selectedFile
-                      ? `unlocked-${selectedFile.name}`
-                      : "unlocked.pdf"
-                  }
-                  downloadMimeType="application/pdf"
+                  downloadFilename={selectedFile ? `unlocked-${selectedFile.name}` : 'unlocked.pdf'}
+                  downloadMimeType='application/pdf'
                   onDownload={downloadUnlockedPdf}
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -301,9 +257,9 @@ export default function PdfRemovePasswordPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Removing password protection..."
-            completeText="Password removed successfully!"
-            errorText="Failed to remove password"
+            processingText='Removing password protection...'
+            completeText='Password removed successfully!'
+            errorText='Failed to remove password'
           />
         </MotionDiv>
       </MotionDiv>

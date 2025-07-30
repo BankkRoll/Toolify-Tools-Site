@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { CheckCircle, Loader2, RotateCcw, X } from "lucide-react";
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { CheckCircle, Loader2, RotateCcw, X } from 'lucide-react';
 
 /**
  * Props for the ProcessingStatus component
@@ -42,9 +42,9 @@ export function ProcessingStatus({
   error,
   onReset,
   onRetry,
-  processingText = "Processing...",
-  completeText = "Processing complete!",
-  errorText = "An error occurred",
+  processingText = 'Processing...',
+  completeText = 'Processing complete!',
+  errorText = 'An error occurred',
   className,
   showProgress = false,
   progress = 0,
@@ -52,21 +52,16 @@ export function ProcessingStatus({
   if (isProcessing) {
     return (
       <Alert className={cn(className)}>
-        <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-        <AlertDescription className="flex items-center justify-between w-full">
+        <Loader2 className='h-4 w-4 animate-spin text-blue-500' />
+        <AlertDescription className='flex items-center justify-between w-full'>
           <span>{processingText}</span>
           {showProgress && (
-            <span className="text-xs text-muted-foreground">
-              {Math.round(progress)}%
-            </span>
+            <span className='text-xs text-muted-foreground'>{Math.round(progress)}%</span>
           )}
         </AlertDescription>
         {showProgress && (
-          <div className="w-full bg-muted rounded-full h-1 mt-2">
-            <div
-              className="bg-blue-500 h-1 rounded-full"
-              style={{ width: `${progress}%` }}
-            />
+          <div className='w-full bg-muted rounded-full h-1 mt-2'>
+            <div className='bg-blue-500 h-1 rounded-full' style={{ width: `${progress}%` }} />
           </div>
         )}
       </Alert>
@@ -75,31 +70,21 @@ export function ProcessingStatus({
 
   if (error) {
     return (
-      <Alert variant="destructive" className={cn(className)}>
-        <X className="h-4 w-4" />
-        <AlertDescription className="flex items-center justify-between w-full">
+      <Alert variant='destructive' className={cn(className)}>
+        <X className='h-4 w-4' />
+        <AlertDescription className='flex items-center justify-between w-full'>
           <span>
             {errorText}: {error}
           </span>
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             {onRetry && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onRetry}
-                className="h-6 px-2 text-xs"
-              >
-                <RotateCcw className="h-3 w-3 mr-1" />
+              <Button variant='outline' size='sm' onClick={onRetry} className='h-6 px-2 text-xs'>
+                <RotateCcw className='h-3 w-3 mr-1' />
                 Retry
               </Button>
             )}
             {onReset && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onReset}
-                className="h-6 px-2 text-xs"
-              >
+              <Button variant='outline' size='sm' onClick={onReset} className='h-6 px-2 text-xs'>
                 Reset
               </Button>
             )}
@@ -111,18 +96,16 @@ export function ProcessingStatus({
 
   if (isComplete) {
     return (
-      <Alert
-        className={cn("border-green-200 bg-green-50 text-green-800", className)}
-      >
-        <CheckCircle className="h-4 w-4 text-green-600" />
-        <AlertDescription className="flex items-center justify-between w-full">
+      <Alert className={cn('border-green-200 bg-green-50 text-green-800', className)}>
+        <CheckCircle className='h-4 w-4 text-green-600' />
+        <AlertDescription className='flex items-center justify-between w-full'>
           <span>{completeText}</span>
           {onReset && (
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               onClick={onReset}
-              className="h-6 px-2 text-xs border-green-300 text-green-700 hover:bg-green-100"
+              className='h-6 px-2 text-xs border-green-300 text-green-700 hover:bg-green-100'
             >
               Reset
             </Button>

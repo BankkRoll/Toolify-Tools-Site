@@ -1,39 +1,33 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
 
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { FileText } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { FileText } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * PDF compression tool page
  */
 export default function CompressPdfPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [compressionLevel, setCompressionLevel] = useState("medium");
+  const [compressionLevel, setCompressionLevel] = useState('medium');
   const [compressedPdf, setCompressedPdf] = useState<Uint8Array | null>(null);
   const [originalSize, setOriginalSize] = useState(0);
   const [compressedSize, setCompressedSize] = useState(0);
@@ -41,10 +35,7 @@ export default function CompressPdfPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-compress-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-compress-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -74,8 +65,7 @@ export default function CompressPdfPage() {
   const formatFileSize = (size: number) => {
     if (size < 1024) return `${size} B`;
     if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
-    if (size < 1024 * 1024 * 1024)
-      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    if (size < 1024 * 1024 * 1024) return `${(size / (1024 * 1024)).toFixed(2)} MB`;
     return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
 
@@ -109,9 +99,9 @@ export default function CompressPdfPage() {
 
       // Basic compression by removing unused objects and optimizing
       const pdfBytes = await pdfDoc.save({
-        useObjectStreams: compressionLevel !== "low",
+        useObjectStreams: compressionLevel !== 'low',
         addDefaultPage: false,
-        objectsPerTick: compressionLevel === "high" ? 50 : 20,
+        objectsPerTick: compressionLevel === 'high' ? 50 : 20,
       });
 
       setCompressedPdf(pdfBytes);
@@ -119,17 +109,12 @@ export default function CompressPdfPage() {
       setIsComplete(true);
       setHistory([selectedFile.name, ...history].slice(0, 10));
 
-      const compressionRatio = (
-        ((originalSize - pdfBytes.length) / originalSize) *
-        100
-      ).toFixed(1);
+      const compressionRatio = (((originalSize - pdfBytes.length) / originalSize) * 100).toFixed(1);
 
       toast.success(`PDF compressed by ${compressionRatio}%`);
     } catch (error) {
-      setError(
-        "Failed to compress PDF. Please ensure the file is a valid PDF.",
-      );
-      toast.error("Failed to compress PDF");
+      setError('Failed to compress PDF. Please ensure the file is a valid PDF.');
+      toast.error('Failed to compress PDF');
     } finally {
       setIsProcessing(false);
     }
@@ -152,15 +137,15 @@ export default function CompressPdfPage() {
    */
   const getDownloadData = () => {
     if (!compressedPdf) return null;
-    return new Blob([compressedPdf], { type: "application/pdf" });
+    return new Blob([compressedPdf], { type: 'application/pdf' });
   };
 
   /**
    * Generates download filename for compressed PDF
    */
   const getDownloadFilename = () => {
-    if (!selectedFile) return "compressed-document.pdf";
-    const name = selectedFile.name.replace(/\.pdf$/i, "");
+    if (!selectedFile) return 'compressed-document.pdf';
+    const name = selectedFile.name.replace(/\.pdf$/i, '');
     return `compressed-${name}.pdf`;
   };
 
@@ -180,48 +165,35 @@ export default function CompressPdfPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-compress">
+    <ToolLayout toolId='pdf-compress'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
-          className="grid gap-6 lg:grid-cols-2"
+          className='grid gap-6 lg:grid-cols-2'
           variants={animationsEnabled ? containerVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
             <Card>
               <CardHeader>
                 <CardTitle>PDF Compression</CardTitle>
                 <CardDescription>
-                  Compress PDF files to reduce file size while maintaining
-                  quality
+                  Compress PDF files to reduce file size while maintaining quality
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <FileUploadZone
-                  accept=".pdf,application/pdf"
+                  accept='.pdf,application/pdf'
                   onFilesSelected={handleFileSelect}
                   multiple={false}
                   files={selectedFile ? [selectedFile] : []}
@@ -240,40 +212,21 @@ export default function CompressPdfPage() {
 
                 {selectedFile && (
                   <MotionDiv
-                    className="space-y-4"
-                    initial={
-                      animationsEnabled ? { opacity: 0, height: 0 } : undefined
-                    }
-                    animate={
-                      animationsEnabled
-                        ? { opacity: 1, height: "auto" }
-                        : undefined
-                    }
-                    transition={
-                      animationsEnabled ? { duration: 0.3 } : undefined
-                    }
+                    className='space-y-4'
+                    initial={animationsEnabled ? { opacity: 0, height: 0 } : undefined}
+                    animate={animationsEnabled ? { opacity: 1, height: 'auto' } : undefined}
+                    transition={animationsEnabled ? { duration: 0.3 } : undefined}
                   >
-                    <div className="space-y-2">
-                      <Label htmlFor="compression-level">
-                        Compression Level
-                      </Label>
-                      <Select
-                        value={compressionLevel}
-                        onValueChange={setCompressionLevel}
-                      >
+                    <div className='space-y-2'>
+                      <Label htmlFor='compression-level'>Compression Level</Label>
+                      <Select value={compressionLevel} onValueChange={setCompressionLevel}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="low">
-                            Low (Better Quality)
-                          </SelectItem>
-                          <SelectItem value="medium">
-                            Medium (Balanced)
-                          </SelectItem>
-                          <SelectItem value="high">
-                            High (Smaller Size)
-                          </SelectItem>
+                          <SelectItem value='low'>Low (Better Quality)</SelectItem>
+                          <SelectItem value='medium'>Medium (Balanced)</SelectItem>
+                          <SelectItem value='high'>High (Smaller Size)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -282,11 +235,11 @@ export default function CompressPdfPage() {
 
                 <ActionButtons
                   onGenerate={compressPdf}
-                  generateLabel="Compress PDF"
+                  generateLabel='Compress PDF'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={!selectedFile || isProcessing}
                 />
               </CardContent>
@@ -301,74 +254,48 @@ export default function CompressPdfPage() {
                   View compression statistics and download the result
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 {selectedFile && (
                   <MotionDiv
-                    className="space-y-3"
-                    initial={
-                      animationsEnabled ? { opacity: 0, x: 20 } : undefined
-                    }
-                    animate={
-                      animationsEnabled ? { opacity: 1, x: 0 } : undefined
-                    }
-                    transition={
-                      animationsEnabled ? { duration: 0.3 } : undefined
-                    }
+                    className='space-y-3'
+                    initial={animationsEnabled ? { opacity: 0, x: 20 } : undefined}
+                    animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
+                    transition={animationsEnabled ? { duration: 0.3 } : undefined}
                   >
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      <span className="font-medium">{selectedFile.name}</span>
+                    <div className='flex items-center gap-2'>
+                      <FileText className='h-4 w-4' />
+                      <span className='font-medium'>{selectedFile.name}</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className='grid grid-cols-2 gap-4 text-sm'>
                       <div>
-                        <span className="text-muted-foreground">
-                          Original Size:
-                        </span>
-                        <div className="font-medium">
-                          {formatFileSize(originalSize)}
-                        </div>
+                        <span className='text-muted-foreground'>Original Size:</span>
+                        <div className='font-medium'>{formatFileSize(originalSize)}</div>
                       </div>
                       {compressedSize > 0 && (
                         <div>
-                          <span className="text-muted-foreground">
-                            Compressed Size:
-                          </span>
-                          <div className="font-medium">
-                            {formatFileSize(compressedSize)}
-                          </div>
+                          <span className='text-muted-foreground'>Compressed Size:</span>
+                          <div className='font-medium'>{formatFileSize(compressedSize)}</div>
                         </div>
                       )}
                     </div>
 
                     {compressedSize > 0 && (
                       <MotionDiv
-                        className="space-y-2"
-                        initial={
-                          animationsEnabled ? { opacity: 0, y: 10 } : undefined
-                        }
-                        animate={
-                          animationsEnabled ? { opacity: 1, y: 0 } : undefined
-                        }
-                        transition={
-                          animationsEnabled ? { delay: 0.2 } : undefined
-                        }
+                        className='space-y-2'
+                        initial={animationsEnabled ? { opacity: 0, y: 10 } : undefined}
+                        animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
+                        transition={animationsEnabled ? { delay: 0.2 } : undefined}
                       >
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">
-                            Compression Ratio:
-                          </span>
-                          <span className="font-medium">
-                            {(
-                              ((originalSize - compressedSize) / originalSize) *
-                              100
-                            ).toFixed(1)}
-                            %
+                        <div className='flex items-center justify-between text-sm'>
+                          <span className='text-muted-foreground'>Compression Ratio:</span>
+                          <span className='font-medium'>
+                            {(((originalSize - compressedSize) / originalSize) * 100).toFixed(1)}%
                           </span>
                         </div>
-                        <div className="w-full bg-muted rounded-full h-2">
+                        <div className='w-full bg-muted rounded-full h-2'>
                           <div
-                            className="bg-primary h-2 rounded-full transition-all duration-300"
+                            className='bg-primary h-2 rounded-full transition-all duration-300'
                             style={{
                               width: `${Math.min(100, (compressedSize / originalSize) * 100)}%`,
                             }}
@@ -381,34 +308,26 @@ export default function CompressPdfPage() {
 
                 {compressedPdf && (
                   <MotionDiv
-                    className="space-y-4"
-                    initial={
-                      animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined
-                    }
-                    animate={
-                      animationsEnabled ? { opacity: 1, scale: 1 } : undefined
-                    }
-                    transition={
-                      animationsEnabled ? { duration: 0.3 } : undefined
-                    }
+                    className='space-y-4'
+                    initial={animationsEnabled ? { opacity: 0, scale: 0.9 } : undefined}
+                    animate={animationsEnabled ? { opacity: 1, scale: 1 } : undefined}
+                    transition={animationsEnabled ? { duration: 0.3 } : undefined}
                   >
                     <ActionButtons
                       downloadData={getDownloadData()!}
                       downloadFilename={getDownloadFilename()}
-                      downloadMimeType="application/pdf"
-                      variant="outline"
-                      size="sm"
+                      downloadMimeType='application/pdf'
+                      variant='outline'
+                      size='sm'
                     />
                   </MotionDiv>
                 )}
 
                 {!selectedFile && (
-                  <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                    <div className="text-center">
-                      <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-muted-foreground">
-                        Upload a PDF file to get started
-                      </p>
+                  <div className='flex items-center justify-center h-32 border-2 border-dashed rounded-lg'>
+                    <div className='text-center'>
+                      <FileText className='h-8 w-8 text-muted-foreground mx-auto mb-2' />
+                      <p className='text-muted-foreground'>Upload a PDF file to get started</p>
                     </div>
                   </div>
                 )}
@@ -420,54 +339,41 @@ export default function CompressPdfPage() {
         <MotionDiv
           ref={aboutSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? aboutSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (aboutSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
               <CardTitle>About PDF Compression</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
                 <MotionDiv
-                  initial={
-                    animationsEnabled ? { opacity: 0, x: -20 } : undefined
-                  }
+                  initial={animationsEnabled ? { opacity: 0, x: -20 } : undefined}
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.1 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">How it works:</h4>
-                  <p className="text-muted-foreground">
-                    PDF compression reduces file size by optimizing images,
-                    removing unused objects, and applying various compression
-                    techniques while maintaining document quality.
+                  <h4 className='font-medium mb-2'>How it works:</h4>
+                  <p className='text-muted-foreground'>
+                    PDF compression reduces file size by optimizing images, removing unused objects,
+                    and applying various compression techniques while maintaining document quality.
                   </p>
                 </MotionDiv>
                 <MotionDiv
-                  initial={
-                    animationsEnabled ? { opacity: 0, x: 20 } : undefined
-                  }
+                  initial={animationsEnabled ? { opacity: 0, x: 20 } : undefined}
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.2 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">Compression Levels:</h4>
-                  <ul className="text-muted-foreground space-y-1">
+                  <h4 className='font-medium mb-2'>Compression Levels:</h4>
+                  <ul className='text-muted-foreground space-y-1'>
                     <li>
                       • <strong>Low:</strong> Minimal compression, best quality
                     </li>
                     <li>
-                      • <strong>Medium:</strong> Balanced compression and
-                      quality
+                      • <strong>Medium:</strong> Balanced compression and quality
                     </li>
                     <li>
-                      • <strong>High:</strong> Maximum compression, smaller
-                      files
+                      • <strong>High:</strong> Maximum compression, smaller files
                     </li>
                   </ul>
                 </MotionDiv>
@@ -482,9 +388,9 @@ export default function CompressPdfPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Compressing PDF..."
-            completeText="PDF compression complete!"
-            errorText="Compression failed"
+            processingText='Compressing PDF...'
+            completeText='PDF compression complete!'
+            errorText='Compression failed'
           />
         </MotionDiv>
       </MotionDiv>

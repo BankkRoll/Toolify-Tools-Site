@@ -1,25 +1,19 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Download, Edit3, FileText } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Download, Edit3, FileText } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Form field data structure
@@ -27,7 +21,7 @@ import { toast } from "sonner";
 interface FormField {
   name: string;
   value: string;
-  type: "text" | "email" | "phone" | "date";
+  type: 'text' | 'email' | 'phone' | 'date';
 }
 
 /**
@@ -41,10 +35,7 @@ export default function PdfFormFillerPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-form-filler-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-form-filler-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -80,13 +71,13 @@ export default function PdfFormFillerPage() {
       setIsComplete(false);
       // Initialize with common form fields
       setFormFields([
-        { name: "Full Name", value: "", type: "text" },
-        { name: "Email", value: "", type: "email" },
-        { name: "Phone", value: "", type: "phone" },
-        { name: "Date", value: "", type: "date" },
-        { name: "Address", value: "", type: "text" },
+        { name: 'Full Name', value: '', type: 'text' },
+        { name: 'Email', value: '', type: 'email' },
+        { name: 'Phone', value: '', type: 'phone' },
+        { name: 'Date', value: '', type: 'date' },
+        { name: 'Address', value: '', type: 'text' },
       ]);
-      toast.success("PDF loaded successfully");
+      toast.success('PDF loaded successfully');
     }
   };
 
@@ -94,7 +85,7 @@ export default function PdfFormFillerPage() {
    * Updates form field value
    */
   const updateField = (index: number, value: string) => {
-    setFormFields((prev) => {
+    setFormFields(prev => {
       const updated = [...prev];
       updated[index] = { ...updated[index], value };
       return updated;
@@ -105,17 +96,14 @@ export default function PdfFormFillerPage() {
    * Adds a new form field
    */
   const addField = () => {
-    setFormFields((prev) => [
-      ...prev,
-      { name: `Field ${prev.length + 1}`, value: "", type: "text" },
-    ]);
+    setFormFields(prev => [...prev, { name: `Field ${prev.length + 1}`, value: '', type: 'text' }]);
   };
 
   /**
    * Removes a form field
    */
   const removeField = (index: number) => {
-    setFormFields((prev) => prev.filter((_, i) => i !== index));
+    setFormFields(prev => prev.filter((_, i) => i !== index));
   };
 
   /**
@@ -123,7 +111,7 @@ export default function PdfFormFillerPage() {
    */
   const fillForm = async () => {
     if (!selectedFile) {
-      toast.error("Please select a PDF file");
+      toast.error('Please select a PDF file');
       return;
     }
     setIsProcessing(true);
@@ -140,7 +128,7 @@ export default function PdfFormFillerPage() {
         const page = pages[0];
         let yOffset = page.getHeight() - 100;
 
-        formFields.forEach((field) => {
+        formFields.forEach(field => {
           if (field.value.trim()) {
             page.drawText(`${field.name}: ${field.value}`, {
               x: 50,
@@ -158,10 +146,9 @@ export default function PdfFormFillerPage() {
       setFilledPdf(pdfBytes);
       setIsComplete(true);
       setHistory([selectedFile.name, ...history].slice(0, 10));
-      toast.success("Form filled successfully");
+      toast.success('Form filled successfully');
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to fill PDF form";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fill PDF form';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -174,14 +161,14 @@ export default function PdfFormFillerPage() {
    */
   const downloadFilledPdf = () => {
     if (!filledPdf) return;
-    const blob = new Blob([filledPdf], { type: "application/pdf" });
+    const blob = new Blob([filledPdf], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `filled-${selectedFile?.name || "form.pdf"}`;
+    a.download = `filled-${selectedFile?.name || 'form.pdf'}`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("PDF downloaded successfully");
+    toast.success('PDF downloaded successfully');
   };
 
   /**
@@ -209,39 +196,27 @@ export default function PdfFormFillerPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-form-filler">
+    <ToolLayout toolId='pdf-form-filler'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileText className='h-5 w-5' />
                 Upload PDF Form
               </CardTitle>
               <CardDescription>Select a PDF form to fill out</CardDescription>
@@ -249,7 +224,7 @@ export default function PdfFormFillerPage() {
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -262,61 +237,53 @@ export default function PdfFormFillerPage() {
           <MotionDiv
             ref={formSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? formSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (formSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Edit3 className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Edit3 className='h-5 w-5' />
                   Fill Form Fields
                 </CardTitle>
-                <CardDescription>
-                  Enter values for each form field
-                </CardDescription>
+                <CardDescription>Enter values for each form field</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 {formFields.map((field, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex items-center justify-between">
+                  <div key={index} className='space-y-2'>
+                    <div className='flex items-center justify-between'>
                       <Label htmlFor={`field-${index}`}>{field.name}</Label>
                       <ActionButtons
                         onReset={() => removeField(index)}
-                        resetLabel="Remove"
-                        variant="ghost"
-                        size="sm"
+                        resetLabel='Remove'
+                        variant='ghost'
+                        size='sm'
                       />
                     </div>
                     <Input
                       id={`field-${index}`}
-                      type={field.type === "date" ? "date" : "text"}
+                      type={field.type === 'date' ? 'date' : 'text'}
                       value={field.value}
-                      onChange={(e) => updateField(index, e.target.value)}
+                      onChange={e => updateField(index, e.target.value)}
                       placeholder={`Enter ${field.name.toLowerCase()}...`}
-                      className="w-full"
+                      className='w-full'
                     />
                   </div>
                 ))}
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   <ActionButtons
                     onGenerate={addField}
-                    generateLabel="Add Field"
-                    variant="outline"
-                    size="sm"
+                    generateLabel='Add Field'
+                    variant='outline'
+                    size='sm'
                   />
                   <ActionButtons
                     onGenerate={fillForm}
-                    generateLabel="Fill Form"
+                    generateLabel='Fill Form'
                     onReset={clearAll}
-                    resetLabel="Clear"
-                    variant="outline"
-                    size="sm"
+                    resetLabel='Clear'
+                    variant='outline'
+                    size='sm'
                     disabled={isProcessing}
                     isGenerating={isProcessing}
                   />
@@ -330,19 +297,13 @@ export default function PdfFormFillerPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Filled PDF Form
                 </CardTitle>
                 <CardDescription>Download your filled PDF form</CardDescription>
@@ -351,14 +312,12 @@ export default function PdfFormFillerPage() {
                 <ActionButtons
                   downloadData={filledPdf}
                   downloadFilename={
-                    selectedFile
-                      ? `filled-${selectedFile.name}`
-                      : "filled-form.pdf"
+                    selectedFile ? `filled-${selectedFile.name}` : 'filled-form.pdf'
                   }
-                  downloadMimeType="application/pdf"
+                  downloadMimeType='application/pdf'
                   onDownload={downloadFilledPdf}
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -371,9 +330,9 @@ export default function PdfFormFillerPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Filling PDF form..."
-            completeText="Form filled successfully!"
-            errorText="Failed to fill PDF form"
+            processingText='Filling PDF form...'
+            completeText='Form filled successfully!'
+            errorText='Failed to fill PDF form'
           />
         </MotionDiv>
       </MotionDiv>

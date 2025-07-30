@@ -1,59 +1,52 @@
-"use client";
+'use client';
 
-import { ToolCard } from "@/components/tools/tool-card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { ToolCard } from '@/components/tools/tool-card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import type { Tool } from "@/lib/tools-config";
+} from '@/components/ui/select';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import type { Tool } from '@/lib/tools-config';
 import {
   allTools,
   getAllActiveTools,
   getToolStats,
   searchTools,
   toolCategories,
-} from "@/lib/tools-config";
-import {
-  useAnimations,
-  useSettingsStore,
-  useViewModeStore,
-} from "@/stores/settings-store";
-import { Clock, Filter, Grid3X3, List, Search, SortAsc } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useMemo, useRef, useState } from "react";
+} from '@/lib/tools-config';
+import { useAnimations, useSettingsStore, useViewModeStore } from '@/stores/settings-store';
+import { Clock, Filter, Grid3X3, List, Search, SortAsc } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useMemo, useRef, useState } from 'react';
 
 /**
  * Type for sort options
  */
-type SortOption = "name" | "category" | "popular" | "recent";
+type SortOption = 'name' | 'category' | 'popular' | 'recent';
 
 /**
  * Main tools page component
  */
 export default function ToolsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const { viewMode, setViewMode } = useViewModeStore();
-  const [sortBy, setSortBy] = useState<SortOption>("name");
+  const [sortBy, setSortBy] = useState<SortOption>('name');
   const [showInactive, setShowInactive] = useState(false);
 
   const { isFavorite, toggleFavorite } = useSettingsStore();
   const animationsEnabled = useAnimations();
 
   // Local storage for user preferences
-  const [recentlyViewed] = useLocalStorage<string[]>(
-    "tools-recently-viewed",
-    [],
-  );
-  const [searchHistory] = useLocalStorage<string[]>("tools-search-history", []);
+  const [recentlyViewed] = useLocalStorage<string[]>('tools-recently-viewed', []);
+  const [searchHistory] = useLocalStorage<string[]>('tools-search-history', []);
 
   // Refs for motion animations
   const headerRef = useRef(null);
@@ -96,8 +89,8 @@ export default function ToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   /**
    * Filters and sorts tools based on current state
@@ -115,9 +108,7 @@ export default function ToolsPage() {
           (tool: Tool) =>
             tool.name.toLowerCase().includes(lowercaseQuery) ||
             tool.description.toLowerCase().includes(lowercaseQuery) ||
-            tool.tags.some((tag: string) =>
-              tag.toLowerCase().includes(lowercaseQuery),
-            ),
+            tool.tags.some((tag: string) => tag.toLowerCase().includes(lowercaseQuery)),
         );
       } else {
         // When showing only active, use the existing search function
@@ -133,13 +124,13 @@ export default function ToolsPage() {
     // Sort tools
     tools.sort((a: Tool, b: Tool) => {
       switch (sortBy) {
-        case "name":
+        case 'name':
           return a.name.localeCompare(b.name);
-        case "category":
+        case 'category':
           return a.category.localeCompare(b.category);
-        case "popular":
+        case 'popular':
           return (b.popular ? 1 : 0) - (a.popular ? 1 : 0);
-        case "recent":
+        case 'recent':
           return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
         default:
           return 0;
@@ -153,34 +144,30 @@ export default function ToolsPage() {
    * Clears all active filters
    */
   const clearFilters = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     setSelectedCategory(null);
     setShowInactive(false);
-    setSortBy("name");
+    setSortBy('name');
   };
 
-  const hasActiveFilters =
-    searchQuery || selectedCategory || showInactive || sortBy !== "name";
+  const hasActiveFilters = searchQuery || selectedCategory || showInactive || sortBy !== 'name';
 
   return (
-    <div className="space-y-8">
+    <div className='space-y-8'>
       {/* Header */}
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-3">
+        <div className='flex flex-col gap-2'>
+          <div className='flex items-center gap-3'>
             <div>
-              <h1 className="text-4xl font-bold tracking-tight">All Tools</h1>
-              <p className="text-muted-foreground">
-                {stats.activeTools} active browser-based tools for developers
-                and designers
+              <h1 className='text-4xl font-bold tracking-tight'>All Tools</h1>
+              <p className='text-muted-foreground'>
+                {stats.activeTools} active browser-based tools for developers and designers
               </p>
             </div>
           </div>
@@ -190,62 +177,46 @@ export default function ToolsPage() {
       {/* Advanced Search and Filters */}
       <MotionSection
         ref={filtersRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (filtersInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (filtersInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-4"
+        className='space-y-4'
       >
         {/* Search Bar */}
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? filtersInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="relative"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (filtersInView ? 'visible' : 'hidden') : undefined}
+          className='relative'
         >
-          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className='absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
           <Input
-            placeholder="Search tools by name, description, or category..."
+            placeholder='Search tools by name, description, or category...'
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-12 pl-12 pr-4 text-base"
+            onChange={e => setSearchQuery(e.target.value)}
+            className='h-12 pl-12 pr-4 text-base'
           />
         </MotionDiv>
 
         {/* Filter Controls */}
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? filtersInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (filtersInView ? 'visible' : 'hidden') : undefined}
+          className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'
         >
-          <div className="flex flex-wrap items-center gap-3">
+          <div className='flex flex-wrap items-center gap-3'>
             {/* Category Filter */}
             <Select
-              value={selectedCategory || "all"}
-              onValueChange={(value) =>
-                setSelectedCategory(value === "all" ? null : value)
-              }
+              value={selectedCategory || 'all'}
+              onValueChange={value => setSelectedCategory(value === 'all' ? null : value)}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="All Categories" />
+              <SelectTrigger className='w-[180px]'>
+                <SelectValue placeholder='All Categories' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {toolCategories.map((category) => (
+                <SelectItem value='all'>All Categories</SelectItem>
+                {toolCategories.map(category => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.name}
                   </SelectItem>
@@ -254,47 +225,44 @@ export default function ToolsPage() {
             </Select>
 
             {/* Sort Options */}
-            <Select
-              value={sortBy}
-              onValueChange={(value) => setSortBy(value as SortOption)}
-            >
-              <SelectTrigger className="w-[140px]">
+            <Select value={sortBy} onValueChange={value => setSortBy(value as SortOption)}>
+              <SelectTrigger className='w-[140px]'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="name">Name A-Z</SelectItem>
-                <SelectItem value="category">Category</SelectItem>
-                <SelectItem value="popular">Most Popular</SelectItem>
-                <SelectItem value="recent">Recently Added</SelectItem>
+                <SelectItem value='name'>Name A-Z</SelectItem>
+                <SelectItem value='category'>Category</SelectItem>
+                <SelectItem value='popular'>Most Popular</SelectItem>
+                <SelectItem value='recent'>Recently Added</SelectItem>
               </SelectContent>
             </Select>
 
             {/* Show Inactive Toggle */}
             <Button
-              variant={showInactive ? "default" : "outline"}
-              size="sm"
+              variant={showInactive ? 'default' : 'outline'}
+              size='sm'
               onClick={() => setShowInactive(!showInactive)}
             >
-              <Clock className="mr-2 h-4 w-4" />
-              {showInactive ? "Hide Inactive" : "Show All Tools"}
+              <Clock className='mr-2 h-4 w-4' />
+              {showInactive ? 'Hide Inactive' : 'Show All Tools'}
             </Button>
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("grid")}
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size='sm'
+              onClick={() => setViewMode('grid')}
             >
-              <Grid3X3 className="h-4 w-4" />
+              <Grid3X3 className='h-4 w-4' />
             </Button>
             <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("list")}
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size='sm'
+              onClick={() => setViewMode('list')}
             >
-              <List className="h-4 w-4" />
+              <List className='h-4 w-4' />
             </Button>
           </div>
         </MotionDiv>
@@ -303,54 +271,41 @@ export default function ToolsPage() {
         {hasActiveFilters && (
           <MotionDiv
             variants={animationsEnabled ? itemVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? filtersInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
-            className="flex items-center gap-3 rounded-lg border bg-muted/20 px-4 py-3"
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (filtersInView ? 'visible' : 'hidden') : undefined}
+            className='flex items-center gap-3 rounded-lg border bg-muted/20 px-4 py-3'
           >
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">
-              Active filters:
-            </span>
-            <div className="flex flex-wrap gap-2">
+            <Filter className='h-4 w-4 text-muted-foreground' />
+            <span className='text-sm font-medium text-muted-foreground'>Active filters:</span>
+            <div className='flex flex-wrap gap-2'>
               {searchQuery && (
-                <Badge variant="secondary" className="gap-1">
-                  <Search className="h-3 w-3" />"{searchQuery}"
+                <Badge variant='secondary' className='gap-1'>
+                  <Search className='h-3 w-3' />"{searchQuery}"
                 </Badge>
               )}
               {selectedCategory && (
-                <Badge variant="secondary" className="gap-1">
-                  {toolCategories.find((c) => c.id === selectedCategory)?.name}
+                <Badge variant='secondary' className='gap-1'>
+                  {toolCategories.find(c => c.id === selectedCategory)?.name}
                 </Badge>
               )}
               {showInactive && (
-                <Badge variant="secondary" className="gap-1">
-                  <Clock className="h-3 w-3" />
+                <Badge variant='secondary' className='gap-1'>
+                  <Clock className='h-3 w-3' />
                   All Tools (Including Inactive)
                 </Badge>
               )}
-              {sortBy !== "name" && (
-                <Badge variant="secondary" className="gap-1">
-                  <SortAsc className="h-3 w-3" />
-                  {sortBy === "popular"
-                    ? "Most Popular"
-                    : sortBy === "recent"
-                      ? "Recently Added"
-                      : "By Category"}
+              {sortBy !== 'name' && (
+                <Badge variant='secondary' className='gap-1'>
+                  <SortAsc className='h-3 w-3' />
+                  {sortBy === 'popular'
+                    ? 'Most Popular'
+                    : sortBy === 'recent'
+                      ? 'Recently Added'
+                      : 'By Category'}
                 </Badge>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="ml-auto"
-            >
+            <Button variant='ghost' size='sm' onClick={clearFilters} className='ml-auto'>
               Clear all
             </Button>
           </MotionDiv>
@@ -360,33 +315,23 @@ export default function ToolsPage() {
       {/* All Tools */}
       <MotionSection
         ref={toolsRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
         {filteredTools.length === 0 ? (
           <MotionDiv
             variants={animationsEnabled ? itemVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? toolsInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
           >
-            <Card className="p-12 text-center">
+            <Card className='p-12 text-center'>
               <CardContent>
-                <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No tools found</h3>
-                <p className="text-muted-foreground mb-4">
-                  No tools match your current filters.
-                </p>
-                <Button variant="outline" onClick={clearFilters}>
+                <Search className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
+                <h3 className='text-lg font-semibold mb-2'>No tools found</h3>
+                <p className='text-muted-foreground mb-4'>No tools match your current filters.</p>
+                <Button variant='outline' onClick={clearFilters}>
                   Clear filters
                 </Button>
               </CardContent>
@@ -395,12 +340,10 @@ export default function ToolsPage() {
         ) : (
           <MotionDiv
             variants={staggerContainer}
-            initial="hidden"
-            animate={toolsInView ? "visible" : "hidden"}
+            initial='hidden'
+            animate={toolsInView ? 'visible' : 'hidden'}
             className={`grid gap-4 ${
-              viewMode === "grid"
-                ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                : "grid-cols-1"
+              viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'
             }`}
           >
             {filteredTools.map((tool, index) => (

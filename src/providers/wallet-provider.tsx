@@ -1,11 +1,8 @@
 /* @ts-nocheck */
-"use client";
+'use client';
 
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import {
-  ConnectionProvider,
-  WalletProvider,
-} from "@solana/wallet-adapter-react";
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import {
   AlphaWalletAdapter,
   AvanaWalletAdapter,
@@ -36,23 +33,15 @@ import {
   TrezorWalletAdapter,
   TrustWalletAdapter,
   XDEFIWalletAdapter,
-} from "@solana/wallet-adapter-wallets";
-import { clusterApiUrl } from "@solana/web3.js";
-import { useMemo } from "react";
+} from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
+import { useMemo } from 'react';
 
-export const WalletContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const WalletContextProvider = ({ children }: { children: React.ReactNode }) => {
   const network = WalletAdapterNetwork.Mainnet;
   const heliusRpcUrl =
-    "https://mainnet.helius-rpc.com/?api-key=" +
-    process.env.NEXT_PUBLIC_HELIUS_API_KEY;
-  const endpoint = useMemo(
-    () => (heliusRpcUrl as string) || clusterApiUrl(network),
-    [network],
-  );
+    'https://mainnet.helius-rpc.com/?api-key=' + process.env.NEXT_PUBLIC_HELIUS_API_KEY;
+  const endpoint = useMemo(() => (heliusRpcUrl as string) || clusterApiUrl(network), [network]);
   const wallets = useMemo(
     () => [
       new PhantomWalletAdapter(),

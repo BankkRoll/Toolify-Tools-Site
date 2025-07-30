@@ -1,58 +1,49 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Textarea } from '@/components/ui/textarea';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * API mock generator tool for creating mock API endpoints and responses
  */
 export default function ApiMockPage() {
   const animationsEnabled = useAnimations();
-  const [endpointName, setEndpointName] = useLocalStorage(
-    "api-mock-endpoint",
-    "users",
-  );
-  const [httpMethod, setHttpMethod] = useLocalStorage("api-mock-method", "GET");
-  const [responseType, setResponseType] = useLocalStorage(
-    "api-mock-response",
-    "array",
-  );
-  const [itemCount, setItemCount] = useLocalStorage("api-mock-count", 5);
-  const [includePagination, setIncludePagination] = useLocalStorage(
-    "api-mock-pagination",
-    false,
-  );
-  const [generatedApi, setGeneratedApi] = useState("");
+  const [endpointName, setEndpointName] = useLocalStorage('api-mock-endpoint', 'users');
+  const [httpMethod, setHttpMethod] = useLocalStorage('api-mock-method', 'GET');
+  const [responseType, setResponseType] = useLocalStorage('api-mock-response', 'array');
+  const [itemCount, setItemCount] = useLocalStorage('api-mock-count', 5);
+  const [includePagination, setIncludePagination] = useLocalStorage('api-mock-pagination', false);
+  const [generatedApi, setGeneratedApi] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useLocalStorage<
     Array<{ endpoint: string; method: string; type: string; timestamp: number }>
-  >("api-mock-history", []);
+  >('api-mock-history', []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true });
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   // Mock data generators
   const mockDataGenerators = {
@@ -61,30 +52,23 @@ export default function ApiMockPage() {
       name: `User ${Math.floor(Math.random() * 1000)}`,
       email: `user${Math.floor(Math.random() * 1000)}@example.com`,
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`,
-      role: ["admin", "user", "moderator"][Math.floor(Math.random() * 3)],
+      role: ['admin', 'user', 'moderator'][Math.floor(Math.random() * 3)],
       isActive: Math.random() > 0.3,
-      createdAt: new Date(
-        Date.now() - Math.random() * 10000000000,
-      ).toISOString(),
-      lastLogin: new Date(
-        Date.now() - Math.random() * 1000000000,
-      ).toISOString(),
+      createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+      lastLogin: new Date(Date.now() - Math.random() * 1000000000).toISOString(),
     }),
     products: () => ({
       id: Math.floor(Math.random() * 10000),
       name: `Product ${Math.floor(Math.random() * 1000)}`,
       description: `This is a sample product description for ${Math.floor(Math.random() * 1000)}`,
       price: parseFloat((Math.random() * 1000).toFixed(2)),
-      category: ["Electronics", "Clothing", "Books", "Home", "Sports"][
+      category: ['Electronics', 'Clothing', 'Books', 'Home', 'Sports'][
         Math.floor(Math.random() * 5)
       ],
       inStock: Math.random() > 0.3,
       rating: parseFloat((Math.random() * 5).toFixed(1)),
       images: [`https://picsum.photos/300/200?random=${Math.random()}`],
-      tags: ["featured", "new", "popular"].slice(
-        0,
-        Math.floor(Math.random() * 3) + 1,
-      ),
+      tags: ['featured', 'new', 'popular'].slice(0, Math.floor(Math.random() * 3) + 1),
     }),
     posts: () => ({
       id: Math.floor(Math.random() * 10000),
@@ -96,16 +80,9 @@ export default function ApiMockPage() {
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random()}`,
       },
       published: Math.random() > 0.2,
-      tags: ["tech", "design", "business", "lifestyle"].slice(
-        0,
-        Math.floor(Math.random() * 4) + 1,
-      ),
-      createdAt: new Date(
-        Date.now() - Math.random() * 10000000000,
-      ).toISOString(),
-      updatedAt: new Date(
-        Date.now() - Math.random() * 1000000000,
-      ).toISOString(),
+      tags: ['tech', 'design', 'business', 'lifestyle'].slice(0, Math.floor(Math.random() * 4) + 1),
+      createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+      updatedAt: new Date(Date.now() - Math.random() * 1000000000).toISOString(),
     }),
     orders: () => ({
       id: Math.floor(Math.random() * 10000),
@@ -117,20 +94,16 @@ export default function ApiMockPage() {
         price: parseFloat((Math.random() * 100).toFixed(2)),
       })),
       total: parseFloat((Math.random() * 1000).toFixed(2)),
-      status: ["pending", "processing", "shipped", "delivered", "cancelled"][
+      status: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'][
         Math.floor(Math.random() * 5)
       ],
       shippingAddress: {
         street: `${Math.floor(Math.random() * 9999)} Main St`,
-        city: ["New York", "London", "Tokyo", "Paris", "Berlin"][
-          Math.floor(Math.random() * 5)
-        ],
-        country: ["US", "UK", "JP", "FR", "DE"][Math.floor(Math.random() * 5)],
+        city: ['New York', 'London', 'Tokyo', 'Paris', 'Berlin'][Math.floor(Math.random() * 5)],
+        country: ['US', 'UK', 'JP', 'FR', 'DE'][Math.floor(Math.random() * 5)],
         zipCode: Math.floor(Math.random() * 99999).toString(),
       },
-      createdAt: new Date(
-        Date.now() - Math.random() * 10000000000,
-      ).toISOString(),
+      createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
     }),
   };
 
@@ -143,8 +116,7 @@ export default function ApiMockPage() {
     setIsComplete(false);
 
     try {
-      const generator =
-        mockDataGenerators[endpointName as keyof typeof mockDataGenerators];
+      const generator = mockDataGenerators[endpointName as keyof typeof mockDataGenerators];
       const data = Array.from({ length: itemCount }, () => generator());
 
       let response: any = {
@@ -153,7 +125,7 @@ export default function ApiMockPage() {
         timestamp: new Date().toISOString(),
       };
 
-      if (responseType === "array") {
+      if (responseType === 'array') {
         response.data = data;
         if (includePagination) {
           response.pagination = {
@@ -163,9 +135,9 @@ export default function ApiMockPage() {
             totalPages: 10,
           };
         }
-      } else if (responseType === "single") {
+      } else if (responseType === 'single') {
         response.data = data[0];
-      } else if (responseType === "paginated") {
+      } else if (responseType === 'paginated') {
         response.data = data;
         response.pagination = {
           page: 1,
@@ -183,8 +155,8 @@ export default function ApiMockPage() {
         response: response,
         statusCode: 200,
         headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
         },
       };
 
@@ -198,14 +170,13 @@ export default function ApiMockPage() {
         type: responseType,
         timestamp: Date.now(),
       };
-      setHistory((prev) => [newEntry, ...prev.slice(0, 9)]);
+      setHistory(prev => [newEntry, ...prev.slice(0, 9)]);
 
       toast.success(`Generated ${httpMethod} /${endpointName} mock API`);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to generate mock API";
+      const errorMessage = error instanceof Error ? error.message : 'Failed to generate mock API';
       setError(errorMessage);
-      toast.error("Failed to generate mock API");
+      toast.error('Failed to generate mock API');
     } finally {
       setIsProcessing(false);
     }
@@ -216,17 +187,17 @@ export default function ApiMockPage() {
    */
   const copyApi = () => {
     navigator.clipboard.writeText(generatedApi);
-    toast.success("API response copied to clipboard");
+    toast.success('API response copied to clipboard');
   };
 
   /**
    * Clear all data
    */
   const clearAll = () => {
-    setGeneratedApi("");
+    setGeneratedApi('');
     setIsComplete(false);
     setError(null);
-    toast.success("All data cleared");
+    toast.success('All data cleared');
   };
 
   const variants = {
@@ -235,69 +206,69 @@ export default function ApiMockPage() {
   };
 
   return (
-    <ToolLayout toolId="dev-api-mock">
-      <div ref={containerRef} className="space-y-6">
+    <ToolLayout toolId='dev-api-mock'>
+      <div ref={containerRef} className='space-y-6'>
         <MotionDiv
           variants={variants}
-          initial="hidden"
-          animate={isInView && animationsEnabled ? "visible" : "hidden"}
+          initial='hidden'
+          animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
           transition={{ duration: 0.5 }}
-          className="space-y-4"
+          className='space-y-4'
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="endpoint-name">Endpoint</Label>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='endpoint-name'>Endpoint</Label>
               <Select value={endpointName} onValueChange={setEndpointName}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="users">Users</SelectItem>
-                  <SelectItem value="products">Products</SelectItem>
-                  <SelectItem value="posts">Posts</SelectItem>
-                  <SelectItem value="orders">Orders</SelectItem>
+                  <SelectItem value='users'>Users</SelectItem>
+                  <SelectItem value='products'>Products</SelectItem>
+                  <SelectItem value='posts'>Posts</SelectItem>
+                  <SelectItem value='orders'>Orders</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="http-method">HTTP Method</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='http-method'>HTTP Method</Label>
               <Select value={httpMethod} onValueChange={setHttpMethod}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="GET">GET</SelectItem>
-                  <SelectItem value="POST">POST</SelectItem>
-                  <SelectItem value="PUT">PUT</SelectItem>
-                  <SelectItem value="DELETE">DELETE</SelectItem>
+                  <SelectItem value='GET'>GET</SelectItem>
+                  <SelectItem value='POST'>POST</SelectItem>
+                  <SelectItem value='PUT'>PUT</SelectItem>
+                  <SelectItem value='DELETE'>DELETE</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="response-type">Response Type</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='response-type'>Response Type</Label>
               <Select value={responseType} onValueChange={setResponseType}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="array">Array</SelectItem>
-                  <SelectItem value="single">Single Item</SelectItem>
-                  <SelectItem value="paginated">Paginated</SelectItem>
+                  <SelectItem value='array'>Array</SelectItem>
+                  <SelectItem value='single'>Single Item</SelectItem>
+                  <SelectItem value='paginated'>Paginated</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="item-count">Item Count: {itemCount}</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='item-count'>Item Count: {itemCount}</Label>
               <Slider
                 value={[itemCount]}
-                onValueChange={(value) => setItemCount(value[0])}
+                onValueChange={value => setItemCount(value[0])}
                 max={20}
                 min={1}
                 step={1}
-                className="w-full"
+                className='w-full'
               />
             </div>
           </div>
@@ -305,34 +276,27 @@ export default function ApiMockPage() {
           <ActionButtons
             onGenerate={generateMockApi}
             onClear={clearAll}
-            generateLabel="Generate API"
-            clearLabel="Clear All"
+            generateLabel='Generate API'
+            clearLabel='Clear All'
             isGenerating={isProcessing}
           />
         </MotionDiv>
 
-        <ProcessingStatus
-          isProcessing={isProcessing}
-          isComplete={isComplete}
-          error={error}
-        />
+        <ProcessingStatus isProcessing={isProcessing} isComplete={isComplete} error={error} />
 
         {generatedApi && (
           <MotionDiv
             variants={variants}
-            initial="hidden"
-            animate={isInView && animationsEnabled ? "visible" : "hidden"}
+            initial='hidden'
+            animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="space-y-4"
+            className='space-y-4'
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className='flex items-center justify-between'>
                   Generated API Response
-                  <button
-                    onClick={copyApi}
-                    className="text-sm text-blue-600 hover:text-blue-800"
-                  >
+                  <button onClick={copyApi} className='text-sm text-blue-600 hover:text-blue-800'>
                     Copy
                   </button>
                 </CardTitle>
@@ -341,7 +305,7 @@ export default function ApiMockPage() {
                 <Textarea
                   value={generatedApi}
                   readOnly
-                  className="min-h-[400px] font-mono text-sm"
+                  className='min-h-[400px] font-mono text-sm'
                 />
               </CardContent>
             </Card>
@@ -351,24 +315,24 @@ export default function ApiMockPage() {
         {history.length > 0 && (
           <MotionDiv
             variants={variants}
-            initial="hidden"
-            animate={isInView && animationsEnabled ? "visible" : "hidden"}
+            initial='hidden'
+            animate={isInView && animationsEnabled ? 'visible' : 'hidden'}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            className='space-y-4'
           >
-            <h3 className="text-lg font-semibold">Recent History</h3>
-            <div className="space-y-2">
+            <h3 className='text-lg font-semibold'>Recent History</h3>
+            <div className='space-y-2'>
               {history.map((entry, index) => (
                 <Card key={index}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{entry.method}</Badge>
-                          <p className="font-medium">/{entry.endpoint}</p>
-                          <Badge variant="secondary">{entry.type}</Badge>
+                  <CardContent className='p-4'>
+                    <div className='flex items-center justify-between text-sm'>
+                      <div className='flex-1 min-w-0'>
+                        <div className='flex items-center gap-2'>
+                          <Badge variant='outline'>{entry.method}</Badge>
+                          <p className='font-medium'>/{entry.endpoint}</p>
+                          <Badge variant='secondary'>{entry.type}</Badge>
                         </div>
-                        <p className="text-gray-500">
+                        <p className='text-gray-500'>
                           {new Date(entry.timestamp).toLocaleString()}
                         </p>
                       </div>
@@ -377,9 +341,9 @@ export default function ApiMockPage() {
                           setEndpointName(entry.endpoint);
                           setHttpMethod(entry.method);
                           setResponseType(entry.type);
-                          toast.success("Settings restored from history");
+                          toast.success('Settings restored from history');
                         }}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
+                        className='ml-2 text-blue-600 hover:text-blue-800'
                       >
                         Restore
                       </button>

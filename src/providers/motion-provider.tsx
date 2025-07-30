@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useAnimations } from "@/stores/settings-store";
-import { LazyMotion, domAnimation } from "motion/react";
-import { ReactNode } from "react";
+import { useAnimations } from '@/stores/settings-store';
+import { LazyMotion, domAnimation } from 'motion/react';
+import { ReactNode } from 'react';
 
 interface MotionProviderProps {
   children: ReactNode;

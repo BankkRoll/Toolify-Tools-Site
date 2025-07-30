@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Check, Copy, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Check, Copy, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 /**
  * Props for the CopyButton component
@@ -14,9 +14,9 @@ interface CopyButtonProps {
   /** Callback when copy action is triggered */
   onCopy?: () => void;
   /** Button variant */
-  variant?: "default" | "outline" | "ghost";
+  variant?: 'default' | 'outline' | 'ghost';
   /** Button size */
-  size?: "default" | "sm" | "lg" | "icon";
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   /** Whether button is disabled */
   disabled?: boolean;
   /** Additional CSS classes */
@@ -33,8 +33,8 @@ interface CopyButtonProps {
 export function CopyButton({
   text,
   onCopy,
-  variant = "outline",
-  size = "icon",
+  variant = 'outline',
+  size = 'icon',
   disabled = false,
   className,
   children,
@@ -65,8 +65,8 @@ export function CopyButton({
         }, 3000);
       }
     } catch (err) {
-      setError("Failed to copy to clipboard");
-      console.error("Copy failed:", err);
+      setError('Failed to copy to clipboard');
+      console.error('Copy failed:', err);
     } finally {
       setIsCopying(false);
     }
@@ -74,22 +74,22 @@ export function CopyButton({
 
   const getIcon = () => {
     if (isCopying) {
-      return <Loader2 className="h-4 w-4 mr-1 animate-spin" />;
+      return <Loader2 className='h-4 w-4 mr-1 animate-spin' />;
     }
     if (isCopied && showSuccessState) {
-      return <Check className="h-4 w-4 mr-1 text-green-500" />;
+      return <Check className='h-4 w-4 mr-1 text-green-500' />;
     }
-    return <Copy className="h-4 w-4 mr-1" />;
+    return <Copy className='h-4 w-4 mr-1' />;
   };
 
   const getButtonText = () => {
-    if (isCopying) return "Copying...";
-    if (isCopied && showSuccessState) return "Copied!";
-    return children || "Copy";
+    if (isCopying) return 'Copying...';
+    if (isCopied && showSuccessState) return 'Copied!';
+    return children || 'Copy';
   };
 
   return (
-    <div className="relative">
+    <div className='relative'>
       <Button
         variant={variant}
         size={size}
@@ -98,8 +98,8 @@ export function CopyButton({
         className={cn(
           isCopied &&
             showSuccessState &&
-            "bg-green-50 border-green-200 text-green-700 hover:bg-green-100",
-          error && "bg-red-50 border-red-200 text-red-700 hover:bg-red-100",
+            'bg-green-50 border-green-200 text-green-700 hover:bg-green-100',
+          error && 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100',
           className,
         )}
       >
@@ -108,7 +108,7 @@ export function CopyButton({
       </Button>
 
       {error && (
-        <div className="absolute -bottom-8 left-0 text-xs text-red-500 bg-red-50 px-2 py-1 rounded border border-red-200">
+        <div className='absolute -bottom-8 left-0 text-xs text-red-500 bg-red-50 px-2 py-1 rounded border border-red-200'>
           {error}
         </div>
       )}

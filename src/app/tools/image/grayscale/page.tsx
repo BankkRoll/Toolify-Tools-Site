@@ -1,22 +1,16 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { Contrast, Download, FileImage } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { Contrast, Download, FileImage } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Image grayscale tool page
@@ -28,10 +22,7 @@ export default function ImageGrayscalePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-grayscale-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-grayscale-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -60,7 +51,7 @@ export default function ImageGrayscalePage() {
       setGrayscaleImage(null);
       setError(null);
       setIsComplete(false);
-      toast.success("Image loaded successfully");
+      toast.success('Image loaded successfully');
     }
   };
 
@@ -69,16 +60,16 @@ export default function ImageGrayscalePage() {
    */
   const convertToGrayscale = async () => {
     if (!selectedFile) {
-      toast.error("Please select an image file");
+      toast.error('Please select an image file');
       return;
     }
     setIsProcessing(true);
     setError(null);
     setIsComplete(false);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to get canvas context");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Failed to get canvas context');
 
       const img = new Image();
       img.onload = () => {
@@ -91,8 +82,7 @@ export default function ImageGrayscalePage() {
         const data = imageData.data;
 
         for (let i = 0; i < data.length; i += 4) {
-          const gray =
-            data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
           data[i] = gray; // Red
           data[i + 1] = gray; // Green
           data[i + 2] = gray; // Blue
@@ -100,22 +90,21 @@ export default function ImageGrayscalePage() {
         }
 
         ctx.putImageData(imageData, 0, 0);
-        const grayscaleDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        const grayscaleDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         setGrayscaleImage(grayscaleDataUrl);
         setIsComplete(true);
         setHistory([selectedFile.name, ...history].slice(0, 10));
-        toast.success("Image converted to grayscale successfully");
+        toast.success('Image converted to grayscale successfully');
         setIsProcessing(false);
       };
 
       img.onerror = () => {
-        throw new Error("Failed to load image");
+        throw new Error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(selectedFile);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to convert to grayscale";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to convert to grayscale';
       setError(errorMessage);
       toast.error(errorMessage);
       setIsProcessing(false);
@@ -127,11 +116,11 @@ export default function ImageGrayscalePage() {
    */
   const downloadGrayscaleImage = () => {
     if (!grayscaleImage) return;
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = grayscaleImage;
-    link.download = `grayscale-${selectedFile?.name || "image.jpg"}`;
+    link.download = `grayscale-${selectedFile?.name || 'image.jpg'}`;
     link.click();
-    toast.success("Grayscale image downloaded successfully");
+    toast.success('Grayscale image downloaded successfully');
   };
 
   /**
@@ -158,49 +147,35 @@ export default function ImageGrayscalePage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-grayscale">
+    <ToolLayout toolId='image-grayscale'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileImage className='h-5 w-5' />
                 Upload Image
               </CardTitle>
-              <CardDescription>
-                Select an image to convert to grayscale
-              </CardDescription>
+              <CardDescription>Select an image to convert to grayscale</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept="image/*"
+                accept='image/*'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -213,22 +188,20 @@ export default function ImageGrayscalePage() {
           <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Contrast className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Contrast className='h-5 w-5' />
                   Convert to Grayscale
                 </CardTitle>
-                <CardDescription>
-                  Convert your image to black and white
-                </CardDescription>
+                <CardDescription>Convert your image to black and white</CardDescription>
               </CardHeader>
               <CardContent>
                 <ActionButtons
                   onGenerate={convertToGrayscale}
-                  generateLabel="Convert to Grayscale"
+                  generateLabel='Convert to Grayscale'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -241,34 +214,28 @@ export default function ImageGrayscalePage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Grayscale Image
                 </CardTitle>
                 <CardDescription>Download your grayscale image</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <img
                   src={grayscaleImage}
-                  alt="Grayscale"
-                  className="max-w-full h-auto rounded-lg border"
+                  alt='Grayscale'
+                  className='max-w-full h-auto rounded-lg border'
                 />
                 <ActionButtons
                   onGenerate={downloadGrayscaleImage}
-                  generateLabel="Download Grayscale Image"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download Grayscale Image'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -281,9 +248,9 @@ export default function ImageGrayscalePage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Converting to grayscale..."
-            completeText="Image converted to grayscale successfully!"
-            errorText="Failed to convert to grayscale"
+            processingText='Converting to grayscale...'
+            completeText='Image converted to grayscale successfully!'
+            errorText='Failed to convert to grayscale'
           />
         </MotionDiv>
       </MotionDiv>

@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { CloudyIcon, Download, FileImage } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Slider } from '@/components/ui/slider';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { CloudyIcon, Download, FileImage } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * Image blur tool page
@@ -30,10 +24,7 @@ export default function ImageBlurPage() {
   const [isComplete, setIsComplete] = useState(false);
   const [blurRadius, setBlurRadius] = useState(5);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "image-blur-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('image-blur-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -67,7 +58,7 @@ export default function ImageBlurPage() {
       setBlurredImage(null);
       setError(null);
       setIsComplete(false);
-      toast.success("Image loaded successfully");
+      toast.success('Image loaded successfully');
     }
   };
 
@@ -76,16 +67,16 @@ export default function ImageBlurPage() {
    */
   const applyBlur = async () => {
     if (!selectedFile) {
-      toast.error("Please select an image file");
+      toast.error('Please select an image file');
       return;
     }
     setIsProcessing(true);
     setError(null);
     setIsComplete(false);
     try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Failed to get canvas context");
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Failed to get canvas context');
 
       const img = new Image();
       img.onload = () => {
@@ -153,22 +144,21 @@ export default function ImageBlurPage() {
         }
 
         ctx.putImageData(imageData, 0, 0);
-        const blurredDataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        const blurredDataUrl = canvas.toDataURL('image/jpeg', 0.9);
         setBlurredImage(blurredDataUrl);
         setIsComplete(true);
         setHistory([selectedFile.name, ...history].slice(0, 10));
-        toast.success("Blur effect applied successfully");
+        toast.success('Blur effect applied successfully');
         setIsProcessing(false);
       };
 
       img.onerror = () => {
-        throw new Error("Failed to load image");
+        throw new Error('Failed to load image');
       };
 
       img.src = URL.createObjectURL(selectedFile);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to apply blur effect";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to apply blur effect';
       setError(errorMessage);
       toast.error(errorMessage);
       setIsProcessing(false);
@@ -180,11 +170,11 @@ export default function ImageBlurPage() {
    */
   const downloadBlurredImage = () => {
     if (!blurredImage) return;
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = blurredImage;
-    link.download = `blurred-${selectedFile?.name || "image.jpg"}`;
+    link.download = `blurred-${selectedFile?.name || 'image.jpg'}`;
     link.click();
-    toast.success("Blurred image downloaded successfully");
+    toast.success('Blurred image downloaded successfully');
   };
 
   /**
@@ -211,49 +201,35 @@ export default function ImageBlurPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="image-blur">
+    <ToolLayout toolId='image-blur'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileImage className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileImage className='h-5 w-5' />
                 Upload Image
               </CardTitle>
-              <CardDescription>
-                Select an image to apply blur effect
-              </CardDescription>
+              <CardDescription>Select an image to apply blur effect</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept="image/*"
+                accept='image/*'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -266,45 +242,39 @@ export default function ImageBlurPage() {
           <MotionDiv
             ref={configSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? configSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (configSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CloudyIcon className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <CloudyIcon className='h-5 w-5' />
                   Blur Settings
                 </CardTitle>
                 <CardDescription>Adjust the blur intensity</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <div className='flex justify-between'>
                     <span>Blur Radius: {blurRadius}</span>
                   </div>
                   <Slider
                     value={[blurRadius]}
-                    onValueChange={(value) => setBlurRadius(value[0])}
+                    onValueChange={value => setBlurRadius(value[0])}
                     min={1}
                     max={20}
                     step={1}
-                    className="w-full"
+                    className='w-full'
                   />
                 </div>
 
                 <ActionButtons
                   onGenerate={applyBlur}
-                  generateLabel="Apply Blur"
+                  generateLabel='Apply Blur'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
@@ -317,34 +287,28 @@ export default function ImageBlurPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Download className='h-5 w-5' />
                   Blurred Image
                 </CardTitle>
                 <CardDescription>Download your blurred image</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <img
                   src={blurredImage}
-                  alt="Blurred"
-                  className="max-w-full h-auto rounded-lg border"
+                  alt='Blurred'
+                  className='max-w-full h-auto rounded-lg border'
                 />
                 <ActionButtons
                   onGenerate={downloadBlurredImage}
-                  generateLabel="Download Blurred Image"
-                  variant="outline"
-                  size="sm"
+                  generateLabel='Download Blurred Image'
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -357,9 +321,9 @@ export default function ImageBlurPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Applying blur effect..."
-            completeText="Blur effect applied successfully!"
-            errorText="Failed to apply blur effect"
+            processingText='Applying blur effect...'
+            completeText='Blur effect applied successfully!'
+            errorText='Failed to apply blur effect'
           />
         </MotionDiv>
       </MotionDiv>

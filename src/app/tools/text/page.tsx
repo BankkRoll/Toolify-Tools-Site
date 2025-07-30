@@ -1,13 +1,10 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ToolCard } from "@/components/tools/tool-card";
-import { Badge } from "@/components/ui/badge";
-import {
-  getActiveToolsByCategory,
-  getToolsByCategory,
-} from "@/lib/tools-config";
-import { useAnimations } from "@/stores/settings-store";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ToolCard } from '@/components/tools/tool-card';
+import { Badge } from '@/components/ui/badge';
+import { getActiveToolsByCategory, getToolsByCategory } from '@/lib/tools-config';
+import { useAnimations } from '@/stores/settings-store';
 import {
   ArrowUpDown,
   BarChart,
@@ -26,9 +23,9 @@ import {
   Type,
   Volume2,
   Zap,
-} from "lucide-react";
-import { m, useInView } from "motion/react";
-import { useRef } from "react";
+} from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { useRef } from 'react';
 
 /**
  * Icon mapping for text tools
@@ -57,8 +54,8 @@ const iconMap = {
  * Text tools overview page
  */
 export default function TextToolsPage() {
-  const textTools = getToolsByCategory("text");
-  const activeTools = getActiveToolsByCategory("text");
+  const textTools = getToolsByCategory('text');
+  const activeTools = getActiveToolsByCategory('text');
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -96,39 +93,31 @@ export default function TextToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
-  const MotionSection = animationsEnabled ? m.section : "section";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
+  const MotionSection = animationsEnabled ? m.section : 'section';
 
   return (
-    <ToolLayout toolId="text">
+    <ToolLayout toolId='text'>
       <MotionSection
         ref={headerRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className='space-y-6'
       >
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? headerInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-          className="flex items-center justify-between"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (headerInView ? 'visible' : 'hidden') : undefined}
+          className='flex items-center justify-between'
         >
           <div>
-            <h2 className="text-2xl font-bold">Text Tools</h2>
-            <p className="text-muted-foreground">
+            <h2 className='text-2xl font-bold'>Text Tools</h2>
+            <p className='text-muted-foreground'>
               Powerful text processing tools for writers and developers
             </p>
           </div>
-          <Badge variant="outline" className="text-sm">
+          <Badge variant='outline' className='text-sm'>
             {activeTools.length}/{textTools.length} Available
           </Badge>
         </MotionDiv>
@@ -136,11 +125,9 @@ export default function TextToolsPage() {
         <MotionDiv
           ref={toolsRef}
           variants={animationsEnabled ? staggerContainer : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-          }
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (toolsInView ? 'visible' : 'hidden') : undefined}
+          className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
         >
           {textTools.map((tool, index) => (
             <ToolCard

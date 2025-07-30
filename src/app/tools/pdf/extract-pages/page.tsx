@@ -1,42 +1,33 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { FileText } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { FileText } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * PDF page extraction tool page
  */
 export default function ExtractPagesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pageRange, setPageRange] = useState("");
+  const [pageRange, setPageRange] = useState('');
   const [totalPages, setTotalPages] = useState(0);
   const [extractedPdf, setExtractedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-extract-pages-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-extract-pages-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -75,10 +66,10 @@ export default function ExtractPagesPage() {
         const arrayBuffer = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         setTotalPages(pdfDoc.getPageCount());
-        toast.success("PDF loaded successfully");
+        toast.success('PDF loaded successfully');
       } catch (error) {
-        setError("Failed to load PDF file");
-        toast.error("Failed to load PDF file");
+        setError('Failed to load PDF file');
+        toast.error('Failed to load PDF file');
       }
     }
   };
@@ -88,7 +79,7 @@ export default function ExtractPagesPage() {
    */
   const extractPages = async () => {
     if (!selectedFile || !pageRange.trim()) {
-      toast.error("Please select a file and specify page range");
+      toast.error('Please select a file and specify page range');
       return;
     }
 
@@ -105,7 +96,7 @@ export default function ExtractPagesPage() {
       const pages = parsePageRange(pageRange, totalPages);
 
       if (pages.length === 0) {
-        throw new Error("No valid pages specified");
+        throw new Error('No valid pages specified');
       }
 
       for (const pageNum of pages) {
@@ -119,8 +110,7 @@ export default function ExtractPagesPage() {
       setHistory([selectedFile.name, ...history].slice(0, 10));
       toast.success(`Extracted ${pages.length} pages from PDF`);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to extract pages";
+      const errorMessage = error instanceof Error ? error.message : 'Failed to extract pages';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -133,13 +123,11 @@ export default function ExtractPagesPage() {
    */
   const parsePageRange = (range: string, maxPages: number): number[] => {
     const pages: number[] = [];
-    const parts = range.split(",");
+    const parts = range.split(',');
 
     for (const part of parts) {
-      if (part.includes("-")) {
-        const [start, end] = part
-          .split("-")
-          .map((n) => Number.parseInt(n.trim()));
+      if (part.includes('-')) {
+        const [start, end] = part.split('-').map(n => Number.parseInt(n.trim()));
         for (let i = start; i <= Math.min(end, maxPages); i++) {
           if (i >= 1) pages.push(i);
         }
@@ -160,14 +148,14 @@ export default function ExtractPagesPage() {
   const downloadExtractedPdf = () => {
     if (!extractedPdf) return;
 
-    const blob = new Blob([extractedPdf], { type: "application/pdf" });
+    const blob = new Blob([extractedPdf], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `extracted-${selectedFile?.name || "pages"}.pdf`;
+    a.download = `extracted-${selectedFile?.name || 'pages'}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("PDF downloaded successfully");
+    toast.success('PDF downloaded successfully');
   };
 
   /**
@@ -175,7 +163,7 @@ export default function ExtractPagesPage() {
    */
   const clearAll = () => {
     setSelectedFile(null);
-    setPageRange("");
+    setPageRange('');
     setTotalPages(0);
     setExtractedPdf(null);
     setError(null);
@@ -193,7 +181,7 @@ export default function ExtractPagesPage() {
    * Gets download filename for the extracted PDF
    */
   const getDownloadFilename = () => {
-    return `extracted-${selectedFile?.name || "pages"}.pdf`;
+    return `extracted-${selectedFile?.name || 'pages'}.pdf`;
   };
 
   // Motion variants
@@ -213,49 +201,35 @@ export default function ExtractPagesPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-extract-pages">
+    <ToolLayout toolId='pdf-extract-pages'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileText className='h-5 w-5' />
                 Upload PDF
               </CardTitle>
-              <CardDescription>
-                Select a PDF file to extract pages from
-              </CardDescription>
+              <CardDescription>Select a PDF file to extract pages from</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={() => {
@@ -267,9 +241,7 @@ export default function ExtractPagesPage() {
                 }}
               />
               {totalPages > 0 && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  Total pages: {totalPages}
-                </p>
+                <p className='text-sm text-muted-foreground mt-2'>Total pages: {totalPages}</p>
               )}
             </CardContent>
           </Card>
@@ -278,41 +250,33 @@ export default function ExtractPagesPage() {
         <MotionDiv
           ref={settingsSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? settingsSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (settingsSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
               <CardTitle>Page Range</CardTitle>
-              <CardDescription>
-                Specify which pages to extract (e.g., "1-3,5,7-9")
-              </CardDescription>
+              <CardDescription>Specify which pages to extract (e.g., "1-3,5,7-9")</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="pageRange">Page Range</Label>
+            <CardContent className='space-y-4'>
+              <div className='space-y-2'>
+                <Label htmlFor='pageRange'>Page Range</Label>
                 <Input
-                  id="pageRange"
+                  id='pageRange'
                   value={pageRange}
-                  onChange={(e) => setPageRange(e.target.value)}
-                  placeholder="1-3,5,7-9"
-                  className="font-mono"
+                  onChange={e => setPageRange(e.target.value)}
+                  placeholder='1-3,5,7-9'
+                  className='font-mono'
                 />
               </div>
 
               <ActionButtons
                 onGenerate={extractPages}
-                generateLabel="Extract Pages"
+                generateLabel='Extract Pages'
                 onReset={clearAll}
-                resetLabel="Clear All"
-                variant="outline"
-                size="sm"
+                resetLabel='Clear All'
+                variant='outline'
+                size='sm'
                 disabled={!selectedFile || !pageRange.trim() || isProcessing}
                 isGenerating={isProcessing}
               />
@@ -324,30 +288,22 @@ export default function ExtractPagesPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
                 <CardTitle>Extracted PDF</CardTitle>
-                <CardDescription>
-                  Your extracted pages are ready for download
-                </CardDescription>
+                <CardDescription>Your extracted pages are ready for download</CardDescription>
               </CardHeader>
               <CardContent>
                 <ActionButtons
                   downloadData={getDownloadData()}
                   downloadFilename={getDownloadFilename()}
-                  downloadMimeType="application/pdf"
+                  downloadMimeType='application/pdf'
                   onDownload={downloadExtractedPdf}
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                 />
               </CardContent>
             </Card>
@@ -360,9 +316,9 @@ export default function ExtractPagesPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Extracting pages..."
-            completeText="Pages extracted successfully!"
-            errorText="Failed to extract pages"
+            processingText='Extracting pages...'
+            completeText='Pages extracted successfully!'
+            errorText='Failed to extract pages'
           />
         </MotionDiv>
       </MotionDiv>

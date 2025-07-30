@@ -1,39 +1,30 @@
-"use client";
+'use client';
 
-import { ToolLayout } from "@/components/layout/tool-layout";
-import { ActionButtons } from "@/components/tools/action-buttons";
-import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { ProcessingStatus } from "@/components/tools/processing-status";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useAnimations } from "@/stores/settings-store";
-import { FileText, Search } from "lucide-react";
-import { m, useInView } from "motion/react";
-import { PDFDocument } from "pdf-lib";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
+import { ToolLayout } from '@/components/layout/tool-layout';
+import { ActionButtons } from '@/components/tools/action-buttons';
+import { FileUploadZone } from '@/components/tools/file-upload-zone';
+import { ProcessingStatus } from '@/components/tools/processing-status';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useAnimations } from '@/stores/settings-store';
+import { FileText, Search } from 'lucide-react';
+import { m, useInView } from 'motion/react';
+import { PDFDocument } from 'pdf-lib';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 /**
  * PDF to Text extraction tool page
  */
 export default function PdfToTextPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [extractedText, setExtractedText] = useState("");
+  const [extractedText, setExtractedText] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history, setHistory] = useLocalStorage<string[]>(
-    "pdf-to-text-history",
-    [],
-  );
+  const [history, setHistory] = useLocalStorage<string[]>('pdf-to-text-history', []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -59,7 +50,7 @@ export default function PdfToTextPage() {
     const file = files[0];
     if (file) {
       setSelectedFile(file);
-      setExtractedText("");
+      setExtractedText('');
       setError(null);
       setIsComplete(false);
     }
@@ -70,7 +61,7 @@ export default function PdfToTextPage() {
    */
   const extractText = async () => {
     if (!selectedFile) {
-      toast.error("Please select a PDF file");
+      toast.error('Please select a PDF file');
       return;
     }
     setIsProcessing(true);
@@ -80,20 +71,19 @@ export default function PdfToTextPage() {
       const arrayBuffer = await selectedFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
-      let text = "";
+      let text = '';
       for (const page of pages) {
         // pdf-lib does not support text extraction directly, so we use a placeholder
         // In a real app, use pdf.js or a backend service for full extraction
         text += `[Page ${pages.indexOf(page) + 1}]\n`;
-        text += "(Text extraction requires pdf.js or a backend service)\n\n";
+        text += '(Text extraction requires pdf.js or a backend service)\n\n';
       }
       setExtractedText(text);
       setIsComplete(true);
       setHistory([selectedFile.name, ...history].slice(0, 10));
-      toast.success("Text extracted from PDF (demo mode)");
+      toast.success('Text extracted from PDF (demo mode)');
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to extract text from PDF";
+      const errorMessage = err instanceof Error ? err.message : 'Failed to extract text from PDF';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -105,14 +95,14 @@ export default function PdfToTextPage() {
    * Downloads the extracted text as a .txt file
    */
   const downloadText = () => {
-    const blob = new Blob([extractedText], { type: "text/plain" });
+    const blob = new Blob([extractedText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `${selectedFile?.name.replace(/\.pdf$/i, "") || "document"}-extracted.txt`;
+    a.download = `${selectedFile?.name.replace(/\.pdf$/i, '') || 'document'}-extracted.txt`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Text file downloaded");
+    toast.success('Text file downloaded');
   };
 
   /**
@@ -120,7 +110,7 @@ export default function PdfToTextPage() {
    */
   const clearAll = () => {
     setSelectedFile(null);
-    setExtractedText("");
+    setExtractedText('');
     setError(null);
     setIsComplete(false);
   };
@@ -139,49 +129,35 @@ export default function PdfToTextPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionDiv = animationsEnabled ? m.div : 'div';
 
   return (
-    <ToolLayout toolId="pdf-to-text">
+    <ToolLayout toolId='pdf-to-text'>
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className='space-y-6'
         variants={animationsEnabled ? containerVariants : undefined}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled
-            ? containerInView
-              ? "visible"
-              : "hidden"
-            : undefined
-        }
+        initial={animationsEnabled ? 'hidden' : undefined}
+        animate={animationsEnabled ? (containerInView ? 'visible' : 'hidden') : undefined}
       >
         <MotionDiv
           ref={uploadSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? uploadSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
+          initial={animationsEnabled ? 'hidden' : undefined}
+          animate={animationsEnabled ? (uploadSectionInView ? 'visible' : 'hidden') : undefined}
         >
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <FileText className='h-5 w-5' />
                 Upload PDF
               </CardTitle>
-              <CardDescription>
-                Select a PDF file to extract text from
-              </CardDescription>
+              <CardDescription>Select a PDF file to extract text from</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf,application/pdf"
+                accept='.pdf,application/pdf'
                 multiple={false}
                 files={selectedFile ? [selectedFile] : []}
                 onRemoveFile={clearAll}
@@ -194,55 +170,46 @@ export default function PdfToTextPage() {
           <MotionDiv
             ref={resultsSectionRef}
             variants={animationsEnabled ? cardVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? resultsSectionInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            initial={animationsEnabled ? 'hidden' : undefined}
+            animate={animationsEnabled ? (resultsSectionInView ? 'visible' : 'hidden') : undefined}
           >
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Search className='h-5 w-5' />
                   Extract Text
                 </CardTitle>
-                <CardDescription>
-                  Extract all text from the uploaded PDF file
-                </CardDescription>
+                <CardDescription>Extract all text from the uploaded PDF file</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className='space-y-4'>
                 <ActionButtons
                   onGenerate={extractText}
-                  generateLabel="Extract Text"
+                  generateLabel='Extract Text'
                   onReset={clearAll}
-                  resetLabel="Clear"
-                  variant="outline"
-                  size="sm"
+                  resetLabel='Clear'
+                  variant='outline'
+                  size='sm'
                   disabled={isProcessing}
                   isGenerating={isProcessing}
                 />
                 <Textarea
                   value={extractedText}
                   readOnly
-                  className="min-h-[300px] font-mono text-sm"
-                  placeholder="Extracted text will appear here..."
+                  className='min-h-[300px] font-mono text-sm'
+                  placeholder='Extracted text will appear here...'
                 />
                 <ActionButtons
                   copyText={extractedText}
-                  copySuccessMessage="Text copied to clipboard"
                   downloadData={extractedText}
                   downloadFilename={
                     selectedFile
-                      ? `${selectedFile.name.replace(/\.pdf$/i, "")}-extracted.txt`
-                      : "extracted.txt"
+                      ? `${selectedFile.name.replace(/\.pdf$/i, '')}-extracted.txt`
+                      : 'extracted.txt'
                   }
-                  downloadMimeType="text/plain"
+                  downloadMimeType='text/plain'
                   onDownload={downloadText}
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   disabled={!extractedText}
                 />
               </CardContent>
@@ -256,9 +223,9 @@ export default function PdfToTextPage() {
             isComplete={isComplete}
             error={error}
             onReset={clearAll}
-            processingText="Extracting text from PDF..."
-            completeText="Text extracted successfully!"
-            errorText="Failed to extract text from PDF"
+            processingText='Extracting text from PDF...'
+            completeText='Text extracted successfully!'
+            errorText='Failed to extract text from PDF'
           />
         </MotionDiv>
       </MotionDiv>
