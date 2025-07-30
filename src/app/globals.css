@@ -1,0 +1,266 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: hsl(20 5.8824% 90%);
+  --foreground: hsl(217.2414 32.5843% 17.451%);
+  --card: hsl(60 4.7619% 95.8824%);
+  --card-foreground: hsl(217.2414 32.5843% 17.451%);
+  --popover: hsl(60 4.7619% 95.8824%);
+  --popover-foreground: hsl(217.2414 32.5843% 17.451%);
+  --primary: hsl(137.8082 100% 57.0588%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(24 5.7471% 82.9412%);
+  --secondary-foreground: hsl(215 13.7931% 34.1176%);
+  --muted: hsl(20 5.8824% 90%);
+  --muted-foreground: hsl(220 8.9362% 46.0784%);
+  --accent: hsl(292.5 44.4444% 92.9412%);
+  --accent-foreground: hsl(216.9231 19.1176% 26.6667%);
+  --destructive: hsl(0 84.2365% 60.1961%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(24 5.7471% 82.9412%);
+  --input: hsl(24 5.7471% 82.9412%);
+  --ring: hsl(238.7324 83.5294% 66.6667%);
+  --chart-1: hsl(238.7324 83.5294% 66.6667%);
+  --chart-2: hsl(243.3962 75.3555% 58.6275%);
+  --chart-3: hsl(244.5205 57.9365% 50.5882%);
+  --chart-4: hsl(243.6522 54.5024% 41.3725%);
+  --chart-5: hsl(242.1687 47.4286% 34.3137%);
+  --sidebar: hsl(24 5.7471% 82.9412%);
+  --sidebar-foreground: hsl(240 5.2632% 26.0784%);
+  --sidebar-primary: hsl(240 5.8824% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98.0392%);
+  --sidebar-accent: hsl(240 4.7619% 95.8824%);
+  --sidebar-accent-foreground: hsl(240 5.8824% 10%);
+  --sidebar-border: hsl(220 13.0435% 90.9804%);
+  --sidebar-ring: hsl(217.2193 91.2195% 59.8039%);
+  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
+  --font-serif: Lora, serif;
+  --font-mono: Geist Mono, ui-monospace, monospace;
+  --radius: 1.25rem;
+  --shadow-2xs: 2px 2px 2px 1px hsl(240 4% 60% / 0.09);
+  --shadow-xs: 2px 2px 2px 1px hsl(240 4% 60% / 0.09);
+  --shadow-sm: 2px 2px 2px 1px hsl(240 4% 60% / 0.18),
+    2px 1px 2px 0px hsl(240 4% 60% / 0.18);
+  --shadow: 2px 2px 2px 1px hsl(240 4% 60% / 0.18),
+    2px 1px 2px 0px hsl(240 4% 60% / 0.18);
+  --shadow-md: 2px 2px 2px 1px hsl(240 4% 60% / 0.18),
+    2px 2px 4px 0px hsl(240 4% 60% / 0.18);
+  --shadow-lg: 2px 2px 2px 1px hsl(240 4% 60% / 0.18),
+    2px 4px 6px 0px hsl(240 4% 60% / 0.18);
+  --shadow-xl: 2px 2px 2px 1px hsl(240 4% 60% / 0.18),
+    2px 8px 10px 0px hsl(240 4% 60% / 0.18);
+  --shadow-2xl: 2px 2px 2px 1px hsl(240 4% 60% / 0.45);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: hsl(30 11.1111% 10.5882%);
+  --foreground: hsl(214.2857 31.8182% 91.3725%);
+  --card: hsl(25.7143 8.642% 15.8824%);
+  --card-foreground: hsl(214.2857 31.8182% 91.3725%);
+  --popover: hsl(25.7143 8.642% 15.8824%);
+  --popover-foreground: hsl(214.2857 31.8182% 91.3725%);
+  --primary: hsl(138.0451 100% 73.9216%);
+  --primary-foreground: hsl(30 11.1111% 10.5882%);
+  --secondary: hsl(25.7143 6.422% 21.3725%);
+  --secondary-foreground: hsl(216 12.1951% 83.9216%);
+  --muted: hsl(25.7143 8.642% 15.8824%);
+  --muted-foreground: hsl(217.8947 10.6145% 64.902%);
+  --accent: hsl(25.7143 5.1095% 26.8627%);
+  --accent-foreground: hsl(216 12.1951% 83.9216%);
+  --destructive: hsl(0 84.2365% 60.1961%);
+  --destructive-foreground: hsl(30 11.1111% 10.5882%);
+  --border: hsl(25.7143 6.422% 21.3725%);
+  --input: hsl(25.7143 6.422% 21.3725%);
+  --ring: hsl(127.1795 87.9699% 73.9216%);
+  --chart-1: hsl(141.0256 87.9699% 73.9216%);
+  --chart-2: hsl(135.2113 84.5238% 67.0588%);
+  --chart-3: hsl(137.9618 75.1196% 59.0196%);
+  --chart-4: hsl(140.6897 58.2329% 51.1765%);
+  --chart-5: hsl(142.9565 55.0239% 40.9804%);
+  --sidebar: hsl(25.7143 8.642% 15.8824%);
+  --sidebar-foreground: hsl(240 4.7619% 95.8824%);
+  --sidebar-primary: hsl(138.0645 76.2295% 47.8431%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(25.7143 6.422% 21.3725%);
+  --sidebar-accent-foreground: hsl(240 4.7619% 95.8824%);
+  --sidebar-border: hsl(25.7143 6.422% 21.3725%);
+  --sidebar-ring: hsl(124.1935 91.1765% 60%);
+  --font-sans: Geist, ui-sans-serif, sans-serif, system-ui;
+  --font-serif: Lora, serif;
+  --font-mono: Geist Mono, ui-monospace, monospace;
+  --radius: 1.25rem;
+  --shadow-2xs: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.09);
+  --shadow-xs: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.09);
+  --shadow-sm: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.18),
+    2px 1px 2px 0px hsl(0 0% 52.9412% / 0.18);
+  --shadow: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.18),
+    2px 1px 2px 0px hsl(0 0% 52.9412% / 0.18);
+  --shadow-md: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.18),
+    2px 2px 4px 0px hsl(0 0% 52.9412% / 0.18);
+  --shadow-lg: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.18),
+    2px 4px 6px 0px hsl(0 0% 52.9412% / 0.18);
+  --shadow-xl: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.18),
+    2px 8px 10px 0px hsl(0 0% 52.9412% / 0.18);
+  --shadow-2xl: 2px 2px 2px 1px hsl(0 0% 52.9412% / 0.45);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+
+  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
+  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
+  --tracking-normal: var(--tracking-normal);
+  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
+  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
+  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-loading-bar-slide: loading-bar-slide 1.5s linear infinite;
+  --animate-shine: shine 2s infinite linear;
+
+  @keyframes shine {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  /* Form loading bar animation */
+  @keyframes loading-bar-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(
+        300%
+      ); /* Bar is w-1/3, travels 3x its width to cross parent */
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* View Transition Effects */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 0;
+}
+
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* CIRCLE REVEAL - center to edge */
+@keyframes circle-reveal-center-to-edge {
+  from {
+    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
+    opacity: 0.7;
+  }
+  to {
+    clip-path: circle(150% at var(--x, 50%) var(--y, 50%));
+    opacity: 1;
+  }
+}
+
+/* Apply random animation based on CSS variable */
+::view-transition-new(root) {
+  animation: var(--transition-type, circle-reveal) 0.6s
+    cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
