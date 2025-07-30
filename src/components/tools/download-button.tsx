@@ -15,6 +15,8 @@ interface DownloadButtonProps {
   filename: string;
   /** MIME type for the download */
   mimeType?: string;
+  /** Callback when download action is triggered */
+  onDownload?: () => void;
   /** Button variant */
   variant?: "default" | "outline" | "ghost";
   /** Button size */
@@ -36,6 +38,7 @@ export function DownloadButton({
   data,
   filename,
   mimeType = "application/octet-stream",
+  onDownload,
   variant = "outline",
   size = "sm",
   disabled = false,
@@ -74,6 +77,11 @@ export function DownloadButton({
       URL.revokeObjectURL(url);
 
       setIsDownloaded(true);
+
+      // Call the onDownload callback if provided
+      if (onDownload) {
+        onDownload();
+      }
 
       if (showSuccessState) {
         setTimeout(() => {

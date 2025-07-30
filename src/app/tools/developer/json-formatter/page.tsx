@@ -397,7 +397,6 @@ export default function JsonFormatterPage() {
 
                   <ActionButtons
                     copyText={outputJson}
-                    copySuccessMessage="JSON copied to clipboard"
                     downloadData={getDownloadData()}
                     downloadFilename={getDownloadFilename()}
                     downloadMimeType="application/json"

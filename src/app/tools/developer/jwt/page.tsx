@@ -399,7 +399,6 @@ export default function JwtDebuggerPage() {
 
                 <ActionButtons
                   copyText={getCopyText()}
-                  copySuccessMessage="Decoded JWT copied to clipboard"
                   variant="outline"
                   size="sm"
                 />

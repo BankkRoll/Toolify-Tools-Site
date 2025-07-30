@@ -11,8 +11,8 @@ import { useState } from "react";
 interface CopyButtonProps {
   /** Text to copy to clipboard */
   text: string;
-  /** Success message shown after copying */
-  successMessage?: string;
+  /** Callback when copy action is triggered */
+  onCopy?: () => void;
   /** Button variant */
   variant?: "default" | "outline" | "ghost";
   /** Button size */
@@ -23,8 +23,6 @@ interface CopyButtonProps {
   className?: string;
   /** Button content */
   children?: React.ReactNode;
-  /** Whether to show the copy icon */
-  showIcon?: boolean;
   /** Whether to show success state */
   showSuccessState?: boolean;
 }
@@ -34,13 +32,12 @@ interface CopyButtonProps {
  */
 export function CopyButton({
   text,
-  successMessage = "Copied to clipboard!",
+  onCopy,
   variant = "outline",
   size = "icon",
   disabled = false,
   className,
   children,
-  showIcon = true,
   showSuccessState = true,
 }: CopyButtonProps) {
   const [isCopying, setIsCopying] = useState(false);
@@ -56,6 +53,11 @@ export function CopyButton({
     try {
       await navigator.clipboard.writeText(text);
       setIsCopied(true);
+
+      // Call the onCopy callback if provided
+      if (onCopy) {
+        onCopy();
+      }
 
       if (showSuccessState) {
         setTimeout(() => {
@@ -77,10 +79,7 @@ export function CopyButton({
     if (isCopied && showSuccessState) {
       return <Check className="h-4 w-4 mr-1 text-green-500" />;
     }
-    if (showIcon) {
-      return <Copy className="h-4 w-4 mr-1" />;
-    }
-    return null;
+    return <Copy className="h-4 w-4 mr-1" />;
   };
 
   const getButtonText = () => {

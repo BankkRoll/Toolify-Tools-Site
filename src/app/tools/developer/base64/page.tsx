@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/layout/tool-layout";
 import { ActionButtons } from "@/components/tools/action-buttons";
 import { FileUploadZone } from "@/components/tools/file-upload-zone";
 import { ProcessingStatus } from "@/components/tools/processing-status";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -16,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
-import { Binary, FileText } from "lucide-react";
+import { Binary, FileText, History, Info, Zap } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -32,6 +33,7 @@ export default function Base64EncoderPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [activeTab, setActiveTab] = useState("text");
 
   const [history, setHistory] = useLocalStorage<string[]>("base64-history", []);
   const animationsEnabled = useAnimations();
@@ -103,8 +105,8 @@ export default function Base64EncoderPage() {
       );
       toast.success("Text decoded successfully");
     } catch (err) {
-      setError("Invalid Base64 string");
-      toast.error("Invalid Base64 string");
+      setError("Invalid Base64 format");
+      toast.error("Invalid Base64 format");
     }
   };
 
@@ -129,7 +131,6 @@ export default function Base64EncoderPage() {
         String.fromCharCode(byte),
       ).join("");
       const encoded = btoa(binaryString);
-
       setFileOutput(encoded);
       setIsComplete(true);
       setHistory([`File encoded: ${file.name}`, ...history].slice(0, 10));
@@ -146,31 +147,35 @@ export default function Base64EncoderPage() {
    * Decodes Base64 file
    */
   const decodeFile = () => {
-    if (!inputText.trim()) {
-      toast.error("Please enter Base64 data to decode");
+    if (!fileOutput.trim()) {
+      toast.error("Please encode a file first");
       return;
     }
 
     try {
-      const decoded = atob(inputText);
-      setFileOutput(decoded);
-      setError(null);
-      setIsComplete(true);
-      setHistory(
-        [`File decoded: ${inputText.substring(0, 20)}...`, ...history].slice(
-          0,
-          10,
-        ),
-      );
-      toast.success("File decoded successfully");
+      const decoded = atob(fileOutput);
+      const uint8Array = new Uint8Array(decoded.length);
+      for (let i = 0; i < decoded.length; i++) {
+        uint8Array[i] = decoded.charCodeAt(i);
+      }
+      const blob = new Blob([uint8Array]);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "decoded_file";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success("File decoded and downloaded");
     } catch (err) {
-      setError("Invalid Base64 data");
-      toast.error("Invalid Base64 data");
+      setError("Failed to decode file");
+      toast.error("Failed to decode file");
     }
   };
 
   /**
-   * Clears all data and resets state
+   * Clears all input and output
    */
   const clearAll = () => {
     setInputText("");
@@ -179,6 +184,7 @@ export default function Base64EncoderPage() {
     setFileOutput("");
     setError(null);
     setIsComplete(false);
+    setIsProcessing(false);
   };
 
   /**
@@ -193,10 +199,10 @@ export default function Base64EncoderPage() {
   };
 
   /**
-   * Gets copy text for different outputs
+   * Gets copy text with type information
    */
   const getCopyText = (text: string, type: string): string => {
-    return `${type}: ${text}`;
+    return `${type}:\n${text}`;
   };
 
   const containerVariants = {
@@ -221,7 +227,7 @@ export default function Base64EncoderPage() {
     <ToolLayout toolId="dev-base64">
       <MotionDiv
         ref={containerRef}
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6 px-2 sm:px-4 lg:px-6"
         variants={animationsEnabled ? containerVariants : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
         animate={
@@ -232,196 +238,349 @@ export default function Base64EncoderPage() {
             : undefined
         }
       >
+        {/* Main Content */}
         <MotionDiv
           ref={textSectionRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? textSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
         >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Binary className="h-5 w-5" />
-                Text Encoding/Decoding
-              </CardTitle>
-              <CardDescription>
-                Encode text to Base64 or decode Base64 to text
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="input">Input Text</Label>
-                <Textarea
-                  id="input"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                  placeholder="Enter text to encode or Base64 to decode..."
-                  className="min-h-[120px] font-mono"
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <ActionButtons
-                  onGenerate={encodeText}
-                  generateLabel="Encode to Base64"
-                  onReset={decodeText}
-                  resetLabel="Decode from Base64"
-                  variant="outline"
-                  size="sm"
-                  disabled={!inputText.trim()}
-                />
-              </div>
-
-              {outputText && (
-                <MotionDiv
-                  className="space-y-2"
-                  initial={
-                    animationsEnabled ? { opacity: 0, y: 10 } : undefined
-                  }
-                  animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
-                  transition={animationsEnabled ? { duration: 0.3 } : undefined}
-                >
-                  <Label>Output</Label>
-                  <div className="p-3 bg-muted rounded-lg">
-                    <p className="font-mono text-sm break-all">{outputText}</p>
+          <Card className="shadow-md border-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6 pb-4 sm:pb-6">
+              {/* Mobile: Stacked layout */}
+              <div className="flex flex-col space-y-4 sm:hidden">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                    <Binary className="h-5 w-5 text-primary" />
                   </div>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <span className="truncate">Base64 Encoder/Decoder</span>
+                    </CardTitle>
+                    <CardDescription className="text-sm line-clamp-2">
+                      Convert text and files to Base64 encoding
+                    </CardDescription>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
                   <ActionButtons
-                    copyText={outputText}
-                    copySuccessMessage="Output copied to clipboard"
+                    onGenerate={activeTab === "text" ? encodeText : encodeFile}
+                    generateLabel={activeTab === "text" ? "Encode" : "Encode"}
+                    onReset={activeTab === "text" ? decodeText : decodeFile}
+                    resetLabel={activeTab === "text" ? "Decode" : "Decode"}
+                    onClear={clearAll}
+                    clearLabel="Clear"
                     variant="outline"
                     size="sm"
+                    disabled={
+                      activeTab === "text"
+                        ? !inputText.trim()
+                        : selectedFiles.length === 0
+                    }
                   />
-                </MotionDiv>
-              )}
-            </CardContent>
-          </Card>
-        </MotionDiv>
+                </div>
+              </div>
 
-        <MotionDiv
-          ref={fileSectionRef}
-          variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled
-              ? fileSectionInView
-                ? "visible"
-                : "hidden"
-              : undefined
-          }
-        >
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                File Encoding/Decoding
-              </CardTitle>
-              <CardDescription>
-                Encode files to Base64 or decode Base64 to files
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Tabs defaultValue="encode" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="encode">Encode File</TabsTrigger>
-                  <TabsTrigger value="decode">Decode File</TabsTrigger>
+              {/* Desktop: Side-by-side layout */}
+              <div className="hidden sm:flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Binary className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      Base64 Encoder/Decoder
+                    </CardTitle>
+                    <CardDescription>
+                      Convert text and files to Base64 encoding or decode Base64
+                      back to original format
+                    </CardDescription>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ActionButtons
+                    onGenerate={activeTab === "text" ? encodeText : encodeFile}
+                    generateLabel={
+                      activeTab === "text" ? "Encode" : "Encode File"
+                    }
+                    onReset={activeTab === "text" ? decodeText : decodeFile}
+                    resetLabel={activeTab === "text" ? "Decode" : "Decode File"}
+                    onClear={clearAll}
+                    clearLabel="Clear All"
+                    variant="outline"
+                    size="sm"
+                    disabled={
+                      activeTab === "text"
+                        ? !inputText.trim()
+                        : selectedFiles.length === 0
+                    }
+                  />
+                </div>
+              </div>
+
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full mt-4 sm:mt-6"
+              >
+                <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">
+                  <TabsTrigger
+                    value="text"
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                  >
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">Text</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="file"
+                    className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
+                  >
+                    <Binary className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden xs:inline">File</span>
+                  </TabsTrigger>
                 </TabsList>
+              </Tabs>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsContent
+                  value="text"
+                  className="space-y-4 sm:space-y-6 mt-0"
+                >
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                    {/* Input Section */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="space-y-2">
+                        <Label
+                          htmlFor="input"
+                          className="text-sm font-medium flex items-center gap-2"
+                        >
+                          <FileText className="h-4 w-4 flex-shrink-0" />
+                          <span>Input Text</span>
+                        </Label>
+                        <Textarea
+                          id="input"
+                          value={inputText}
+                          onChange={(e) => setInputText(e.target.value)}
+                          placeholder="Enter text to encode or Base64 to decode..."
+                          className="min-h-[120px] sm:min-h-[160px] lg:min-h-[200px] font-mono text-xs sm:text-sm resize-none border-2 focus:border-primary transition-colors"
+                        />
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>{inputText.length} characters</span>
+                          {inputText && (
+                            <Badge
+                              variant={
+                                isValidBase64(inputText)
+                                  ? "default"
+                                  : "secondary"
+                              }
+                              className="text-xs"
+                            >
+                              {isValidBase64(inputText)
+                                ? "Valid Base64"
+                                : "Plain Text"}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
 
-                <TabsContent value="encode" className="space-y-4">
-                  <FileUploadZone
-                    onFilesSelected={setSelectedFiles}
-                    accept="*/*"
-                    multiple={false}
-                    files={selectedFiles}
-                    onRemoveFile={() => {
-                      setSelectedFiles([]);
-                      setFileOutput("");
-                      setError(null);
-                      setIsComplete(false);
-                    }}
-                  />
-
-                  <ActionButtons
-                    onGenerate={encodeFile}
-                    generateLabel="Encode File"
-                    onReset={clearAll}
-                    resetLabel="Clear All"
-                    variant="outline"
-                    size="sm"
-                    disabled={selectedFiles.length === 0 || isProcessing}
-                    isGenerating={isProcessing}
-                  />
+                    {/* Output Section */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <Binary className="h-4 w-4 flex-shrink-0" />
+                          <span>Output</span>
+                        </Label>
+                        {outputText ? (
+                          <MotionDiv
+                            className="space-y-3"
+                            initial={
+                              animationsEnabled
+                                ? { opacity: 0, y: 10 }
+                                : undefined
+                            }
+                            animate={
+                              animationsEnabled
+                                ? { opacity: 1, y: 0 }
+                                : undefined
+                            }
+                            transition={
+                              animationsEnabled ? { duration: 0.3 } : undefined
+                            }
+                          >
+                            <div className="p-3 sm:p-4 bg-muted/50 rounded-lg border-2 border-primary/20 max-h-[120px] sm:max-h-[160px] lg:max-h-[200px] overflow-auto">
+                              <pre className="font-mono text-xs sm:text-sm break-all whitespace-pre-wrap leading-relaxed">
+                                {outputText}
+                              </pre>
+                            </div>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>{outputText.length} characters</span>
+                              <Badge variant="outline" className="text-xs">
+                                {isValidBase64(outputText)
+                                  ? "Base64"
+                                  : "Decoded"}
+                              </Badge>
+                            </div>
+                            <ActionButtons
+                              copyText={outputText}
+                              variant="outline"
+                              size="sm"
+                            />
+                          </MotionDiv>
+                        ) : (
+                          <div className="flex items-center justify-center h-[120px] sm:h-[160px] lg:h-[200px] border-2 border-dashed rounded-lg bg-muted/20">
+                            <div className="text-center p-4">
+                              <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground mx-auto mb-2" />
+                              <p className="text-muted-foreground text-xs sm:text-sm">
+                                Enter text and click encode/decode to see output
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </TabsContent>
 
-                <TabsContent value="decode" className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="base64Input">Base64 Data</Label>
-                    <Textarea
-                      id="base64Input"
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      placeholder="Paste Base64 encoded data here..."
-                      className="min-h-[120px] font-mono"
-                    />
-                  </div>
+                <TabsContent
+                  value="file"
+                  className="space-y-4 sm:space-y-6 mt-0"
+                >
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+                    {/* File Upload Section */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <FileText className="h-4 w-4 flex-shrink-0" />
+                          <span>Select File</span>
+                        </Label>
+                        <FileUploadZone
+                          onFilesSelected={setSelectedFiles}
+                          files={selectedFiles}
+                          onRemoveFile={(index) => {
+                            const newFiles = [...selectedFiles];
+                            newFiles.splice(index, 1);
+                            setSelectedFiles(newFiles);
+                          }}
+                          accept="*/*"
+                          multiple={false}
+                          maxSize={10 * 1024 * 1024} // 10MB
+                        />
+                      </div>
+                    </div>
 
-                  <ActionButtons
-                    onGenerate={decodeFile}
-                    generateLabel="Decode File"
-                    onReset={clearAll}
-                    resetLabel="Clear All"
-                    variant="outline"
-                    size="sm"
-                    disabled={!inputText.trim() || isProcessing}
-                    isGenerating={isProcessing}
-                  />
+                    {/* File Output Section */}
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium flex items-center gap-2">
+                          <Binary className="h-4 w-4 flex-shrink-0" />
+                          <span>Encoded File</span>
+                        </Label>
+                        {fileOutput ? (
+                          <MotionDiv
+                            className="space-y-3"
+                            initial={
+                              animationsEnabled
+                                ? { opacity: 0, y: 10 }
+                                : undefined
+                            }
+                            animate={
+                              animationsEnabled
+                                ? { opacity: 1, y: 0 }
+                                : undefined
+                            }
+                            transition={
+                              animationsEnabled ? { duration: 0.3 } : undefined
+                            }
+                          >
+                            <div className="p-3 sm:p-4 bg-muted/50 rounded-lg border-2 border-primary/20 max-h-[120px] sm:max-h-[160px] lg:max-h-[200px] overflow-auto">
+                              <pre className="font-mono text-xs break-all whitespace-pre-wrap leading-relaxed">
+                                {fileOutput}
+                              </pre>
+                            </div>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>{fileOutput.length} characters</span>
+                              <Badge variant="outline" className="text-xs">
+                                Base64 Encoded
+                              </Badge>
+                            </div>
+                            <ActionButtons
+                              copyText={fileOutput}
+                              onDownload={decodeFile}
+                              variant="outline"
+                              size="sm"
+                            />
+                          </MotionDiv>
+                        ) : (
+                          <div className="flex items-center justify-center h-[120px] sm:h-[160px] lg:h-[200px] border-2 border-dashed rounded-lg bg-muted/20">
+                            <div className="text-center p-4">
+                              <Binary className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground mx-auto mb-2" />
+                              <p className="text-muted-foreground text-xs sm:text-sm">
+                                Select a file and click encode to see output
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
-
-              {fileOutput && (
-                <MotionDiv
-                  className="space-y-2"
-                  initial={
-                    animationsEnabled ? { opacity: 0, y: 10 } : undefined
-                  }
-                  animate={animationsEnabled ? { opacity: 1, y: 0 } : undefined}
-                  transition={animationsEnabled ? { duration: 0.3 } : undefined}
-                >
-                  <Label>File Output</Label>
-                  <div className="p-3 bg-muted rounded-lg max-h-64 overflow-auto">
-                    <p className="font-mono text-sm break-all">{fileOutput}</p>
-                  </div>
-                  <ActionButtons
-                    copyText={fileOutput}
-                    copySuccessMessage="File output copied to clipboard"
-                    variant="outline"
-                    size="sm"
-                  />
-                </MotionDiv>
-              )}
             </CardContent>
           </Card>
         </MotionDiv>
 
+        {/* History Section */}
+        {history.length > 0 && (
+          <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
+            <Card className="shadow-md border-0 overflow-hidden">
+              <CardHeader className="p-4 sm:p-6 pb-4 sm:pb-6">
+                <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                  <History className="h-5 w-5 text-primary" />
+                  Recent Operations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+                <div className="space-y-2">
+                  {history.slice(0, 5).map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 sm:p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      <span className="text-sm font-medium truncate flex-1 mr-2">
+                        {item}
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="text-xs flex-shrink-0"
+                      >
+                        {index + 1}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </MotionDiv>
+        )}
+
+        {/* About Section */}
         <MotionDiv
           ref={aboutRef}
           variants={animationsEnabled ? cardVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (aboutInView ? "visible" : "hidden") : undefined
-          }
         >
-          <Card>
-            <CardHeader>
-              <CardTitle>About Base64</CardTitle>
+          <Card className="shadow-md border-0 overflow-hidden">
+            <CardHeader className="p-4 sm:p-6 pb-4 sm:pb-6">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Info className="h-5 w-5 text-primary" />
+                About Base64 Encoding
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 text-sm">
                 <MotionDiv
                   initial={
                     animationsEnabled ? { opacity: 0, x: -20 } : undefined
@@ -429,12 +588,14 @@ export default function Base64EncoderPage() {
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.1 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">What is Base64?</h4>
-                  <p className="text-muted-foreground">
+                  <h4 className="font-semibold mb-3 text-primary">
+                    What is Base64?
+                  </h4>
+                  <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                     Base64 is a binary-to-text encoding scheme that represents
                     binary data in an ASCII string format. It's commonly used
-                    for encoding files, images, and other binary data for
-                    transmission over text-based protocols.
+                    for transmitting data over text-based protocols like HTTP,
+                    email, and JSON.
                   </p>
                 </MotionDiv>
                 <MotionDiv
@@ -444,29 +605,31 @@ export default function Base64EncoderPage() {
                   animate={animationsEnabled ? { opacity: 1, x: 0 } : undefined}
                   transition={animationsEnabled ? { delay: 0.2 } : undefined}
                 >
-                  <h4 className="font-medium mb-2">Common Uses:</h4>
-                  <ul className="text-muted-foreground space-y-1">
-                    <li>• Email attachments</li>
-                    <li>• Data URLs in web pages</li>
-                    <li>• API responses with binary data</li>
-                    <li>• Configuration files</li>
+                  <h4 className="font-semibold mb-3 text-primary">
+                    Common Uses
+                  </h4>
+                  <ul className="text-muted-foreground space-y-2 text-sm sm:text-base">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1 flex-shrink-0">•</span>
+                      <span>Embedding images in HTML/CSS</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1 flex-shrink-0">•</span>
+                      <span>API data transmission</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1 flex-shrink-0">•</span>
+                      <span>Email attachments</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-1 flex-shrink-0">•</span>
+                      <span>Data storage in databases</span>
+                    </li>
                   </ul>
                 </MotionDiv>
               </div>
             </CardContent>
           </Card>
-        </MotionDiv>
-
-        <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
-          <ProcessingStatus
-            isProcessing={isProcessing}
-            isComplete={isComplete}
-            error={error}
-            onReset={clearAll}
-            processingText="Processing file..."
-            completeText="File processing complete!"
-            errorText="Processing failed"
-          />
         </MotionDiv>
       </MotionDiv>
     </ToolLayout>

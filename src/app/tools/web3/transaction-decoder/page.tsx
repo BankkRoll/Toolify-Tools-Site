@@ -6,11 +6,11 @@ import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,12 +21,12 @@ import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import {
-    Copy,
-    ExternalLink,
-    Eye,
-    EyeOff,
-    FileText,
-    Search,
+  Copy,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  FileText,
+  Search,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useMemo, useRef, useState } from "react";

@@ -426,7 +426,6 @@ export default function UuidGeneratorPage() {
                         </Badge>
                         <ActionButtons
                           copyText={uuid}
-                          copySuccessMessage="UUID copied to clipboard"
                           variant="outline"
                           size="sm"
                         />
@@ -436,7 +435,6 @@ export default function UuidGeneratorPage() {
 
                   <ActionButtons
                     copyText={getCopyText()}
-                    copySuccessMessage="All UUIDs copied to clipboard"
                     variant="outline"
                     size="sm"
                   />

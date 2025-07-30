@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { SearchCommand } from "@/components/ui/search-command-dialog";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +35,7 @@ import {
   FileText,
   Grid3X3,
   ImageIcon,
+  Search,
   Star,
   Type,
   Wrench,
@@ -75,6 +77,61 @@ export function ToolsSidebar() {
 
   const totalTools = getAllActiveTools().length;
 
+  // Create search commands from all tools
+  const allTools = getAllActiveTools();
+  const searchCommands = allTools.map((tool) => ({
+    id: tool.id,
+    title: tool.name,
+    description: tool.description,
+    category: tool.category,
+    keywords: tool.tags,
+    action: () => {
+      window.location.href = tool.href;
+    },
+  }));
+
+  const commandGroups = [
+    {
+      heading: "Quick Actions",
+      items: [
+        {
+          id: "all-tools",
+          title: "All Tools",
+          description: "Browse all available tools",
+          category: "navigation",
+          action: () => {
+            window.location.href = "/tools";
+          },
+        },
+        {
+          id: "favorites",
+          title: "Favorites",
+          description: "Your saved favorite tools",
+          category: "navigation",
+          action: () => {
+            window.location.href = "/tools/favorites";
+          },
+        },
+      ],
+    },
+    {
+      heading: "Tool Categories",
+      items: toolCategories.map((category) => ({
+        id: `category-${category.id}`,
+        title: category.name,
+        description: category.description,
+        category: "category",
+        action: () => {
+          window.location.href = category.href;
+        },
+      })),
+    },
+    {
+      heading: "All Tools",
+      items: searchCommands,
+    },
+  ];
+
   return (
     <Sidebar variant="sidebar" className="border-r overflow-hidden">
       <SidebarHeader className="border-b p-4">
@@ -93,6 +150,33 @@ export function ToolsSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="overflow-hidden">
+        {/* Search Command Dialog */}
+        <div className="p-4 border-b border-primary">
+          <SearchCommand
+            commands={commandGroups}
+            placeholder="Search tools..."
+            emptyMessage="No tools found. Try a different search term."
+            enableFuzzySearch={true}
+            enableHistory={true}
+            enableFavorites={true}
+            enableShortcuts={true}
+            showBadges={true}
+            maxRecent={5}
+            trigger={
+              <button className="cursor-pointer w-full inline-flex items-center gap-3 rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-muted-foreground shadow-sm transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-md hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group relative overflow-hidden">
+                <Search className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                <span className="flex-1 text-left">Search tools...</span>
+                <div className="flex items-center gap-2">
+                  <kbd className="hidden h-5 select-none items-center gap-1 rounded-md border bg-muted px-1.5 font-mono text-[10px] font-medium sm:flex">
+                    <span className="text-xs">⌘</span>K
+                  </kbd>
+                  <Zap className="h-3 w-3 opacity-60" />
+                </div>
+              </button>
+            }
+          />
+        </div>
+
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -128,10 +212,10 @@ export function ToolsSidebar() {
           </SidebarMenu>
         </SidebarGroup>
 
-        <SidebarSeparator />
+        <div className="border-primary border-b" />
 
         <SidebarGroup>
-          <ScrollArea className="h-[80svh]">
+          <ScrollArea className="h-[71svh]">
             <SidebarGroupLabel className="px-2">Categories</SidebarGroupLabel>
             <SidebarMenu>
               {toolCategories.map((category) => {
@@ -155,7 +239,7 @@ export function ToolsSidebar() {
                       {/* Right side - Toggle button */}
                       <button
                         onClick={() => toggleCategory(category.id)}
-                        className="cursor-pointer flex items-center justify-center px-2 hover:bg-accent hover:text-accent-foreground transition-colors rounded-none rounded-r-md"
+                        className="cursor-pointer flex items-center justify-center px-2 hover:bg-sidebar-ring hover:text-secondary transition-colors rounded-none rounded-r-md"
                       >
                         <ChevronRight
                           className={cn(

@@ -1,15 +1,8 @@
 "use client";
 
 import { ToolLayout } from "@/components/layout/tool-layout";
+import { ToolCard } from "@/components/tools/tool-card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   getActiveToolsByCategory,
   getToolsByCategory,
@@ -37,7 +30,6 @@ import {
   Volume2,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
-import Link from "next/link";
 import { useRef } from "react";
 
 /**
@@ -154,51 +146,14 @@ export default function GeneralToolsPage() {
           }
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-          {generalTools.map((tool, index) => {
-            const IconComponent =
-              iconMap[tool.icon as keyof typeof iconMap] || Key;
-            const isActive = tool.status === "active";
-
-            return (
-              <MotionDiv
-                key={tool.id}
-                variants={animationsEnabled ? cardVariants : undefined}
-                custom={index}
-              >
-                <Card
-                  className={`hover:shadow-md transition-shadow ${!isActive ? "opacity-75" : ""}`}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <IconComponent className="h-6 w-6 text-primary" />
-                      <Badge variant={isActive ? "default" : "secondary"}>
-                        {isActive
-                          ? "Ready"
-                          : tool.status === "beta"
-                            ? "Beta"
-                            : "Coming Soon"}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                    <CardDescription className="text-sm">
-                      {tool.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    {isActive ? (
-                      <Button asChild className="w-full">
-                        <Link href={tool.href}>Open Tool</Link>
-                      </Button>
-                    ) : (
-                      <Button disabled className="w-full">
-                        {tool.status === "beta" ? "Beta Access" : "Coming Soon"}
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              </MotionDiv>
-            );
-          })}
+          {generalTools.map((tool, index) => (
+            <ToolCard
+              key={tool.id}
+              tool={tool}
+              animationDelay={index}
+              enableHoverAnimations={animationsEnabled}
+            />
+          ))}
         </MotionDiv>
       </MotionSection>
     </ToolLayout>

@@ -1,14 +1,9 @@
 "use client";
 
+import { ToolCard } from "@/components/tools/tool-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -25,18 +20,8 @@ import {
   useSettingsStore,
   useViewModeStore,
 } from "@/stores/settings-store";
-import {
-  Filter,
-  Grid3X3,
-  List,
-  Search,
-  SortAsc,
-  Star,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
+import { Filter, Grid3X3, List, Search, SortAsc, Star } from "lucide-react";
 import { m, useInView } from "motion/react";
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
 type SortOption = "name" | "category" | "popular" | "recent";
@@ -143,12 +128,6 @@ export default function FavoritesPage() {
   };
 
   const hasActiveFilters = searchQuery || selectedCategory || sortBy !== "name";
-
-  const handleToggleFavorite = (e: React.MouseEvent, toolId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleFavorite(toolId);
-  };
 
   return (
     <div className="space-y-8">
@@ -371,15 +350,9 @@ export default function FavoritesPage() {
           </MotionDiv>
         ) : (
           <MotionDiv
-            variants={animationsEnabled ? staggerContainer : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? toolsInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
+            variants={staggerContainer}
+            initial="hidden"
+            animate={toolsInView ? "visible" : "hidden"}
             className={`grid gap-4 ${
               viewMode === "grid"
                 ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
@@ -387,85 +360,13 @@ export default function FavoritesPage() {
             }`}
           >
             {filteredTools.map((tool, index) => (
-              <MotionDiv
+              <ToolCard
                 key={tool.id}
-                variants={animationsEnabled ? cardVariants : undefined}
-                custom={index}
-              >
-                <Link href={tool.href}>
-                  <Card
-                    className={`group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 ${
-                      viewMode === "list" ? "flex items-center" : ""
-                    }`}
-                  >
-                    <CardHeader
-                      className={`pb-3 ${viewMode === "list" ? "flex-1" : ""}`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline" className="capitalize">
-                          {tool.category}
-                        </Badge>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50"
-                            onClick={(e) => handleToggleFavorite(e, tool.id)}
-                          >
-                            <Star className="h-4 w-4 fill-current" />
-                          </Button>
-                          {tool.popular && (
-                            <Badge
-                              variant="secondary"
-                              className="bg-orange-100 text-orange-800"
-                            >
-                              <Star className="mr-1 h-3 w-3" />
-                              Popular
-                            </Badge>
-                          )}
-                          {tool.featured && (
-                            <Badge
-                              variant="secondary"
-                              className="bg-primary/10 text-primary"
-                            >
-                              <Zap className="mr-1 h-3 w-3" />
-                              Featured
-                            </Badge>
-                          )}
-                          {tool.status !== "active" && (
-                            <Badge variant="outline" className="text-xs">
-                              {tool.status === "beta" ? "Beta" : "Soon"}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      <CardTitle
-                        className={`group-hover:text-primary transition-colors ${
-                          viewMode === "list" ? "text-lg" : "text-lg"
-                        }`}
-                      >
-                        {tool.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent
-                      className={viewMode === "list" ? "flex-1" : ""}
-                    >
-                      <CardDescription
-                        className={`mb-4 ${viewMode === "list" ? "text-sm" : ""}`}
-                      >
-                        {tool.description}
-                      </CardDescription>
-                      <Button
-                        size="sm"
-                        className="w-full"
-                        disabled={tool.status !== "active"}
-                      >
-                        {tool.status === "active" ? "Use Tool" : "Coming Soon"}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </MotionDiv>
+                tool={tool}
+                viewMode={viewMode}
+                animationDelay={index}
+                enableHoverAnimations={animationsEnabled}
+              />
             ))}
           </MotionDiv>
         )}

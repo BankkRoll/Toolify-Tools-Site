@@ -11,8 +11,6 @@ import { DownloadButton } from "./download-button";
 interface ActionButtonsProps {
   /** Text to copy to clipboard */
   copyText?: string;
-  /** Success message shown after copying */
-  copySuccessMessage?: string;
   /** Callback when copy action is triggered */
   onCopy?: () => void;
   /** Data to download */
@@ -53,6 +51,8 @@ interface ActionButtonsProps {
   className?: string;
   /** Whether buttons are disabled */
   disabled?: boolean;
+  /** Whether to show success states */
+  showSuccessStates?: boolean;
 }
 
 /**
@@ -60,7 +60,6 @@ interface ActionButtonsProps {
  */
 export function ActionButtons({
   copyText,
-  copySuccessMessage,
   onCopy,
   downloadData,
   downloadFilename,
@@ -81,9 +80,10 @@ export function ActionButtons({
   size = "sm",
   className,
   disabled = false,
+  showSuccessStates = true,
 }: ActionButtonsProps) {
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
+    <div className={`flex flex-wrap gap-2 ${className || ""}`}>
       {onGenerate && (
         <Button
           onClick={onGenerate}
@@ -101,11 +101,11 @@ export function ActionButtons({
       {copyText && (
         <CopyButton
           text={copyText}
-          successMessage={copySuccessMessage}
           variant={variant}
           size={size}
           disabled={disabled}
-          showSuccessState={true}
+          showSuccessState={showSuccessStates}
+          onCopy={onCopy}
         >
           Copy
         </CopyButton>
@@ -119,7 +119,8 @@ export function ActionButtons({
           variant={variant}
           size={size}
           disabled={disabled}
-          showSuccessState={true}
+          showSuccessState={showSuccessStates}
+          onDownload={onDownload}
         >
           Download
         </DownloadButton>

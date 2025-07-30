@@ -1,14 +1,9 @@
 "use client";
 
+import { ToolCard } from "@/components/tools/tool-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -31,18 +26,8 @@ import {
   useSettingsStore,
   useViewModeStore,
 } from "@/stores/settings-store";
-import {
-  Clock,
-  Filter,
-  Grid3X3,
-  List,
-  Search,
-  SortAsc,
-  Star,
-  Zap,
-} from "lucide-react";
+import { Clock, Filter, Grid3X3, List, Search, SortAsc } from "lucide-react";
 import { m, useInView } from "motion/react";
-import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
 /**
@@ -176,15 +161,6 @@ export default function ToolsPage() {
 
   const hasActiveFilters =
     searchQuery || selectedCategory || showInactive || sortBy !== "name";
-
-  /**
-   * Handles favorite toggle for tools
-   */
-  const handleToggleFavorite = (e: React.MouseEvent, toolId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggleFavorite(toolId);
-  };
 
   return (
     <div className="space-y-8">
@@ -427,96 +403,15 @@ export default function ToolsPage() {
                 : "grid-cols-1"
             }`}
           >
-            {filteredTools.map((tool, index) => {
-              const isRecentlyViewed = recentlyViewed.includes(tool.id);
-
-              return (
-                <MotionDiv key={tool.id} variants={cardVariants} custom={index}>
-                  <Link href={tool.href}>
-                    <Card
-                      className={`group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 ${
-                        viewMode === "list" ? "flex items-center" : ""
-                      } ${isRecentlyViewed ? "ring-2 ring-primary/20" : ""}`}
-                    >
-                      <CardHeader
-                        className={`pb-3 ${viewMode === "list" ? "flex-1" : ""}`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="capitalize">
-                            {tool.category}
-                          </Badge>
-                          <div className="flex gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50"
-                              onClick={(e) => handleToggleFavorite(e, tool.id)}
-                            >
-                              <Star
-                                className={`h-4 w-4 ${isFavorite(tool.id) ? "fill-current" : ""}`}
-                              />
-                            </Button>
-                            {isRecentlyViewed && (
-                              <Badge variant="secondary" className="text-xs">
-                                Recent
-                              </Badge>
-                            )}
-                            {tool.popular && (
-                              <Badge
-                                variant="secondary"
-                                className="bg-orange-100 text-orange-800"
-                              >
-                                <Star className="mr-1 h-3 w-3" />
-                                Popular
-                              </Badge>
-                            )}
-                            {tool.featured && (
-                              <Badge
-                                variant="secondary"
-                                className="bg-primary/10 text-primary"
-                              >
-                                <Zap className="mr-1 h-3 w-3" />
-                                Featured
-                              </Badge>
-                            )}
-                            {tool.status !== "active" && (
-                              <Badge variant="outline" className="text-xs">
-                                {tool.status === "beta" ? "Beta" : "Soon"}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                        <CardTitle
-                          className={`group-hover:text-primary transition-colors ${
-                            viewMode === "list" ? "text-lg" : "text-lg"
-                          }`}
-                        >
-                          {tool.name}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent
-                        className={viewMode === "list" ? "flex-1" : ""}
-                      >
-                        <CardDescription
-                          className={`mb-4 ${viewMode === "list" ? "text-sm" : ""}`}
-                        >
-                          {tool.description}
-                        </CardDescription>
-                        <Button
-                          size="sm"
-                          className="w-full"
-                          disabled={tool.status !== "active"}
-                        >
-                          {tool.status === "active"
-                            ? "Use Tool"
-                            : "Coming Soon"}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </MotionDiv>
-              );
-            })}
+            {filteredTools.map((tool, index) => (
+              <ToolCard
+                key={tool.id}
+                tool={tool}
+                viewMode={viewMode}
+                animationDelay={index}
+                enableHoverAnimations={animationsEnabled}
+              />
+            ))}
           </MotionDiv>
         )}
       </MotionSection>

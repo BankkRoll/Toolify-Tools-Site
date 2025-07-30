@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getCategoryById, getToolById } from "@/lib/tools-config";
 import { cn } from "@/lib/utils";
@@ -21,7 +20,6 @@ interface ToolLayoutProps {
   title?: string;
   description?: string;
   category?: string;
-  features?: ReactNode;
   popular?: boolean;
   featured?: boolean;
   status?: "active" | "beta" | "inactive";
@@ -33,7 +31,6 @@ export function ToolLayout({
   title,
   description,
   category,
-  features,
   popular,
   featured,
   status,
@@ -50,7 +47,6 @@ export function ToolLayout({
   // InView hooks
   const headerInView = useInView(headerRef, { once: true, amount: 0.2 });
   const contentInView = useInView(contentRef, { once: true, amount: 0.2 });
-  const featuresInView = useInView(featuresRef, { once: true, amount: 0.2 });
 
   // Motion variants
   const sectionVariants = {
@@ -111,7 +107,7 @@ export function ToolLayout({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
       <MotionSection
         ref={headerRef}
@@ -120,7 +116,7 @@ export function ToolLayout({
           animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
         }
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-4"
+        className="space-y-3 sm:space-y-4"
       >
         {/* Back Navigation */}
         <MotionDiv
@@ -135,10 +131,15 @@ export function ToolLayout({
           }
           className="flex items-center gap-2"
         >
-          <Button variant="ghost" size="sm" asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            asChild
+            className="h-8 sm:h-9 px-2 sm:px-3"
+          >
             <Link href="/tools">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Tools
+              <ArrowLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="text-xs sm:text-sm">Back to Tools</span>
             </Link>
           </Button>
         </MotionDiv>
@@ -154,22 +155,25 @@ export function ToolLayout({
                 : "hidden"
               : undefined
           }
-          className="space-y-3"
+          className="space-y-3 sm:space-y-4"
         >
-          <div className="flex items-start justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <h1 className="text-4xl font-bold tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+            <div className="space-y-2 sm:space-y-3 flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight truncate">
                   {finalTitle}
                 </h1>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="capitalize">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                  <Badge
+                    variant="secondary"
+                    className="capitalize text-xs sm:text-sm"
+                  >
                     {finalCategory}
                   </Badge>
                   {!isCategoryPage && finalPopular && (
                     <Badge
                       variant="secondary"
-                      className="bg-orange-100 text-orange-800"
+                      className="bg-orange-100 text-orange-800 text-xs sm:text-sm"
                     >
                       <Star className="mr-1 h-3 w-3" />
                       Popular
@@ -178,14 +182,14 @@ export function ToolLayout({
                   {!isCategoryPage && finalFeatured && (
                     <Badge
                       variant="secondary"
-                      className="bg-primary/10 text-primary"
+                      className="bg-primary/10 text-primary text-xs sm:text-sm"
                     >
                       <Zap className="mr-1 h-3 w-3" />
                       Featured
                     </Badge>
                   )}
                   {!isCategoryPage && finalStatus !== "active" && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs sm:text-sm">
                       {finalStatus === "beta" ? "Beta" : "Coming Soon"}
                     </Badge>
                   )}
@@ -193,35 +197,46 @@ export function ToolLayout({
               </div>
               <p
                 className={cn(
-                  "text-lg text-muted-foreground",
-                  compactMode ? "max-w-2xl" : "max-w-3xl",
+                  "text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed",
+                  compactMode ? "max-w-2xl" : "max-w-3xl xl:max-w-4xl",
                 )}
               >
                 {finalDescription}
               </p>
             </div>
 
-            {/* Action Buttons - Only show for individual tool pages */}
+            {/* Action Buttons */}
             {!isCategoryPage && toolData && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleToggleFavorite}
-                  className={
+                  className={cn(
+                    "h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm",
                     isFavorite(toolId)
                       ? "text-yellow-500 border-yellow-200 hover:bg-yellow-50"
-                      : ""
-                  }
+                      : "",
+                  )}
                 >
                   <Star
-                    className={`mr-2 h-4 w-4 ${isFavorite(toolId) ? "fill-current" : ""}`}
+                    className={cn(
+                      "mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4",
+                      isFavorite(toolId) ? "fill-current" : "",
+                    )}
                   />
-                  {isFavorite(toolId) ? "Favorited" : "Favorite"}
+                  <span className="hidden sm:inline">
+                    {isFavorite(toolId) ? "Favorited" : "Favorite"}
+                  </span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={handleShare}>
-                  <Share2 className="mr-2 h-4 w-4" />
-                  Share
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShare}
+                  className="h-8 sm:h-9 px-2 sm:px-3 text-xs sm:text-sm"
+                >
+                  <Share2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
               </div>
             )}
@@ -229,7 +244,7 @@ export function ToolLayout({
         </MotionDiv>
       </MotionSection>
 
-      <Separator />
+      <Separator className="w-full my-4 sm:my-6" />
 
       {/* Main Content */}
       <MotionSection
@@ -239,78 +254,38 @@ export function ToolLayout({
           animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
         }
         variants={animationsEnabled ? sectionVariants : undefined}
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6"
       >
         {children}
       </MotionSection>
 
-      {/* Features Section */}
-      {features && (
-        <>
-          <Separator />
-          <MotionSection
-            ref={featuresRef}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? featuresInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
-            variants={animationsEnabled ? sectionVariants : undefined}
-            className="space-y-4"
-          >
-            <MotionDiv
-              variants={animationsEnabled ? itemVariants : undefined}
-              initial={animationsEnabled ? "hidden" : undefined}
-              animate={
-                animationsEnabled
-                  ? featuresInView
-                    ? "visible"
-                    : "hidden"
-                  : undefined
-              }
-            >
-              <div>
-                <h2 className="text-2xl font-semibold">Features</h2>
-                <p className="text-muted-foreground">
-                  Key features and capabilities of this tool
-                </p>
-              </div>
-            </MotionDiv>
-            <MotionDiv
-              variants={animationsEnabled ? itemVariants : undefined}
-              initial={animationsEnabled ? "hidden" : undefined}
-              animate={
-                animationsEnabled
-                  ? featuresInView
-                    ? "visible"
-                    : "hidden"
-                  : undefined
-              }
-            >
-              {features}
-            </MotionDiv>
-          </MotionSection>
-        </>
-      )}
-
       {/* Footer */}
-      <Separator />
+      <Separator className="my-4 sm:my-6" />
       <MotionDiv
         variants={animationsEnabled ? itemVariants : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
         animate={
           animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
         }
-        className="flex items-center justify-between text-sm text-muted-foreground"
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground"
       >
-        <div className="flex items-center gap-4">
-          <span>Need help? Check out our documentation</span>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <span>
+            {toolData?.name} - {toolData?.description}
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <span>Powered by Toolify</span>
+          <span>
+            Created by:{" "}
+            <a
+              href="https://toolify.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary"
+            >
+              Toolify
+            </a>
+          </span>
         </div>
       </MotionDiv>
     </div>

@@ -471,7 +471,6 @@ export default function RegexTesterPage() {
               {matches.length > 0 && (
                 <ActionButtons
                   copyText={getCopyText()}
-                  copySuccessMessage="Regex results copied to clipboard"
                   variant="outline"
                   size="sm"
                 />

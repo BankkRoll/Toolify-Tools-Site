@@ -9,23 +9,17 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { SearchCommand } from "@/components/ui/search-command-dialog";
-import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { getAllActiveTools, toolCategories } from "@/lib/tools-config";
 import { cn } from "@/lib/utils";
-import { useCompactMode } from "@/stores/settings-store";
-import { Search, Share2, Zap } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SettingsDialog } from "./settings-dialog";
 
 export function ToolsHeader() {
   const pathname = usePathname();
-  const allTools = getAllActiveTools();
   const { state: sidebarState } = useSidebar();
   const isMobile = useIsMobile();
-  const compactMode = useCompactMode();
   const pathSegments = pathname.split("/").filter(Boolean);
 
   const generateBreadcrumbs = () => {
@@ -75,60 +69,6 @@ export function ToolsHeader() {
     }
   };
 
-  // Create search commands from all tools
-  const searchCommands = allTools.map((tool) => ({
-    id: tool.id,
-    title: tool.name,
-    description: tool.description,
-    category: tool.category,
-    keywords: tool.tags,
-    action: () => {
-      window.location.href = tool.href;
-    },
-  }));
-
-  const commandGroups = [
-    {
-      heading: "Quick Actions",
-      items: [
-        {
-          id: "all-tools",
-          title: "All Tools",
-          description: "Browse all available tools",
-          category: "navigation",
-          action: () => {
-            window.location.href = "/tools";
-          },
-        },
-        {
-          id: "favorites",
-          title: "Favorites",
-          description: "Your saved favorite tools",
-          category: "navigation",
-          action: () => {
-            window.location.href = "/tools/favorites";
-          },
-        },
-      ],
-    },
-    {
-      heading: "Tool Categories",
-      items: toolCategories.map((category) => ({
-        id: `category-${category.id}`,
-        title: category.name,
-        description: category.description,
-        category: "category",
-        action: () => {
-          window.location.href = category.href;
-        },
-      })),
-    },
-    {
-      heading: "All Tools",
-      items: searchCommands,
-    },
-  ];
-
   return (
     <header className="bg-card flex h-16 shrink-0 items-center gap-2 border-b px-6">
       <div
@@ -160,35 +100,6 @@ export function ToolsHeader() {
       </Breadcrumb>
 
       <div className="ml-auto flex items-center gap-2">
-        {/* Search Command Dialog */}
-        <div className={cn("block", isMobile ? "w-36" : "w-80")}>
-          <SearchCommand
-            commands={commandGroups}
-            placeholder="Search tools, categories, or commands..."
-            emptyMessage="No tools found. Try a different search term."
-            enableFuzzySearch={true}
-            enableHistory={true}
-            enableFavorites={true}
-            enableShortcuts={true}
-            showBadges={true}
-            maxRecent={5}
-            trigger={
-              <button className="cursor-pointer w-full inline-flex items-center gap-3 rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-muted-foreground shadow-sm transition-all duration-200 hover:bg-accent hover:text-accent-foreground hover:shadow-md hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 group relative overflow-hidden">
-                <Search className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                <span className="flex-1 text-left">
-                  {isMobile ? "Search..." : "Search tools..."}
-                </span>
-                <div className="flex items-center gap-2">
-                  <kbd className="hidden h-5 select-none items-center gap-1 rounded-md border bg-muted px-1.5 font-mono text-[10px] font-medium sm:flex">
-                    <span className="text-xs">⌘</span>K
-                  </kbd>
-                  <Zap className="h-3 w-3 opacity-60" />
-                </div>
-              </button>
-            }
-          />
-        </div>
-
         <Button variant="ghost" size="icon" onClick={handleShare}>
           <Share2 className="h-4 w-4" />
           <span className="sr-only">Share tool</span>
