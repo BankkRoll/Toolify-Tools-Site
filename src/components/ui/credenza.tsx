@@ -69,7 +69,7 @@ const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
   if (!isMounted) {
     return null;
   }
-  
+
   const Component = isDesktop ? DialogTrigger : DrawerTrigger;
 
   return (

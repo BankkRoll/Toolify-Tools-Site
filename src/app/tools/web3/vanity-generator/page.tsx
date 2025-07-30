@@ -5,7 +5,13 @@ import { ActionButtons } from "@/components/tools/action-buttons";
 import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -15,15 +21,15 @@ import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Keypair } from "@solana/web3.js";
 import {
-    CheckCircle,
-    Copy,
-    Download,
-    ExternalLink,
-    Pause,
-    Play,
-    Settings,
-    Sparkles,
-    Target
+  CheckCircle,
+  Copy,
+  Download,
+  ExternalLink,
+  Pause,
+  Play,
+  Settings,
+  Sparkles,
+  Target,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -60,7 +66,7 @@ interface GenerationSettings {
 export default function VanityGeneratorPage() {
   const { publicKey, connected } = useWallet();
   const animationsEnabled = useAnimations();
-  
+
   // Refs for animations
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -76,17 +82,23 @@ export default function VanityGeneratorPage() {
   const [currentKeypair, setCurrentKeypair] = useState<Keypair | null>(null);
 
   // Settings
-  const [settings, setSettings] = useLocalStorage<GenerationSettings>("vanity-settings", {
-    pattern: "",
-    position: "start",
-    caseSensitive: false,
-    maxAttempts: 1000000,
-    maxTime: 300, // 5 minutes
-    includePrivateKey: true,
-  });
+  const [settings, setSettings] = useLocalStorage<GenerationSettings>(
+    "vanity-settings",
+    {
+      pattern: "",
+      position: "start",
+      caseSensitive: false,
+      maxAttempts: 1000000,
+      maxTime: 300, // 5 minutes
+      includePrivateKey: true,
+    },
+  );
 
   // Generated addresses history
-  const [generatedHistory] = useLocalStorage<VanityResult[]>("vanity-history", []);
+  const [generatedHistory] = useLocalStorage<VanityResult[]>(
+    "vanity-history",
+    [],
+  );
 
   // Motion variants
   const sectionVariants = {
@@ -121,23 +133,31 @@ export default function VanityGeneratorPage() {
   /**
    * Check if a public key matches the vanity pattern
    */
-  const matchesPattern = useCallback((publicKey: string, pattern: string, position: string, caseSensitive: boolean) => {
-    if (!pattern) return false;
-    
-    const key = caseSensitive ? publicKey : publicKey.toLowerCase();
-    const searchPattern = caseSensitive ? pattern : pattern.toLowerCase();
-    
-    switch (position) {
-      case "start":
-        return key.startsWith(searchPattern);
-      case "end":
-        return key.endsWith(searchPattern);
-      case "anywhere":
-        return key.includes(searchPattern);
-      default:
-        return false;
-    }
-  }, []);
+  const matchesPattern = useCallback(
+    (
+      publicKey: string,
+      pattern: string,
+      position: string,
+      caseSensitive: boolean,
+    ) => {
+      if (!pattern) return false;
+
+      const key = caseSensitive ? publicKey : publicKey.toLowerCase();
+      const searchPattern = caseSensitive ? pattern : pattern.toLowerCase();
+
+      switch (position) {
+        case "start":
+          return key.startsWith(searchPattern);
+        case "end":
+          return key.endsWith(searchPattern);
+        case "anywhere":
+          return key.includes(searchPattern);
+        default:
+          return false;
+      }
+    },
+    [],
+  );
 
   /**
    * Generate a new keypair
@@ -162,7 +182,7 @@ export default function VanityGeneratorPage() {
     setResults([]);
 
     const interval = setInterval(() => {
-      setElapsedTime(prev => prev + 100);
+      setElapsedTime((prev) => prev + 100);
     }, 100);
 
     try {
@@ -171,43 +191,59 @@ export default function VanityGeneratorPage() {
       const maxTime = settings.maxTime * 1000; // Convert to milliseconds
       const startTime = Date.now();
 
-      while (attempts < maxAttempts && (Date.now() - startTime) < maxTime) {
+      while (attempts < maxAttempts && Date.now() - startTime < maxTime) {
         attempts++;
         setCurrentAttempts(attempts);
 
         const keypair = generateKeypair();
         const publicKey = keypair.publicKey.toBase58();
 
-        if (matchesPattern(publicKey, settings.pattern, settings.position, settings.caseSensitive)) {
+        if (
+          matchesPattern(
+            publicKey,
+            settings.pattern,
+            settings.position,
+            settings.caseSensitive,
+          )
+        ) {
           const result: VanityResult = {
             publicKey,
-            privateKey: settings.includePrivateKey ? Buffer.from(keypair.secretKey).toString("base64") : "",
+            privateKey: settings.includePrivateKey
+              ? Buffer.from(keypair.secretKey).toString("base64")
+              : "",
             attempts,
             timeElapsed: Date.now() - startTime,
             pattern: settings.pattern,
             timestamp: Date.now(),
           };
 
-          setResults(prev => [result, ...prev]);
+          setResults((prev) => [result, ...prev]);
           setCurrentKeypair(keypair);
-          
+
           // Save to history
           const updatedHistory = [result, ...generatedHistory].slice(0, 50);
-          localStorage.setItem("vanity-history", JSON.stringify(updatedHistory));
-          
-          toast.success(`Found matching address after ${attempts.toLocaleString()} attempts!`);
+          localStorage.setItem(
+            "vanity-history",
+            JSON.stringify(updatedHistory),
+          );
+
+          toast.success(
+            `Found matching address after ${attempts.toLocaleString()} attempts!`,
+          );
           break;
         }
 
         // Yield to prevent blocking the UI
         if (attempts % 1000 === 0) {
-          await new Promise(resolve => setTimeout(resolve, 0));
+          await new Promise((resolve) => setTimeout(resolve, 0));
         }
       }
 
       if (attempts >= maxAttempts) {
-        toast.info(`Reached maximum attempts (${maxAttempts.toLocaleString()})`);
-      } else if ((Date.now() - startTime) >= maxTime) {
+        toast.info(
+          `Reached maximum attempts (${maxAttempts.toLocaleString()})`,
+        );
+      } else if (Date.now() - startTime >= maxTime) {
         toast.info(`Reached maximum time (${settings.maxTime}s)`);
       }
     } catch (error) {
@@ -263,7 +299,9 @@ export default function VanityGeneratorPage() {
       timestamp: result.timestamp,
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -285,7 +323,7 @@ export default function VanityGeneratorPage() {
     if (connected && publicKey && !settings.pattern) {
       const address = publicKey.toBase58();
       const suggestion = address.slice(0, 4);
-      setSettings(prev => ({ ...prev, pattern: suggestion }));
+      setSettings((prev) => ({ ...prev, pattern: suggestion }));
     }
   }, [connected, publicKey, settings.pattern, setSettings]);
 
@@ -294,11 +332,12 @@ export default function VanityGeneratorPage() {
       <MotionSection
         ref={headerRef}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
+        }
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
@@ -317,7 +356,12 @@ export default function VanityGeneratorPage() {
                   id="pattern"
                   placeholder="e.g., SOL, 123, ABC..."
                   value={settings.pattern}
-                  onChange={(e) => setSettings(prev => ({ ...prev, pattern: e.target.value }))}
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      pattern: e.target.value,
+                    }))
+                  }
                   disabled={isGenerating}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
@@ -331,9 +375,16 @@ export default function VanityGeneratorPage() {
                   {["start", "end", "anywhere"].map((pos) => (
                     <Button
                       key={pos}
-                      variant={settings.position === pos ? "default" : "outline"}
+                      variant={
+                        settings.position === pos ? "default" : "outline"
+                      }
                       size="sm"
-                      onClick={() => setSettings(prev => ({ ...prev, position: pos as any }))}
+                      onClick={() =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          position: pos as any,
+                        }))
+                      }
                       disabled={isGenerating}
                     >
                       {pos.charAt(0).toUpperCase() + pos.slice(1)}
@@ -347,7 +398,9 @@ export default function VanityGeneratorPage() {
                 <Switch
                   id="case-sensitive"
                   checked={settings.caseSensitive}
-                  onCheckedChange={(checked) => setSettings(prev => ({ ...prev, caseSensitive: checked }))}
+                  onCheckedChange={(checked) =>
+                    setSettings((prev) => ({ ...prev, caseSensitive: checked }))
+                  }
                   disabled={isGenerating}
                 />
               </div>
@@ -359,7 +412,12 @@ export default function VanityGeneratorPage() {
                     id="max-attempts"
                     type="number"
                     value={settings.maxAttempts}
-                    onChange={(e) => setSettings(prev => ({ ...prev, maxAttempts: parseInt(e.target.value) || 1000000 }))}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        maxAttempts: parseInt(e.target.value) || 1000000,
+                      }))
+                    }
                     disabled={isGenerating}
                   />
                 </div>
@@ -369,7 +427,12 @@ export default function VanityGeneratorPage() {
                     id="max-time"
                     type="number"
                     value={settings.maxTime}
-                    onChange={(e) => setSettings(prev => ({ ...prev, maxTime: parseInt(e.target.value) || 300 }))}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        maxTime: parseInt(e.target.value) || 300,
+                      }))
+                    }
                     disabled={isGenerating}
                   />
                 </div>
@@ -380,7 +443,12 @@ export default function VanityGeneratorPage() {
                 <Switch
                   id="include-private"
                   checked={settings.includePrivateKey}
-                  onCheckedChange={(checked) => setSettings(prev => ({ ...prev, includePrivateKey: checked }))}
+                  onCheckedChange={(checked) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      includePrivateKey: checked,
+                    }))
+                  }
                   disabled={isGenerating}
                 />
               </div>
@@ -405,16 +473,25 @@ export default function VanityGeneratorPage() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Attempts:</span>
-                  <span className="font-mono">{currentAttempts.toLocaleString()}</span>
+                  <span className="font-mono">
+                    {currentAttempts.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Time Elapsed:</span>
-                  <span className="font-mono">{(elapsedTime / 1000).toFixed(1)}s</span>
+                  <span className="font-mono">
+                    {(elapsedTime / 1000).toFixed(1)}s
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Rate:</span>
                   <span className="font-mono">
-                    {elapsedTime > 0 ? Math.round((currentAttempts / (elapsedTime / 1000))).toLocaleString() : 0} attempts/s
+                    {elapsedTime > 0
+                      ? Math.round(
+                          currentAttempts / (elapsedTime / 1000),
+                        ).toLocaleString()
+                      : 0}{" "}
+                    attempts/s
                   </span>
                 </div>
               </div>
@@ -441,7 +518,7 @@ export default function VanityGeneratorPage() {
         </MotionDiv>
       </MotionSection>
 
-      <ProcessingStatus 
+      <ProcessingStatus
         isProcessing={isGenerating}
         isComplete={false}
         error={null}
@@ -451,7 +528,9 @@ export default function VanityGeneratorPage() {
         ref={contentRef}
         variants={animationsEnabled ? staggerContainer : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
+        }
         className="space-y-6"
       >
         {results.length > 0 && (
@@ -463,7 +542,8 @@ export default function VanityGeneratorPage() {
                   Generated Addresses
                 </CardTitle>
                 <CardDescription>
-                  Found {results.length} matching address{results.length !== 1 ? "es" : ""}
+                  Found {results.length} matching address
+                  {results.length !== 1 ? "es" : ""}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -481,7 +561,9 @@ export default function VanityGeneratorPage() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
                                 <CheckCircle className="w-4 h-4 text-green-500" />
-                                <span className="font-medium">Match Found!</span>
+                                <span className="font-medium">
+                                  Match Found!
+                                </span>
                               </div>
                               <Badge variant="outline">
                                 {result.attempts.toLocaleString()} attempts
@@ -489,7 +571,9 @@ export default function VanityGeneratorPage() {
                             </div>
 
                             <div>
-                              <Label className="text-sm text-muted-foreground">Public Key</Label>
+                              <Label className="text-sm text-muted-foreground">
+                                Public Key
+                              </Label>
                               <div className="flex items-center gap-2 mt-1">
                                 <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
                                   {result.publicKey}
@@ -504,7 +588,9 @@ export default function VanityGeneratorPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => viewOnExplorer(result.publicKey)}
+                                  onClick={() =>
+                                    viewOnExplorer(result.publicKey)
+                                  }
                                 >
                                   <ExternalLink className="w-4 h-4" />
                                 </Button>
@@ -513,7 +599,9 @@ export default function VanityGeneratorPage() {
 
                             {result.privateKey && (
                               <div>
-                                <Label className="text-sm text-muted-foreground">Private Key (Base64)</Label>
+                                <Label className="text-sm text-muted-foreground">
+                                  Private Key (Base64)
+                                </Label>
                                 <div className="flex items-center gap-2 mt-1">
                                   <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
                                     {result.privateKey}
@@ -521,7 +609,9 @@ export default function VanityGeneratorPage() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => copyPrivateKey(result.privateKey)}
+                                    onClick={() =>
+                                      copyPrivateKey(result.privateKey)
+                                    }
                                   >
                                     <Copy className="w-4 h-4" />
                                   </Button>
@@ -557,10 +647,13 @@ export default function VanityGeneratorPage() {
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
                                 <span className="font-mono text-sm">
-                                  {result.publicKey.slice(0, 8)}...{result.publicKey.slice(-8)}
+                                  {result.publicKey.slice(0, 8)}...
+                                  {result.publicKey.slice(-8)}
                                 </span>
                                 <span className="text-xs text-muted-foreground">
-                                  {new Date(result.timestamp).toLocaleDateString()}
+                                  {new Date(
+                                    result.timestamp,
+                                  ).toLocaleDateString()}
                                 </span>
                               </div>
                               <div className="flex items-center gap-2">
@@ -587,11 +680,17 @@ export default function VanityGeneratorPage() {
           onCopy={() => results[0] && copyAddress(results[0].publicKey)}
           onDownload={() => results[0] && downloadKeypair(results[0])}
           copyText={results[0]?.publicKey}
-          downloadData={results[0] ? JSON.stringify(results[0], null, 2) : undefined}
-          downloadFilename={results[0] ? `vanity-address-${results[0].pattern}-${Date.now()}.json` : undefined}
+          downloadData={
+            results[0] ? JSON.stringify(results[0], null, 2) : undefined
+          }
+          downloadFilename={
+            results[0]
+              ? `vanity-address-${results[0].pattern}-${Date.now()}.json`
+              : undefined
+          }
           downloadMimeType="application/json"
         />
       </MotionDiv>
     </ToolLayout>
   );
-} 
+}

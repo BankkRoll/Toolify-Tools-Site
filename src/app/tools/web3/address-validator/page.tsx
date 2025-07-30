@@ -5,7 +5,13 @@ import { ActionButtons } from "@/components/tools/action-buttons";
 import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -16,14 +22,14 @@ import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import {
-    CheckCircle,
-    Copy,
-    ExternalLink,
-    FileText,
-    Search,
-    Settings,
-    Sparkles,
-    XCircle
+  CheckCircle,
+  Copy,
+  ExternalLink,
+  FileText,
+  Search,
+  Settings,
+  Sparkles,
+  XCircle,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -63,7 +69,7 @@ interface ValidationSettings {
 export default function AddressValidatorPage() {
   const { publicKey, connected } = useWallet();
   const animationsEnabled = useAnimations();
-  
+
   // Refs for animations
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -74,23 +80,37 @@ export default function AddressValidatorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [addressInput, setAddressInput] = useState("");
   const [batchInput, setBatchInput] = useState("");
-  const [validationResults, setValidationResults] = useState<AddressValidationResult[]>([]);
-  const [customRpc, setCustomRpc] = useLocalStorage<string>("solana-rpc", "https://api.mainnet-beta.solana.com");
+  const [validationResults, setValidationResults] = useState<
+    AddressValidationResult[]
+  >([]);
+  const [customRpc, setCustomRpc] = useLocalStorage<string>(
+    "solana-rpc",
+    "https://api.mainnet-beta.solana.com",
+  );
   const [activeTab, setActiveTab] = useState("single");
 
   // Settings
-  const [settings, setSettings] = useLocalStorage<ValidationSettings>("address-validator-settings", {
-    checkBalance: true,
-    checkAccountInfo: true,
-    includeChecksum: true,
-    batchMode: false,
-  });
+  const [settings, setSettings] = useLocalStorage<ValidationSettings>(
+    "address-validator-settings",
+    {
+      checkBalance: true,
+      checkAccountInfo: true,
+      includeChecksum: true,
+      batchMode: false,
+    },
+  );
 
   // Validation history
-  const [validationHistory] = useLocalStorage<AddressValidationResult[]>("address-validation-history", []);
+  const [validationHistory] = useLocalStorage<AddressValidationResult[]>(
+    "address-validation-history",
+    [],
+  );
 
   // Connection instance
-  const connection = useMemo(() => new Connection(customRpc, "confirmed"), [customRpc]);
+  const connection = useMemo(
+    () => new Connection(customRpc, "confirmed"),
+    [customRpc],
+  );
 
   // Motion variants
   const sectionVariants = {
@@ -125,70 +145,79 @@ export default function AddressValidatorPage() {
   /**
    * Validate a single Solana address
    */
-  const validateAddress = useCallback(async (address: string): Promise<AddressValidationResult> => {
-    try {
-      const pubKey = new PublicKey(address);
-      const result: AddressValidationResult = {
-        address,
-        isValid: true,
-        type: "PublicKey",
-        checksum: pubKey.toBase58(),
-        timestamp: Date.now(),
-      };
+  const validateAddress = useCallback(
+    async (address: string): Promise<AddressValidationResult> => {
+      try {
+        const pubKey = new PublicKey(address);
+        const result: AddressValidationResult = {
+          address,
+          isValid: true,
+          type: "PublicKey",
+          checksum: pubKey.toBase58(),
+          timestamp: Date.now(),
+        };
 
-      // Check account info if enabled
-      if (settings.checkAccountInfo) {
-        try {
-          const accountInfo = await connection.getAccountInfo(pubKey);
-          if (accountInfo) {
-            result.balance = accountInfo.lamports;
-            result.owner = accountInfo.owner.toBase58();
-            result.executable = accountInfo.executable;
-            result.lamports = accountInfo.lamports;
-            result.rentEpoch = accountInfo.rentEpoch;
-            result.data = accountInfo.data;
+        // Check account info if enabled
+        if (settings.checkAccountInfo) {
+          try {
+            const accountInfo = await connection.getAccountInfo(pubKey);
+            if (accountInfo) {
+              result.balance = accountInfo.lamports;
+              result.owner = accountInfo.owner.toBase58();
+              result.executable = accountInfo.executable;
+              result.lamports = accountInfo.lamports;
+              result.rentEpoch = accountInfo.rentEpoch;
+              result.data = accountInfo.data;
+            }
+          } catch (error) {
+            // Account might not exist, which is fine
           }
-        } catch (error) {
-          // Account might not exist, which is fine
         }
-      }
 
-      // Check balance if enabled
-      if (settings.checkBalance) {
-        try {
-          const balance = await connection.getBalance(pubKey);
-          result.balance = balance;
-        } catch (error) {
-          // Balance check failed
+        // Check balance if enabled
+        if (settings.checkBalance) {
+          try {
+            const balance = await connection.getBalance(pubKey);
+            result.balance = balance;
+          } catch (error) {
+            // Balance check failed
+          }
         }
-      }
 
-      return result;
-    } catch (error) {
-      return {
-        address,
-        isValid: false,
-        type: "Invalid",
-        checksum: "",
-        timestamp: Date.now(),
-      };
-    }
-  }, [connection, settings]);
+        return result;
+      } catch (error) {
+        return {
+          address,
+          isValid: false,
+          type: "Invalid",
+          checksum: "",
+          timestamp: Date.now(),
+        };
+      }
+    },
+    [connection, settings],
+  );
 
   /**
    * Validate a single address
    */
   const validateSingleAddress = useCallback(async () => {
     if (!addressInput.trim()) return;
-    
+
     setIsLoading(true);
     try {
       const result = await validateAddress(addressInput.trim());
       setValidationResults([result]);
 
       // Add to history
-      const updatedHistory = [result, ...validationHistory.filter(item => item.address !== result.address)].slice(0, 50);
-      localStorage.setItem("address-validation-history", JSON.stringify(updatedHistory));
+      const updatedHistory = [
+        result,
+        ...validationHistory.filter((item) => item.address !== result.address),
+      ].slice(0, 50);
+      localStorage.setItem(
+        "address-validation-history",
+        JSON.stringify(updatedHistory),
+      );
 
       toast.success(result.isValid ? "Address is valid" : "Address is invalid");
     } catch (error) {
@@ -204,28 +233,33 @@ export default function AddressValidatorPage() {
    */
   const validateBatchAddresses = useCallback(async () => {
     if (!batchInput.trim()) return;
-    
+
     const addresses = batchInput
       .split("\n")
-      .map(addr => addr.trim())
-      .filter(addr => addr.length > 0);
+      .map((addr) => addr.trim())
+      .filter((addr) => addr.length > 0);
 
     if (addresses.length === 0) return;
-    
+
     setIsLoading(true);
     try {
       const results = await Promise.all(
-        addresses.map(addr => validateAddress(addr))
+        addresses.map((addr) => validateAddress(addr)),
       );
-      
+
       setValidationResults(results);
 
       // Add to history
       const updatedHistory = [...results, ...validationHistory].slice(0, 100);
-      localStorage.setItem("address-validation-history", JSON.stringify(updatedHistory));
+      localStorage.setItem(
+        "address-validation-history",
+        JSON.stringify(updatedHistory),
+      );
 
-      const validCount = results.filter(r => r.isValid).length;
-      toast.success(`Validated ${results.length} addresses (${validCount} valid)`);
+      const validCount = results.filter((r) => r.isValid).length;
+      toast.success(
+        `Validated ${results.length} addresses (${validCount} valid)`,
+      );
     } catch (error) {
       console.error("Batch validation error:", error);
       toast.error("Batch validation failed");
@@ -251,7 +285,7 @@ export default function AddressValidatorPage() {
    */
   const copyResults = useCallback(async () => {
     try {
-      const data = validationResults.map(result => ({
+      const data = validationResults.map((result) => ({
         address: result.address,
         isValid: result.isValid,
         type: result.type,
@@ -276,7 +310,9 @@ export default function AddressValidatorPage() {
       validatedBy: "Toolify Address Validator",
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -320,11 +356,12 @@ export default function AddressValidatorPage() {
       <MotionSection
         ref={headerRef}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
+        }
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
@@ -340,32 +377,47 @@ export default function AddressValidatorPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="check-balance">Check Balance</Label>
-                                     <Switch
-                     id="check-balance"
-                     checked={settings.checkBalance}
-                     onCheckedChange={(checked: boolean) => setSettings(prev => ({ ...prev, checkBalance: checked }))}
-                     disabled={isLoading}
-                   />
-                 </div>
+                  <Switch
+                    id="check-balance"
+                    checked={settings.checkBalance}
+                    onCheckedChange={(checked: boolean) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        checkBalance: checked,
+                      }))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
 
-                 <div className="flex items-center justify-between">
-                   <Label htmlFor="check-account">Check Account Info</Label>
-                   <Switch
-                     id="check-account"
-                     checked={settings.checkAccountInfo}
-                     onCheckedChange={(checked: boolean) => setSettings(prev => ({ ...prev, checkAccountInfo: checked }))}
-                     disabled={isLoading}
-                   />
-                 </div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="check-account">Check Account Info</Label>
+                  <Switch
+                    id="check-account"
+                    checked={settings.checkAccountInfo}
+                    onCheckedChange={(checked: boolean) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        checkAccountInfo: checked,
+                      }))
+                    }
+                    disabled={isLoading}
+                  />
+                </div>
 
-                 <div className="flex items-center justify-between">
-                   <Label htmlFor="include-checksum">Include Checksum</Label>
-                   <Switch
-                     id="include-checksum"
-                     checked={settings.includeChecksum}
-                     onCheckedChange={(checked: boolean) => setSettings(prev => ({ ...prev, includeChecksum: checked }))}
-                     disabled={isLoading}
-                   />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="include-checksum">Include Checksum</Label>
+                  <Switch
+                    id="include-checksum"
+                    checked={settings.includeChecksum}
+                    onCheckedChange={(checked: boolean) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        includeChecksum: checked,
+                      }))
+                    }
+                    disabled={isLoading}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -405,7 +457,7 @@ export default function AddressValidatorPage() {
         </MotionDiv>
       </MotionSection>
 
-      <ProcessingStatus 
+      <ProcessingStatus
         isProcessing={isLoading}
         isComplete={false}
         error={null}
@@ -415,7 +467,9 @@ export default function AddressValidatorPage() {
         ref={contentRef}
         variants={animationsEnabled ? staggerContainer : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
+        }
         className="space-y-6"
       >
         <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
@@ -427,7 +481,11 @@ export default function AddressValidatorPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="single">Single Address</TabsTrigger>
                   <TabsTrigger value="batch">Batch Validation</TabsTrigger>
@@ -444,7 +502,7 @@ export default function AddressValidatorPage() {
                         onChange={(e) => setAddressInput(e.target.value)}
                         className="font-mono"
                       />
-                      <Button 
+                      <Button
                         onClick={validateSingleAddress}
                         disabled={!addressInput.trim() || isLoading}
                       >
@@ -456,7 +514,9 @@ export default function AddressValidatorPage() {
 
                 <TabsContent value="batch" className="space-y-4">
                   <div>
-                    <Label htmlFor="batch-addresses">Addresses (one per line)</Label>
+                    <Label htmlFor="batch-addresses">
+                      Addresses (one per line)
+                    </Label>
                     <Textarea
                       id="batch-addresses"
                       placeholder="Enter multiple addresses, one per line..."
@@ -465,7 +525,7 @@ export default function AddressValidatorPage() {
                       className="font-mono min-h-[120px]"
                     />
                   </div>
-                  <Button 
+                  <Button
                     onClick={validateBatchAddresses}
                     disabled={!batchInput.trim() || isLoading}
                     className="w-full"
@@ -488,14 +548,17 @@ export default function AddressValidatorPage() {
                   Validation Results
                 </CardTitle>
                 <CardDescription>
-                  {validationResults.length} address{validationResults.length !== 1 ? "es" : ""} validated
+                  {validationResults.length} address
+                  {validationResults.length !== 1 ? "es" : ""} validated
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="results" className="w-full">
                   <TabsList>
                     <TabsTrigger value="results">Current Results</TabsTrigger>
-                    <TabsTrigger value="history">Validation History</TabsTrigger>
+                    <TabsTrigger value="history">
+                      Validation History
+                    </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="results" className="space-y-4">
@@ -512,9 +575,14 @@ export default function AddressValidatorPage() {
                                     <XCircle className="w-4 h-4 text-red-500" />
                                   )}
                                   <span className="font-medium">
-                                    {result.isValid ? "Valid" : "Invalid"} Address
+                                    {result.isValid ? "Valid" : "Invalid"}{" "}
+                                    Address
                                   </span>
-                                  <Badge variant={result.isValid ? "default" : "destructive"}>
+                                  <Badge
+                                    variant={
+                                      result.isValid ? "default" : "destructive"
+                                    }
+                                  >
                                     {result.type}
                                   </Badge>
                                 </div>
@@ -530,7 +598,9 @@ export default function AddressValidatorPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      onClick={() => viewOnExplorer(result.address)}
+                                      onClick={() =>
+                                        viewOnExplorer(result.address)
+                                      }
                                     >
                                       <ExternalLink className="w-4 h-4" />
                                     </Button>
@@ -539,7 +609,9 @@ export default function AddressValidatorPage() {
                               </div>
 
                               <div>
-                                <Label className="text-sm text-muted-foreground">Address</Label>
+                                <Label className="text-sm text-muted-foreground">
+                                  Address
+                                </Label>
                                 <code className="block text-sm font-mono bg-muted p-2 rounded mt-1">
                                   {result.address}
                                 </code>
@@ -549,7 +621,9 @@ export default function AddressValidatorPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   {result.balance !== undefined && (
                                     <div>
-                                      <Label className="text-sm text-muted-foreground">Balance</Label>
+                                      <Label className="text-sm text-muted-foreground">
+                                        Balance
+                                      </Label>
                                       <div className="font-medium">
                                         {formatLamports(result.balance)} SOL
                                       </div>
@@ -561,17 +635,28 @@ export default function AddressValidatorPage() {
 
                                   {result.owner && (
                                     <div>
-                                      <Label className="text-sm text-muted-foreground">Owner</Label>
+                                      <Label className="text-sm text-muted-foreground">
+                                        Owner
+                                      </Label>
                                       <div className="font-mono text-sm">
-                                        {result.owner.slice(0, 8)}...{result.owner.slice(-8)}
+                                        {result.owner.slice(0, 8)}...
+                                        {result.owner.slice(-8)}
                                       </div>
                                     </div>
                                   )}
 
                                   {result.executable !== undefined && (
                                     <div>
-                                      <Label className="text-sm text-muted-foreground">Executable</Label>
-                                      <Badge variant={result.executable ? "default" : "secondary"}>
+                                      <Label className="text-sm text-muted-foreground">
+                                        Executable
+                                      </Label>
+                                      <Badge
+                                        variant={
+                                          result.executable
+                                            ? "default"
+                                            : "secondary"
+                                        }
+                                      >
                                         {result.executable ? "Yes" : "No"}
                                       </Badge>
                                     </div>
@@ -579,8 +664,12 @@ export default function AddressValidatorPage() {
 
                                   {result.rentEpoch !== undefined && (
                                     <div>
-                                      <Label className="text-sm text-muted-foreground">Rent Epoch</Label>
-                                      <div className="font-medium">{result.rentEpoch}</div>
+                                      <Label className="text-sm text-muted-foreground">
+                                        Rent Epoch
+                                      </Label>
+                                      <div className="font-medium">
+                                        {result.rentEpoch}
+                                      </div>
                                     </div>
                                   )}
                                 </div>
@@ -611,15 +700,22 @@ export default function AddressValidatorPage() {
                                       <XCircle className="w-4 h-4 text-red-500" />
                                     )}
                                     <span className="font-mono text-sm">
-                                      {result.address.slice(0, 8)}...{result.address.slice(-8)}
+                                      {result.address.slice(0, 8)}...
+                                      {result.address.slice(-8)}
                                     </span>
                                   </div>
                                   <div className="text-xs text-muted-foreground">
-                                    {new Date(result.timestamp).toLocaleString()}
+                                    {new Date(
+                                      result.timestamp,
+                                    ).toLocaleString()}
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <Badge variant={result.isValid ? "default" : "destructive"}>
+                                  <Badge
+                                    variant={
+                                      result.isValid ? "default" : "destructive"
+                                    }
+                                  >
                                     {result.type}
                                   </Badge>
                                   {result.balance !== undefined && (
@@ -645,16 +741,28 @@ export default function AddressValidatorPage() {
           onCopy={copyResults}
           onDownload={downloadResults}
           copyText="Copy Results"
-          downloadData={validationResults.length > 0 ? JSON.stringify({
-            results: validationResults,
-            settings,
-            timestamp: Date.now(),
-            validatedBy: "Toolify Address Validator",
-          }, null, 2) : undefined}
-          downloadFilename={validationResults.length > 0 ? `address-validation-${Date.now()}.json` : undefined}
+          downloadData={
+            validationResults.length > 0
+              ? JSON.stringify(
+                  {
+                    results: validationResults,
+                    settings,
+                    timestamp: Date.now(),
+                    validatedBy: "Toolify Address Validator",
+                  },
+                  null,
+                  2,
+                )
+              : undefined
+          }
+          downloadFilename={
+            validationResults.length > 0
+              ? `address-validation-${Date.now()}.json`
+              : undefined
+          }
           downloadMimeType="application/json"
         />
       </MotionDiv>
     </ToolLayout>
   );
-} 
+}

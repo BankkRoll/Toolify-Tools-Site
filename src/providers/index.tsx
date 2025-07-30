@@ -6,12 +6,12 @@ import { MotionProvider } from "@/providers/motion-provider";
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <WalletContextProvider>
-         <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
         <MotionProvider>
           <AnalyticsProvider>{children}</AnalyticsProvider>
         </MotionProvider>

@@ -4,26 +4,26 @@ import { ToolLayout } from "@/components/layout/tool-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import {
-    getActiveToolsByCategory,
-    getToolsByCategory,
+  getActiveToolsByCategory,
+  getToolsByCategory,
 } from "@/lib/tools-config";
 import { useAnimations } from "@/stores/settings-store";
 import {
-    ChartAreaIcon,
-    CheckCircle,
-    Coins,
-    Hash,
-    Key,
-    Search,
-    Wallet,
-    Zap,
+  ChartAreaIcon,
+  CheckCircle,
+  Coins,
+  Hash,
+  Key,
+  Search,
+  Wallet,
+  Zap,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import Link from "next/link";
@@ -175,4 +175,4 @@ export default function Web3ToolsPage() {
       </MotionSection>
     </ToolLayout>
   );
-} 
+}

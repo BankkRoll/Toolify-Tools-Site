@@ -5,7 +5,13 @@ import { ActionButtons } from "@/components/tools/action-buttons";
 import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,12 +19,7 @@ import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
-import {
-    Copy,
-    ExternalLink,
-    Search,
-    Wallet
-} from "lucide-react";
+import { Copy, ExternalLink, Search, Wallet } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -74,7 +75,7 @@ interface PortfolioAnalytics {
 export default function WalletOverviewPage() {
   const { publicKey, connected } = useWallet();
   const animationsEnabled = useAnimations();
-  
+
   // Refs for animations
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -82,21 +83,34 @@ export default function WalletOverviewPage() {
   const contentInView = useInView(contentRef, { once: true, amount: 0.2 });
 
   // State management
-  const [customRpc, setCustomRpc] = useLocalStorage<string>("solana-rpc", "https://api.mainnet-beta.solana.com");
+  const [customRpc, setCustomRpc] = useLocalStorage<string>(
+    "solana-rpc",
+    "https://api.mainnet-beta.solana.com",
+  );
   const [walletAddress, setWalletAddress] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPrivateData, setShowPrivateData] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
 
   // Data state
-  const [accountBalance, setAccountBalance] = useState<AccountBalance | null>(null);
+  const [accountBalance, setAccountBalance] = useState<AccountBalance | null>(
+    null,
+  );
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
-  const [transactionHistory, setTransactionHistory] = useState<TransactionHistory[]>([]);
+  const [transactionHistory, setTransactionHistory] = useState<
+    TransactionHistory[]
+  >([]);
   const [analytics, setAnalytics] = useState<PortfolioAnalytics | null>(null);
-  const [recentAddresses] = useLocalStorage<string[]>("recent-wallet-addresses", []);
+  const [recentAddresses] = useLocalStorage<string[]>(
+    "recent-wallet-addresses",
+    [],
+  );
 
   // Connection instance
-  const connection = useMemo(() => new Connection(customRpc, "confirmed"), [customRpc]);
+  const connection = useMemo(
+    () => new Connection(customRpc, "confirmed"),
+    [customRpc],
+  );
 
   // Motion variants
   const sectionVariants = {
@@ -131,80 +145,96 @@ export default function WalletOverviewPage() {
   /**
    * Fetch account balance for a given address
    */
-  const fetchAccountBalance = useCallback(async (address: string) => {
-    try {
-      const pubKey = new PublicKey(address);
-      const balance = await connection.getBalance(pubKey);
-      
-      setAccountBalance({
-        lamports: balance,
-        sol: balance / LAMPORTS_PER_SOL,
-      });
-    } catch (error) {
-      console.error("Error fetching account balance:", error);
-      toast.error("Failed to fetch account balance");
-    }
-  }, [connection]);
+  const fetchAccountBalance = useCallback(
+    async (address: string) => {
+      try {
+        const pubKey = new PublicKey(address);
+        const balance = await connection.getBalance(pubKey);
+
+        setAccountBalance({
+          lamports: balance,
+          sol: balance / LAMPORTS_PER_SOL,
+        });
+      } catch (error) {
+        console.error("Error fetching account balance:", error);
+        toast.error("Failed to fetch account balance");
+      }
+    },
+    [connection],
+  );
 
   /**
    * Fetch token balances for a given address
    */
-  const fetchTokenBalances = useCallback(async (address: string) => {
-    try {
-      const pubKey = new PublicKey(address);
-      const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubKey, {
-        programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
-      });
+  const fetchTokenBalances = useCallback(
+    async (address: string) => {
+      try {
+        const pubKey = new PublicKey(address);
+        const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+          pubKey,
+          {
+            programId: new PublicKey(
+              "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            ),
+          },
+        );
 
-      const balances: TokenBalance[] = tokenAccounts.value.map((account) => {
-        const accountInfo = account.account.data.parsed.info;
-        return {
-          mint: accountInfo.mint,
-          symbol: accountInfo.tokenAmount.symbol || "Unknown",
-          name: accountInfo.tokenAmount.name || "Unknown Token",
-          balance: accountInfo.tokenAmount.uiAmount || 0,
-          decimals: accountInfo.tokenAmount.decimals,
-        };
-      });
+        const balances: TokenBalance[] = tokenAccounts.value.map((account) => {
+          const accountInfo = account.account.data.parsed.info;
+          return {
+            mint: accountInfo.mint,
+            symbol: accountInfo.tokenAmount.symbol || "Unknown",
+            name: accountInfo.tokenAmount.name || "Unknown Token",
+            balance: accountInfo.tokenAmount.uiAmount || 0,
+            decimals: accountInfo.tokenAmount.decimals,
+          };
+        });
 
-      setTokenBalances(balances);
-    } catch (error) {
-      console.error("Error fetching token balances:", error);
-      toast.error("Failed to fetch token balances");
-    }
-  }, [connection]);
+        setTokenBalances(balances);
+      } catch (error) {
+        console.error("Error fetching token balances:", error);
+        toast.error("Failed to fetch token balances");
+      }
+    },
+    [connection],
+  );
 
   /**
    * Fetch transaction history for a given address
    */
-  const fetchTransactionHistory = useCallback(async (address: string) => {
-    try {
-      const pubKey = new PublicKey(address);
-      const signatures = await connection.getSignaturesForAddress(pubKey, { limit: 20 });
-      
-      const transactions: TransactionHistory[] = await Promise.all(
-        signatures.map(async (sig) => {
-          const tx = await connection.getTransaction(sig.signature, {
-            maxSupportedTransactionVersion: 0,
-          });
-          
-          return {
-            signature: sig.signature,
-            slot: sig.slot,
-            blockTime: sig.blockTime || 0,
-            fee: tx?.meta?.fee || 0,
-            status: tx?.meta?.err ? "Failed" : "Success",
-            type: "Transfer", // Simplified for demo
-          };
-        })
-      );
+  const fetchTransactionHistory = useCallback(
+    async (address: string) => {
+      try {
+        const pubKey = new PublicKey(address);
+        const signatures = await connection.getSignaturesForAddress(pubKey, {
+          limit: 20,
+        });
 
-      setTransactionHistory(transactions);
-    } catch (error) {
-      console.error("Error fetching transaction history:", error);
-      toast.error("Failed to fetch transaction history");
-    }
-  }, [connection]);
+        const transactions: TransactionHistory[] = await Promise.all(
+          signatures.map(async (sig) => {
+            const tx = await connection.getTransaction(sig.signature, {
+              maxSupportedTransactionVersion: 0,
+            });
+
+            return {
+              signature: sig.signature,
+              slot: sig.slot,
+              blockTime: sig.blockTime || 0,
+              fee: tx?.meta?.fee || 0,
+              status: tx?.meta?.err ? "Failed" : "Success",
+              type: "Transfer", // Simplified for demo
+            };
+          }),
+        );
+
+        setTransactionHistory(transactions);
+      } catch (error) {
+        console.error("Error fetching transaction history:", error);
+        toast.error("Failed to fetch transaction history");
+      }
+    },
+    [connection],
+  );
 
   /**
    * Calculate portfolio analytics
@@ -212,8 +242,10 @@ export default function WalletOverviewPage() {
   const calculateAnalytics = useCallback(() => {
     if (!accountBalance || !tokenBalances || !transactionHistory) return;
 
-    const totalValue = accountBalance.sol + (tokenBalances.reduce((sum, token) => sum + (token.usdValue || 0), 0));
-    
+    const totalValue =
+      accountBalance.sol +
+      tokenBalances.reduce((sum, token) => sum + (token.usdValue || 0), 0);
+
     setAnalytics({
       totalValue,
       solBalance: accountBalance.sol,
@@ -226,29 +258,43 @@ export default function WalletOverviewPage() {
   /**
    * Load wallet data for a given address
    */
-  const loadWalletData = useCallback(async (address: string) => {
-    if (!address) return;
-    
-    setIsLoading(true);
-    try {
-      await Promise.all([
-        fetchAccountBalance(address),
-        fetchTokenBalances(address),
-        fetchTransactionHistory(address),
-      ]);
-      
-      // Add to recent addresses
-      const updatedRecent = [address, ...recentAddresses.filter(addr => addr !== address)].slice(0, 10);
-      localStorage.setItem("recent-wallet-addresses", JSON.stringify(updatedRecent));
-      
-      toast.success("Wallet data loaded successfully");
-    } catch (error) {
-      console.error("Error loading wallet data:", error);
-      toast.error("Failed to load wallet data");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchAccountBalance, fetchTokenBalances, fetchTransactionHistory, recentAddresses]);
+  const loadWalletData = useCallback(
+    async (address: string) => {
+      if (!address) return;
+
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          fetchAccountBalance(address),
+          fetchTokenBalances(address),
+          fetchTransactionHistory(address),
+        ]);
+
+        // Add to recent addresses
+        const updatedRecent = [
+          address,
+          ...recentAddresses.filter((addr) => addr !== address),
+        ].slice(0, 10);
+        localStorage.setItem(
+          "recent-wallet-addresses",
+          JSON.stringify(updatedRecent),
+        );
+
+        toast.success("Wallet data loaded successfully");
+      } catch (error) {
+        console.error("Error loading wallet data:", error);
+        toast.error("Failed to load wallet data");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [
+      fetchAccountBalance,
+      fetchTokenBalances,
+      fetchTransactionHistory,
+      recentAddresses,
+    ],
+  );
 
   /**
    * Copy address to clipboard
@@ -288,11 +334,12 @@ export default function WalletOverviewPage() {
       <MotionSection
         ref={headerRef}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
+        }
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
           className="flex items-center gap-4"
@@ -307,7 +354,7 @@ export default function WalletOverviewPage() {
                 onChange={(e) => setWalletAddress(e.target.value)}
                 className="font-mono"
               />
-              <Button 
+              <Button
                 onClick={() => loadWalletData(walletAddress)}
                 disabled={!walletAddress || isLoading}
               >
@@ -350,7 +397,7 @@ export default function WalletOverviewPage() {
         )}
       </MotionSection>
 
-      <ProcessingStatus 
+      <ProcessingStatus
         isProcessing={isLoading}
         isComplete={false}
         error={null}
@@ -360,7 +407,9 @@ export default function WalletOverviewPage() {
         ref={contentRef}
         variants={animationsEnabled ? staggerContainer : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
+        }
         className="space-y-6"
       >
         {accountBalance && (
@@ -406,7 +455,9 @@ export default function WalletOverviewPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">SOL Balance</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            SOL Balance
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">
@@ -420,7 +471,9 @@ export default function WalletOverviewPage() {
 
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Token Count</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Token Count
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">
@@ -434,7 +487,9 @@ export default function WalletOverviewPage() {
 
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Recent Activity
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold">
@@ -460,15 +515,20 @@ export default function WalletOverviewPage() {
                             <CardContent className="p-4">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <div className="font-medium">{token.symbol}</div>
-                                  <div className="text-sm text-muted-foreground">{token.name}</div>
+                                  <div className="font-medium">
+                                    {token.symbol}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {token.name}
+                                  </div>
                                 </div>
                                 <div className="text-right">
                                   <div className="font-medium">
                                     {token.balance.toFixed(token.decimals)}
                                   </div>
                                   <div className="text-sm text-muted-foreground">
-                                    {token.mint.slice(0, 8)}...{token.mint.slice(-8)}
+                                    {token.mint.slice(0, 8)}...
+                                    {token.mint.slice(-8)}
                                   </div>
                                 </div>
                               </div>
@@ -492,14 +552,23 @@ export default function WalletOverviewPage() {
                               <div className="flex items-center justify-between">
                                 <div>
                                   <div className="font-mono text-sm">
-                                    {tx.signature.slice(0, 8)}...{tx.signature.slice(-8)}
+                                    {tx.signature.slice(0, 8)}...
+                                    {tx.signature.slice(-8)}
                                   </div>
                                   <div className="text-sm text-muted-foreground">
-                                    {new Date(tx.blockTime * 1000).toLocaleString()}
+                                    {new Date(
+                                      tx.blockTime * 1000,
+                                    ).toLocaleString()}
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <Badge variant={tx.status === "Success" ? "default" : "destructive"}>
+                                  <Badge
+                                    variant={
+                                      tx.status === "Success"
+                                        ? "default"
+                                        : "destructive"
+                                    }
+                                  >
                                     {tx.status}
                                   </Badge>
                                   <div className="text-sm text-muted-foreground">
@@ -519,7 +588,9 @@ export default function WalletOverviewPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-sm font-medium">Portfolio Value</CardTitle>
+                            <CardTitle className="text-sm font-medium">
+                              Portfolio Value
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="text-2xl font-bold">
@@ -530,25 +601,32 @@ export default function WalletOverviewPage() {
 
                         <Card>
                           <CardHeader>
-                            <CardTitle className="text-sm font-medium">Activity Summary</CardTitle>
+                            <CardTitle className="text-sm font-medium">
+                              Activity Summary
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
                             <div className="space-y-2">
                               <div className="flex justify-between">
                                 <span>Total Transactions:</span>
-                                <span className="font-medium">{analytics.transactionCount}</span>
+                                <span className="font-medium">
+                                  {analytics.transactionCount}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span>Token Count:</span>
-                                <span className="font-medium">{analytics.tokenCount}</span>
+                                <span className="font-medium">
+                                  {analytics.tokenCount}
+                                </span>
                               </div>
                               <div className="flex justify-between">
                                 <span>Last Activity:</span>
                                 <span className="font-medium">
-                                  {analytics.lastActivity ? 
-                                    new Date(analytics.lastActivity * 1000).toLocaleDateString() : 
-                                    "Never"
-                                  }
+                                  {analytics.lastActivity
+                                    ? new Date(
+                                        analytics.lastActivity * 1000,
+                                      ).toLocaleDateString()
+                                    : "Never"}
                                 </span>
                               </div>
                             </div>
@@ -574,7 +652,9 @@ export default function WalletOverviewPage() {
               analytics,
               timestamp: new Date().toISOString(),
             };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const blob = new Blob([JSON.stringify(data, null, 2)], {
+              type: "application/json",
+            });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -584,18 +664,30 @@ export default function WalletOverviewPage() {
             toast.success("Portfolio data downloaded");
           }}
           copyText={walletAddress}
-          downloadData={accountBalance ? JSON.stringify({
-            address: walletAddress,
-            balance: accountBalance,
-            tokens: tokenBalances,
-            transactions: transactionHistory,
-            analytics,
-            timestamp: new Date().toISOString(),
-          }, null, 2) : undefined}
-          downloadFilename={accountBalance ? `wallet-portfolio-${walletAddress.slice(0, 8)}.json` : undefined}
+          downloadData={
+            accountBalance
+              ? JSON.stringify(
+                  {
+                    address: walletAddress,
+                    balance: accountBalance,
+                    tokens: tokenBalances,
+                    transactions: transactionHistory,
+                    analytics,
+                    timestamp: new Date().toISOString(),
+                  },
+                  null,
+                  2,
+                )
+              : undefined
+          }
+          downloadFilename={
+            accountBalance
+              ? `wallet-portfolio-${walletAddress.slice(0, 8)}.json`
+              : undefined
+          }
           downloadMimeType="application/json"
         />
       </MotionDiv>
     </ToolLayout>
   );
-} 
+}

@@ -5,7 +5,13 @@ import { ActionButtons } from "@/components/tools/action-buttons";
 import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,12 +21,12 @@ import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import {
-    Copy,
-    ExternalLink,
-    Eye,
-    EyeOff,
-    FileText,
-    Search
+  Copy,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  FileText,
+  Search,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -69,7 +75,7 @@ interface TransactionHistory {
 export default function TransactionDecoderPage() {
   const { publicKey, connected } = useWallet();
   const animationsEnabled = useAnimations();
-  
+
   // Refs for animations
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -79,15 +85,25 @@ export default function TransactionDecoderPage() {
   // State management
   const [isLoading, setIsLoading] = useState(false);
   const [transactionSignature, setTransactionSignature] = useState("");
-  const [decodedTransaction, setDecodedTransaction] = useState<DecodedTransaction | null>(null);
-  const [customRpc, setCustomRpc] = useLocalStorage<string>("solana-rpc", "https://api.mainnet-beta.solana.com");
+  const [decodedTransaction, setDecodedTransaction] =
+    useState<DecodedTransaction | null>(null);
+  const [customRpc, setCustomRpc] = useLocalStorage<string>(
+    "solana-rpc",
+    "https://api.mainnet-beta.solana.com",
+  );
   const [showRawData, setShowRawData] = useState(false);
 
   // Search history
-  const [searchHistory] = useLocalStorage<TransactionHistory[]>("tx-decoder-history", []);
+  const [searchHistory] = useLocalStorage<TransactionHistory[]>(
+    "tx-decoder-history",
+    [],
+  );
 
   // Connection instance
-  const connection = useMemo(() => new Connection(customRpc, "confirmed"), [customRpc]);
+  const connection = useMemo(
+    () => new Connection(customRpc, "confirmed"),
+    [customRpc],
+  );
 
   // Motion variants
   const sectionVariants = {
@@ -122,80 +138,94 @@ export default function TransactionDecoderPage() {
   /**
    * Decode a transaction signature
    */
-  const decodeTransaction = useCallback(async (signature: string) => {
-    if (!signature.trim()) return;
-    
-    setIsLoading(true);
-    try {
-      const tx = await connection.getTransaction(signature, {
-        maxSupportedTransactionVersion: 0,
-      });
+  const decodeTransaction = useCallback(
+    async (signature: string) => {
+      if (!signature.trim()) return;
 
-      if (!tx) {
-        toast.error("Transaction not found");
-        return;
+      setIsLoading(true);
+      try {
+        const tx = await connection.getTransaction(signature, {
+          maxSupportedTransactionVersion: 0,
+        });
+
+        if (!tx) {
+          toast.error("Transaction not found");
+          return;
+        }
+
+        // Handle both legacy and versioned transactions
+        const message = tx.transaction.message;
+        let staticAccountKeys: PublicKey[];
+        let instructions: any[];
+
+        if ("getAccountKeys" in message) {
+          // Versioned transaction (MessageV0)
+          const accountKeys = message.getAccountKeys();
+          staticAccountKeys = accountKeys.staticAccountKeys;
+          instructions = message.compiledInstructions || [];
+        } else {
+          // Legacy transaction (Message)
+          staticAccountKeys = message.accountKeys;
+          instructions = message.instructions || [];
+        }
+
+        const decoded: DecodedTransaction = {
+          signature: tx.transaction.signatures[0],
+          slot: tx.slot,
+          blockTime: tx.blockTime || 0,
+          fee: tx.meta?.fee || 0,
+          status: tx.meta?.err ? "Failed" : "Success",
+          accounts: staticAccountKeys.map((key: PublicKey) => key.toBase58()),
+          instructions: instructions.map((instruction, index) => {
+            const programId =
+              staticAccountKeys[instruction.programIdIndex].toBase58();
+            const accountIndexes =
+              instruction.accountKeyIndexes || instruction.accounts || [];
+            return {
+              programId,
+              programName: getProgramName(programId),
+              accounts: accountIndexes.map((accIndex: number) =>
+                staticAccountKeys[accIndex].toBase58(),
+              ),
+              data:
+                typeof instruction.data === "string"
+                  ? instruction.data
+                  : Buffer.from(instruction.data).toString("base64"),
+              parsed: tx.meta?.innerInstructions?.[index] || null,
+            };
+          }),
+          logs: tx.meta?.logMessages || [],
+          meta: tx.meta,
+          version: typeof tx.version === "number" ? tx.version : 0,
+        };
+
+        setDecodedTransaction(decoded);
+
+        // Add to search history
+        const historyItem: TransactionHistory = {
+          signature,
+          timestamp: Date.now(),
+          status: decoded.status,
+        };
+        const updatedHistory = [
+          historyItem,
+          ...searchHistory.filter((item) => item.signature !== signature),
+        ].slice(0, 20);
+        localStorage.setItem(
+          "tx-decoder-history",
+          JSON.stringify(updatedHistory),
+        );
+
+        toast.success("Transaction decoded successfully");
+      } catch (error) {
+        console.error("Decode error:", error);
+        toast.error("Failed to decode transaction");
+      } finally {
+        setIsLoading(false);
       }
-
-      // Handle both legacy and versioned transactions
-      const message = tx.transaction.message;
-      let staticAccountKeys: PublicKey[];
-      let instructions: any[];
-
-      if ('getAccountKeys' in message) {
-        // Versioned transaction (MessageV0)
-        const accountKeys = message.getAccountKeys();
-        staticAccountKeys = accountKeys.staticAccountKeys;
-        instructions = message.compiledInstructions || [];
-      } else {
-        // Legacy transaction (Message)
-        staticAccountKeys = message.accountKeys;
-        instructions = message.instructions || [];
-      }
-      
-      const decoded: DecodedTransaction = {
-        signature: tx.transaction.signatures[0],
-        slot: tx.slot,
-        blockTime: tx.blockTime || 0,
-        fee: tx.meta?.fee || 0,
-        status: tx.meta?.err ? "Failed" : "Success",
-        accounts: staticAccountKeys.map((key: PublicKey) => key.toBase58()),
-        instructions: instructions.map((instruction, index) => {
-          const programId = staticAccountKeys[instruction.programIdIndex].toBase58();
-          const accountIndexes = instruction.accountKeyIndexes || instruction.accounts || [];
-          return {
-            programId,
-            programName: getProgramName(programId),
-            accounts: accountIndexes.map((accIndex: number) => 
-              staticAccountKeys[accIndex].toBase58()
-            ),
-            data: typeof instruction.data === 'string' ? instruction.data : Buffer.from(instruction.data).toString('base64'),
-            parsed: tx.meta?.innerInstructions?.[index] || null,
-          };
-        }),
-        logs: tx.meta?.logMessages || [],
-        meta: tx.meta,
-        version: typeof tx.version === 'number' ? tx.version : 0,
-      };
-
-      setDecodedTransaction(decoded);
-
-      // Add to search history
-      const historyItem: TransactionHistory = {
-        signature,
-        timestamp: Date.now(),
-        status: decoded.status,
-      };
-      const updatedHistory = [historyItem, ...searchHistory.filter(item => item.signature !== signature)].slice(0, 20);
-      localStorage.setItem("tx-decoder-history", JSON.stringify(updatedHistory));
-
-      toast.success("Transaction decoded successfully");
-    } catch (error) {
-      console.error("Decode error:", error);
-      toast.error("Failed to decode transaction");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [connection, searchHistory]);
+    },
+    [connection, searchHistory],
+  );
 
   /**
    * Get program name from program ID
@@ -203,12 +233,12 @@ export default function TransactionDecoderPage() {
   const getProgramName = useCallback((programId: string): string => {
     const programNames: { [key: string]: string } = {
       "11111111111111111111111111111111": "System Program",
-      "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA": "Token Program",
-      "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL": "Associated Token Account",
-      "So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo": "Solend Program",
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA: "Token Program",
+      ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL: "Associated Token Account",
+      So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo: "Solend Program",
       "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM": "Orca Swap",
       "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8": "Raydium Swap",
-      "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc": "Whirlpool",
+      whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc: "Whirlpool",
     };
     return programNames[programId] || "Unknown Program";
   }, []);
@@ -230,7 +260,7 @@ export default function TransactionDecoderPage() {
    */
   const copyDecodedData = useCallback(async () => {
     if (!decodedTransaction) return;
-    
+
     try {
       const data = JSON.stringify(decodedTransaction, null, 2);
       await navigator.clipboard.writeText(data);
@@ -245,14 +275,16 @@ export default function TransactionDecoderPage() {
    */
   const downloadDecodedData = useCallback(() => {
     if (!decodedTransaction) return;
-    
+
     const data = {
       ...decodedTransaction,
       decodedBy: "Toolify Transaction Decoder",
       timestamp: Date.now(),
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -288,11 +320,12 @@ export default function TransactionDecoderPage() {
       <MotionSection
         ref={headerRef}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
+        }
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
           className="flex items-center gap-4"
@@ -307,7 +340,7 @@ export default function TransactionDecoderPage() {
                 onChange={(e) => setTransactionSignature(e.target.value)}
                 className="font-mono"
               />
-              <Button 
+              <Button
                 onClick={() => decodeTransaction(transactionSignature)}
                 disabled={!transactionSignature.trim() || isLoading}
               >
@@ -350,7 +383,7 @@ export default function TransactionDecoderPage() {
         )}
       </MotionSection>
 
-      <ProcessingStatus 
+      <ProcessingStatus
         isProcessing={isLoading}
         isComplete={false}
         error={null}
@@ -360,7 +393,9 @@ export default function TransactionDecoderPage() {
         ref={contentRef}
         variants={animationsEnabled ? staggerContainer : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
+        }
         className="space-y-6"
       >
         {decodedTransaction && (
@@ -373,18 +408,24 @@ export default function TransactionDecoderPage() {
                 </CardTitle>
                 <CardDescription>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono">{decodedTransaction.signature}</span>
+                    <span className="font-mono">
+                      {decodedTransaction.signature}
+                    </span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => copySignature(decodedTransaction.signature)}
+                      onClick={() =>
+                        copySignature(decodedTransaction.signature)
+                      }
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => viewOnExplorer(decodedTransaction.signature)}
+                      onClick={() =>
+                        viewOnExplorer(decodedTransaction.signature)
+                      }
                     >
                       <ExternalLink className="w-4 h-4" />
                     </Button>
@@ -404,10 +445,18 @@ export default function TransactionDecoderPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Transaction Status</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Transaction Status
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <Badge variant={decodedTransaction.status === "Success" ? "default" : "destructive"}>
+                          <Badge
+                            variant={
+                              decodedTransaction.status === "Success"
+                                ? "default"
+                                : "destructive"
+                            }
+                          >
                             {decodedTransaction.status}
                           </Badge>
                         </CardContent>
@@ -415,7 +464,9 @@ export default function TransactionDecoderPage() {
 
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Fee</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Fee
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-lg font-bold">
@@ -429,7 +480,9 @@ export default function TransactionDecoderPage() {
 
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Block Time</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Block Time
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-sm">
@@ -443,7 +496,9 @@ export default function TransactionDecoderPage() {
 
                       <Card>
                         <CardHeader className="pb-2">
-                          <CardTitle className="text-sm font-medium">Instructions</CardTitle>
+                          <CardTitle className="text-sm font-medium">
+                            Instructions
+                          </CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="text-lg font-bold">
@@ -459,44 +514,63 @@ export default function TransactionDecoderPage() {
 
                   <TabsContent value="instructions" className="space-y-4">
                     <div className="space-y-2">
-                      {decodedTransaction.instructions.map((instruction, index) => (
-                        <Card key={index}>
-                          <CardContent className="p-4">
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <span className="font-medium">Instruction {index + 1}</span>
-                                  <Badge variant="outline">{instruction.programName}</Badge>
+                      {decodedTransaction.instructions.map(
+                        (instruction, index) => (
+                          <Card key={index}>
+                            <CardContent className="p-4">
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium">
+                                      Instruction {index + 1}
+                                    </span>
+                                    <Badge variant="outline">
+                                      {instruction.programName}
+                                    </Badge>
+                                  </div>
+                                  <span className="text-xs text-muted-foreground">
+                                    {instruction.programId.slice(0, 8)}...
+                                    {instruction.programId.slice(-8)}
+                                  </span>
                                 </div>
-                                <span className="text-xs text-muted-foreground">
-                                  {instruction.programId.slice(0, 8)}...{instruction.programId.slice(-8)}
-                                </span>
-                              </div>
-                              
-                              <div>
-                                <Label className="text-xs text-muted-foreground">Accounts</Label>
-                                <div className="space-y-1 mt-1">
-                                  {instruction.accounts.map((account, accIndex) => (
-                                    <div key={accIndex} className="flex items-center gap-2">
-                                      <span className="text-xs text-muted-foreground w-4">{accIndex}</span>
-                                      <code className="text-xs font-mono">
-                                        {account.slice(0, 8)}...{account.slice(-8)}
-                                      </code>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
 
-                              <div>
-                                <Label className="text-xs text-muted-foreground">Data</Label>
-                                <code className="block text-xs font-mono bg-muted p-2 rounded mt-1">
-                                  {instruction.data}
-                                </code>
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">
+                                    Accounts
+                                  </Label>
+                                  <div className="space-y-1 mt-1">
+                                    {instruction.accounts.map(
+                                      (account, accIndex) => (
+                                        <div
+                                          key={accIndex}
+                                          className="flex items-center gap-2"
+                                        >
+                                          <span className="text-xs text-muted-foreground w-4">
+                                            {accIndex}
+                                          </span>
+                                          <code className="text-xs font-mono">
+                                            {account.slice(0, 8)}...
+                                            {account.slice(-8)}
+                                          </code>
+                                        </div>
+                                      ),
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <Label className="text-xs text-muted-foreground">
+                                    Data
+                                  </Label>
+                                  <code className="block text-xs font-mono bg-muted p-2 rounded mt-1">
+                                    {instruction.data}
+                                  </code>
+                                </div>
                               </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardContent>
+                          </Card>
+                        ),
+                      )}
                     </div>
                   </TabsContent>
 
@@ -507,7 +581,9 @@ export default function TransactionDecoderPage() {
                           <CardContent className="p-3">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium">Account {index}</span>
+                                <span className="text-sm font-medium">
+                                  Account {index}
+                                </span>
                                 <code className="text-xs font-mono">
                                   {account}
                                 </code>
@@ -545,12 +621,20 @@ export default function TransactionDecoderPage() {
                             size="sm"
                             onClick={() => setShowRawData(!showRawData)}
                           >
-                            {showRawData ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showRawData ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </Button>
                         </div>
                         {showRawData && (
                           <Textarea
-                            value={JSON.stringify(decodedTransaction.meta, null, 2)}
+                            value={JSON.stringify(
+                              decodedTransaction.meta,
+                              null,
+                              2,
+                            )}
                             readOnly
                             className="font-mono text-xs h-64"
                           />
@@ -568,15 +652,27 @@ export default function TransactionDecoderPage() {
           onCopy={() => decodedTransaction && copyDecodedData()}
           onDownload={() => decodedTransaction && downloadDecodedData()}
           copyText="Copy Decoded Data"
-          downloadData={decodedTransaction ? JSON.stringify({
-            ...decodedTransaction,
-            decodedBy: "Toolify Transaction Decoder",
-            timestamp: Date.now(),
-          }, null, 2) : undefined}
-          downloadFilename={decodedTransaction ? `transaction-${decodedTransaction.signature.slice(0, 8)}.json` : undefined}
+          downloadData={
+            decodedTransaction
+              ? JSON.stringify(
+                  {
+                    ...decodedTransaction,
+                    decodedBy: "Toolify Transaction Decoder",
+                    timestamp: Date.now(),
+                  },
+                  null,
+                  2,
+                )
+              : undefined
+          }
+          downloadFilename={
+            decodedTransaction
+              ? `transaction-${decodedTransaction.signature.slice(0, 8)}.json`
+              : undefined
+          }
           downloadMimeType="application/json"
         />
       </MotionDiv>
     </ToolLayout>
   );
-} 
+}

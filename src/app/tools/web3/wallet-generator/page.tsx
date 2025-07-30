@@ -5,7 +5,13 @@ import { ActionButtons } from "@/components/tools/action-buttons";
 import { ProcessingStatus } from "@/components/tools/processing-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -15,16 +21,16 @@ import { useAnimations } from "@/stores/settings-store";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Keypair } from "@solana/web3.js";
 import {
-    Copy,
-    Download,
-    ExternalLink,
-    Eye,
-    EyeOff,
-    Plus,
-    RefreshCw,
-    Settings,
-    Sparkles,
-    Wallet
+  Copy,
+  Download,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  Plus,
+  RefreshCw,
+  Settings,
+  Sparkles,
+  Wallet,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import { useCallback, useRef, useState } from "react";
@@ -59,7 +65,7 @@ interface GenerationSettings {
 export default function WalletGeneratorPage() {
   const { publicKey, connected } = useWallet();
   const animationsEnabled = useAnimations();
-  
+
   // Refs for animations
   const headerRef = useRef(null);
   const contentRef = useRef(null);
@@ -68,22 +74,32 @@ export default function WalletGeneratorPage() {
 
   // State management
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedWallets, setGeneratedWallets] = useState<GeneratedWallet[]>([]);
-  const [selectedWallet, setSelectedWallet] = useState<GeneratedWallet | null>(null);
+  const [generatedWallets, setGeneratedWallets] = useState<GeneratedWallet[]>(
+    [],
+  );
+  const [selectedWallet, setSelectedWallet] = useState<GeneratedWallet | null>(
+    null,
+  );
   const [showPrivateKeys, setShowPrivateKeys] = useState(false);
   const [walletName, setWalletName] = useState("");
 
   // Settings
-  const [settings, setSettings] = useLocalStorage<GenerationSettings>("wallet-gen-settings", {
-    count: 1,
-    includeMnemonic: false,
-    includePrivateKey: true,
-    includeQR: false,
-    autoSave: true,
-  });
+  const [settings, setSettings] = useLocalStorage<GenerationSettings>(
+    "wallet-gen-settings",
+    {
+      count: 1,
+      includeMnemonic: false,
+      includePrivateKey: true,
+      includeQR: false,
+      autoSave: true,
+    },
+  );
 
   // Generated wallets history
-  const [walletHistory] = useLocalStorage<GeneratedWallet[]>("wallet-history", []);
+  const [walletHistory] = useLocalStorage<GeneratedWallet[]>(
+    "wallet-history",
+    [],
+  );
 
   // Motion variants
   const sectionVariants = {
@@ -127,10 +143,10 @@ export default function WalletGeneratorPage() {
    */
   const generateWallets = useCallback(async () => {
     setIsGenerating(true);
-    
+
     try {
       const wallets: GeneratedWallet[] = [];
-      
+
       for (let i = 0; i < settings.count; i++) {
         const keypair = generateKeypair();
         const wallet: GeneratedWallet = {
@@ -139,25 +155,27 @@ export default function WalletGeneratorPage() {
           timestamp: Date.now(),
           name: walletName || `Wallet ${i + 1}`,
         };
-        
+
         wallets.push(wallet);
-        
+
         // Add small delay to prevent UI blocking
         if (i < settings.count - 1) {
-          await new Promise(resolve => setTimeout(resolve, 10));
+          await new Promise((resolve) => setTimeout(resolve, 10));
         }
       }
-      
+
       setGeneratedWallets(wallets);
       setSelectedWallet(wallets[0]);
-      
+
       // Auto-save to history if enabled
       if (settings.autoSave) {
         const updatedHistory = [...wallets, ...walletHistory].slice(0, 100);
         localStorage.setItem("wallet-history", JSON.stringify(updatedHistory));
       }
-      
-      toast.success(`Generated ${settings.count} wallet${settings.count !== 1 ? "s" : ""}`);
+
+      toast.success(
+        `Generated ${settings.count} wallet${settings.count !== 1 ? "s" : ""}`,
+      );
     } catch (error) {
       console.error("Generation error:", error);
       toast.error("Failed to generate wallets");
@@ -202,7 +220,9 @@ export default function WalletGeneratorPage() {
       generatedBy: "Toolify Wallet Generator",
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -217,7 +237,7 @@ export default function WalletGeneratorPage() {
    */
   const downloadAllWallets = useCallback(() => {
     const data = {
-      wallets: generatedWallets.map(wallet => ({
+      wallets: generatedWallets.map((wallet) => ({
         name: wallet.name,
         publicKey: wallet.publicKey,
         privateKey: wallet.privateKey,
@@ -227,7 +247,9 @@ export default function WalletGeneratorPage() {
       timestamp: Date.now(),
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -258,11 +280,12 @@ export default function WalletGeneratorPage() {
       <MotionSection
         ref={headerRef}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (headerInView ? "visible" : "hidden") : undefined
+        }
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-
         <MotionDiv
           variants={animationsEnabled ? itemVariants : undefined}
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
@@ -294,7 +317,15 @@ export default function WalletGeneratorPage() {
                   min="1"
                   max="100"
                   value={settings.count}
-                  onChange={(e) => setSettings(prev => ({ ...prev, count: Math.min(100, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      count: Math.min(
+                        100,
+                        Math.max(1, parseInt(e.target.value) || 1),
+                      ),
+                    }))
+                  }
                   disabled={isGenerating}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
@@ -308,7 +339,12 @@ export default function WalletGeneratorPage() {
                   <Switch
                     id="include-private"
                     checked={settings.includePrivateKey}
-                    onCheckedChange={(checked) => setSettings(prev => ({ ...prev, includePrivateKey: checked }))}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        includePrivateKey: checked,
+                      }))
+                    }
                     disabled={isGenerating}
                   />
                 </div>
@@ -318,7 +354,9 @@ export default function WalletGeneratorPage() {
                   <Switch
                     id="auto-save"
                     checked={settings.autoSave}
-                    onCheckedChange={(checked) => setSettings(prev => ({ ...prev, autoSave: checked }))}
+                    onCheckedChange={(checked) =>
+                      setSettings((prev) => ({ ...prev, autoSave: checked }))
+                    }
                     disabled={isGenerating}
                   />
                 </div>
@@ -355,28 +393,32 @@ export default function WalletGeneratorPage() {
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
-                  onClick={() => setSettings(prev => ({ ...prev, count: 1 }))}
+                  onClick={() => setSettings((prev) => ({ ...prev, count: 1 }))}
                   disabled={isGenerating}
                 >
                   Single Wallet
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => setSettings(prev => ({ ...prev, count: 5 }))}
+                  onClick={() => setSettings((prev) => ({ ...prev, count: 5 }))}
                   disabled={isGenerating}
                 >
                   5 Wallets
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => setSettings(prev => ({ ...prev, count: 10 }))}
+                  onClick={() =>
+                    setSettings((prev) => ({ ...prev, count: 10 }))
+                  }
                   disabled={isGenerating}
                 >
                   10 Wallets
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => setSettings(prev => ({ ...prev, count: 25 }))}
+                  onClick={() =>
+                    setSettings((prev) => ({ ...prev, count: 25 }))
+                  }
                   disabled={isGenerating}
                 >
                   25 Wallets
@@ -398,7 +440,7 @@ export default function WalletGeneratorPage() {
         </MotionDiv>
       </MotionSection>
 
-      <ProcessingStatus 
+      <ProcessingStatus
         isProcessing={isGenerating}
         isComplete={false}
         error={null}
@@ -408,7 +450,9 @@ export default function WalletGeneratorPage() {
         ref={contentRef}
         variants={animationsEnabled ? staggerContainer : undefined}
         initial={animationsEnabled ? "hidden" : undefined}
-        animate={animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined}
+        animate={
+          animationsEnabled ? (contentInView ? "visible" : "hidden") : undefined
+        }
         className="space-y-6"
       >
         {generatedWallets.length > 0 && (
@@ -420,7 +464,8 @@ export default function WalletGeneratorPage() {
                   Generated Wallets
                 </CardTitle>
                 <CardDescription>
-                  {generatedWallets.length} wallet{generatedWallets.length !== 1 ? "s" : ""} generated
+                  {generatedWallets.length} wallet
+                  {generatedWallets.length !== 1 ? "s" : ""} generated
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -434,24 +479,31 @@ export default function WalletGeneratorPage() {
                   <TabsContent value="list" className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {generatedWallets.map((wallet, index) => (
-                        <Card 
+                        <Card
                           key={index}
                           className={`cursor-pointer transition-colors ${
-                            selectedWallet?.publicKey === wallet.publicKey ? "ring-2 ring-primary" : ""
+                            selectedWallet?.publicKey === wallet.publicKey
+                              ? "ring-2 ring-primary"
+                              : ""
                           }`}
                           onClick={() => setSelectedWallet(wallet)}
                         >
                           <CardContent className="p-4">
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">{wallet.name}</span>
+                                <span className="font-medium">
+                                  {wallet.name}
+                                </span>
                                 <Badge variant="outline">#{index + 1}</Badge>
                               </div>
                               <div className="font-mono text-xs text-muted-foreground">
-                                {wallet.publicKey.slice(0, 8)}...{wallet.publicKey.slice(-8)}
+                                {wallet.publicKey.slice(0, 8)}...
+                                {wallet.publicKey.slice(-8)}
                               </div>
                               <div className="text-xs text-muted-foreground">
-                                {new Date(wallet.timestamp).toLocaleTimeString()}
+                                {new Date(
+                                  wallet.timestamp,
+                                ).toLocaleTimeString()}
                               </div>
                             </div>
                           </CardContent>
@@ -466,12 +518,18 @@ export default function WalletGeneratorPage() {
                         <CardContent className="p-6">
                           <div className="space-y-4">
                             <div>
-                              <Label className="text-sm font-medium">Wallet Name</Label>
-                              <div className="font-medium">{selectedWallet.name}</div>
+                              <Label className="text-sm font-medium">
+                                Wallet Name
+                              </Label>
+                              <div className="font-medium">
+                                {selectedWallet.name}
+                              </div>
                             </div>
 
                             <div>
-                              <Label className="text-sm font-medium">Public Key</Label>
+                              <Label className="text-sm font-medium">
+                                Public Key
+                              </Label>
                               <div className="flex items-center gap-2 mt-1">
                                 <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
                                   {selectedWallet.publicKey}
@@ -479,14 +537,18 @@ export default function WalletGeneratorPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => copyPublicKey(selectedWallet.publicKey)}
+                                  onClick={() =>
+                                    copyPublicKey(selectedWallet.publicKey)
+                                  }
                                 >
                                   <Copy className="w-4 h-4" />
                                 </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() => viewOnExplorer(selectedWallet.publicKey)}
+                                  onClick={() =>
+                                    viewOnExplorer(selectedWallet.publicKey)
+                                  }
                                 >
                                   <ExternalLink className="w-4 h-4" />
                                 </Button>
@@ -496,23 +558,35 @@ export default function WalletGeneratorPage() {
                             {settings.includePrivateKey && (
                               <div>
                                 <div className="flex items-center justify-between">
-                                  <Label className="text-sm font-medium">Private Key (Base64)</Label>
+                                  <Label className="text-sm font-medium">
+                                    Private Key (Base64)
+                                  </Label>
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => setShowPrivateKeys(!showPrivateKeys)}
+                                    onClick={() =>
+                                      setShowPrivateKeys(!showPrivateKeys)
+                                    }
                                   >
-                                    {showPrivateKeys ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    {showPrivateKeys ? (
+                                      <EyeOff className="w-4 h-4" />
+                                    ) : (
+                                      <Eye className="w-4 h-4" />
+                                    )}
                                   </Button>
                                 </div>
                                 <div className="flex items-center gap-2 mt-1">
                                   <code className="flex-1 p-2 bg-muted rounded text-sm font-mono">
-                                    {showPrivateKeys ? selectedWallet.privateKey : "••••••••••••••••"}
+                                    {showPrivateKeys
+                                      ? selectedWallet.privateKey
+                                      : "••••••••••••••••"}
                                   </code>
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => copyPrivateKey(selectedWallet.privateKey)}
+                                    onClick={() =>
+                                      copyPrivateKey(selectedWallet.privateKey)
+                                    }
                                   >
                                     <Copy className="w-4 h-4" />
                                   </Button>
@@ -556,14 +630,19 @@ export default function WalletGeneratorPage() {
                             <CardContent className="p-4">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <div className="font-medium">{wallet.name}</div>
+                                  <div className="font-medium">
+                                    {wallet.name}
+                                  </div>
                                   <div className="font-mono text-sm text-muted-foreground">
-                                    {wallet.publicKey.slice(0, 8)}...{wallet.publicKey.slice(-8)}
+                                    {wallet.publicKey.slice(0, 8)}...
+                                    {wallet.publicKey.slice(-8)}
                                   </div>
                                 </div>
                                 <div className="text-right">
                                   <div className="text-xs text-muted-foreground">
-                                    {new Date(wallet.timestamp).toLocaleDateString()}
+                                    {new Date(
+                                      wallet.timestamp,
+                                    ).toLocaleDateString()}
                                   </div>
                                   <Button
                                     variant="ghost"
@@ -587,29 +666,55 @@ export default function WalletGeneratorPage() {
         )}
 
         <ActionButtons
-          onCopy={() => selectedWallet && copyPublicKey(selectedWallet.publicKey)}
-          onDownload={() => generatedWallets.length > 1 ? downloadAllWallets() : selectedWallet && downloadWallet(selectedWallet)}
+          onCopy={() =>
+            selectedWallet && copyPublicKey(selectedWallet.publicKey)
+          }
+          onDownload={() =>
+            generatedWallets.length > 1
+              ? downloadAllWallets()
+              : selectedWallet && downloadWallet(selectedWallet)
+          }
           copyText={selectedWallet?.publicKey}
-          downloadData={generatedWallets.length > 1 ? JSON.stringify({
-            wallets: generatedWallets.map(wallet => ({
-              name: wallet.name,
-              publicKey: wallet.publicKey,
-              privateKey: wallet.privateKey,
-              timestamp: wallet.timestamp,
-            })),
-            generatedBy: "Toolify Wallet Generator",
-            timestamp: Date.now(),
-          }, null, 2) : selectedWallet ? JSON.stringify({
-            name: selectedWallet.name,
-            publicKey: selectedWallet.publicKey,
-            privateKey: selectedWallet.privateKey,
-            timestamp: selectedWallet.timestamp,
-            generatedBy: "Toolify Wallet Generator",
-          }, null, 2) : undefined}
-          downloadFilename={generatedWallets.length > 1 ? `solana-wallets-${Date.now()}.json` : selectedWallet ? `solana-wallet-${selectedWallet.name}-${Date.now()}.json` : undefined}
+          downloadData={
+            generatedWallets.length > 1
+              ? JSON.stringify(
+                  {
+                    wallets: generatedWallets.map((wallet) => ({
+                      name: wallet.name,
+                      publicKey: wallet.publicKey,
+                      privateKey: wallet.privateKey,
+                      timestamp: wallet.timestamp,
+                    })),
+                    generatedBy: "Toolify Wallet Generator",
+                    timestamp: Date.now(),
+                  },
+                  null,
+                  2,
+                )
+              : selectedWallet
+                ? JSON.stringify(
+                    {
+                      name: selectedWallet.name,
+                      publicKey: selectedWallet.publicKey,
+                      privateKey: selectedWallet.privateKey,
+                      timestamp: selectedWallet.timestamp,
+                      generatedBy: "Toolify Wallet Generator",
+                    },
+                    null,
+                    2,
+                  )
+                : undefined
+          }
+          downloadFilename={
+            generatedWallets.length > 1
+              ? `solana-wallets-${Date.now()}.json`
+              : selectedWallet
+                ? `solana-wallet-${selectedWallet.name}-${Date.now()}.json`
+                : undefined
+          }
           downloadMimeType="application/json"
         />
       </MotionDiv>
     </ToolLayout>
   );
-} 
+}
