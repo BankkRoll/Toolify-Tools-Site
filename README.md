@@ -9,7 +9,6 @@ A comprehensive browser-based developer toolkit providing professional tools for
 - **144+ Professional Tools** across 8 categories
 - **100% Browser-Based** - No server processing required
 - **Real-time Processing** - Instant results with live preview
-- **File Handling** - Upload, process, and download files
 - **Responsive Design** - Works seamlessly on desktop and mobile
 - **Dark Mode Support** - Built-in theme switching
 - **Search & Filter** - Quick tool discovery
