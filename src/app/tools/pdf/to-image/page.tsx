@@ -1,8 +1,9 @@
 "use client";
 
 import { ToolLayout } from "@/components/layout/tool-layout";
+import { ActionButtons } from "@/components/tools/action-buttons";
 import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { Button } from "@/components/ui/button";
+import { ProcessingStatus } from "@/components/tools/processing-status";
 import {
   Card,
   CardContent,
@@ -19,11 +20,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Download, FileText, ImageIcon } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useAnimations } from "@/stores/settings-store";
+import { FileText } from "lucide-react";
+import { m, useInView } from "motion/react";
 import { PDFDocument } from "pdf-lib";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * Interface for conversion settings
+ */
+interface ConversionSettings {
+  outputFormat: string;
+  quality: number;
+  dpi: number;
+}
+
+/**
+ * PDF to image conversion tool page
+ */
 export default function PdfToImagePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [outputFormat, setOutputFormat] = useState("png");
@@ -32,95 +48,202 @@ export default function PdfToImagePage() {
   const [convertedImages, setConvertedImages] = useState<string[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isComplete, setIsComplete] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-to-image-history",
+    [],
+  );
+  const animationsEnabled = useAnimations();
+
+  // Refs for motion animations
+  const containerRef = useRef(null);
+  const uploadSectionRef = useRef(null);
+  const settingsSectionRef = useRef(null);
+  const resultsSectionRef = useRef(null);
+
+  // InView hooks
+  const containerInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const uploadSectionInView = useInView(uploadSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const settingsSectionInView = useInView(settingsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const resultsSectionInView = useInView(resultsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+
+  /**
+   * Handles file selection and initializes page count
+   */
   const handleFileSelect = async (files: File[]) => {
     const file = files[0];
     if (file) {
       setSelectedFile(file);
+      setError(null);
+      setIsComplete(false);
+      setConvertedImages([]);
+
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         setTotalPages(pdfDoc.getPageCount());
+        toast.success("PDF loaded successfully");
       } catch (error) {
+        setError("Failed to load PDF file");
         toast.error("Failed to load PDF file");
       }
     }
   };
 
+  /**
+   * Converts PDF pages to images
+   */
   const convertToImages = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      toast.error("Please select a PDF file");
+      return;
+    }
 
     setIsProcessing(true);
-    try {
-      // This is a simplified implementation
-      // In a real app, you'd use a library like pdf2pic or PDF.js
-      const images: string[] = [];
+    setError(null);
+    setIsComplete(false);
 
-      // Simulate conversion process
-      for (let i = 0; i < totalPages; i++) {
-        // Create a placeholder canvas for each page
+    try {
+      const arrayBuffer = await selectedFile.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pageCount = pdfDoc.getPageCount();
+      const convertedImages: string[] = [];
+
+      // For demo purposes, we'll create placeholder images
+      // In a real implementation, you would use a library like pdf2pic or similar
+      for (let i = 0; i < pageCount; i++) {
+        // Create a canvas and draw a placeholder
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-
-        // Set canvas size based on DPI
-        const width = Math.floor(8.5 * dpi); // Letter size width
-        const height = Math.floor(11 * dpi); // Letter size height
-        canvas.width = width;
-        canvas.height = height;
-
         if (ctx) {
-          // Fill with white background
-          ctx.fillStyle = "#FFFFFF";
-          ctx.fillRect(0, 0, width, height);
-
-          // Add some placeholder content
-          ctx.fillStyle = "#000000";
+          canvas.width = 800;
+          canvas.height = 600;
+          ctx.fillStyle = "#f0f0f0";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#333";
           ctx.font = "24px Arial";
-          ctx.fillText(`PDF Page ${i + 1}`, 50, 100);
-          ctx.fillText("Converted to Image", 50, 150);
-
-          // Add border
-          ctx.strokeStyle = "#CCCCCC";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(0, 0, width, height);
+          ctx.textAlign = "center";
+          ctx.fillText(`Page ${i + 1}`, canvas.width / 2, canvas.height / 2);
+          ctx.fillText(
+            "(Image conversion placeholder)",
+            canvas.width / 2,
+            canvas.height / 2 + 40,
+          );
         }
-
-        const mimeType = `image/${outputFormat}`;
-        const dataUrl = canvas.toDataURL(mimeType, quality / 100);
-        images.push(dataUrl);
+        convertedImages.push(canvas.toDataURL("image/png"));
       }
 
-      setConvertedImages(images);
-      toast.success(
-        `Converted ${totalPages} pages to ${outputFormat.toUpperCase()}`,
-      );
+      setConvertedImages(convertedImages);
+      setIsComplete(true);
+      setHistory([selectedFile.name, ...history].slice(0, 10));
+      toast.success(`Converted ${pageCount} pages to images`);
     } catch (error) {
-      toast.error("Failed to convert PDF to images");
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to convert PDF to images";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  /**
+   * Downloads a single image
+   */
   const downloadImage = (imageData: string, pageNumber: number) => {
     const link = document.createElement("a");
     link.download = `page-${pageNumber + 1}.${outputFormat}`;
     link.href = imageData;
     link.click();
+    toast.success(`Downloaded page ${pageNumber + 1}`);
   };
 
+  /**
+   * Downloads all converted images
+   */
   const downloadAllImages = () => {
     convertedImages.forEach((imageData, index) => {
       setTimeout(() => downloadImage(imageData, index), index * 100);
     });
+    toast.success("Downloading all images...");
   };
+
+  /**
+   * Clears all data and resets state
+   */
+  const clearAll = () => {
+    setSelectedFile(null);
+    setConvertedImages([]);
+    setTotalPages(0);
+    setError(null);
+    setIsComplete(false);
+  };
+
+  // Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Conditional motion components
+  const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
     <ToolLayout toolId="pdf-to-image">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <MotionDiv
+        ref={containerRef}
+        className="space-y-6"
+        variants={animationsEnabled ? containerVariants : undefined}
+        initial={animationsEnabled ? "hidden" : undefined}
+        animate={
+          animationsEnabled
+            ? containerInView
+              ? "visible"
+              : "hidden"
+            : undefined
+        }
+      >
+        <MotionDiv
+          ref={uploadSectionRef}
+          variants={animationsEnabled ? cardVariants : undefined}
+          initial={animationsEnabled ? "hidden" : undefined}
+          animate={
+            animationsEnabled
+              ? uploadSectionInView
+                ? "visible"
+                : "hidden"
+              : undefined
+          }
+        >
           <Card>
             <CardHeader>
-              <CardTitle>Upload PDF</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Upload PDF
+              </CardTitle>
               <CardDescription>
                 Select a PDF file to convert to images
               </CardDescription>
@@ -128,18 +251,45 @@ export default function PdfToImagePage() {
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf"
+                accept=".pdf,application/pdf"
+                multiple={false}
                 files={selectedFile ? [selectedFile] : []}
-                onRemoveFile={() => setSelectedFile(null)}
+                onRemoveFile={() => {
+                  setSelectedFile(null);
+                  setConvertedImages([]);
+                  setTotalPages(0);
+                  setError(null);
+                  setIsComplete(false);
+                }}
               />
+              {totalPages > 0 && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Total pages: {totalPages}
+                </p>
+              )}
             </CardContent>
           </Card>
+        </MotionDiv>
 
-          {selectedFile && totalPages > 0 && (
+        {selectedFile && totalPages > 0 && (
+          <MotionDiv
+            ref={settingsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? settingsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
             <Card>
               <CardHeader>
                 <CardTitle>Conversion Settings</CardTitle>
-                <CardDescription>Total pages: {totalPages}</CardDescription>
+                <CardDescription>
+                  Configure image output format and quality
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -193,83 +343,97 @@ export default function PdfToImagePage() {
                   </div>
                 )}
 
-                <Button
-                  onClick={convertToImages}
-                  className="w-full"
-                  disabled={isProcessing}
-                >
-                  <ImageIcon className="h-4 w-4 mr-2" />
-                  {isProcessing ? "Converting..." : "Convert to Images"}
-                </Button>
+                <ActionButtons
+                  onGenerate={convertToImages}
+                  generateLabel="Convert to Images"
+                  onReset={clearAll}
+                  resetLabel="Clear All"
+                  variant="outline"
+                  size="sm"
+                  disabled={!selectedFile || isProcessing}
+                  isGenerating={isProcessing}
+                />
               </CardContent>
             </Card>
-          )}
-        </div>
+          </MotionDiv>
+        )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Converted Images
-              {convertedImages.length > 0 && (
-                <Button variant="outline" size="sm" onClick={downloadAllImages}>
-                  <Download className="h-4 w-4 mr-1" />
-                  Download All
-                </Button>
-              )}
-            </CardTitle>
-            <CardDescription>
-              {convertedImages.length > 0
-                ? `${convertedImages.length} images ready`
-                : "Images will appear here"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {convertedImages.length > 0 ? (
-              <div className="space-y-4 max-h-96 overflow-y-auto">
-                {convertedImages.map((imageData, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 border rounded overflow-hidden">
-                        <img
-                          src={imageData || "/placeholder.svg"}
-                          alt={`Page ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">Page {index + 1}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {outputFormat.toUpperCase()}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => downloadImage(imageData, index)}
+        {convertedImages.length > 0 && (
+          <MotionDiv
+            ref={resultsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? resultsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Converted Images
+                  <ActionButtons
+                    onDownload={downloadAllImages}
+                    variant="outline"
+                    size="sm"
+                  />
+                </CardTitle>
+                <CardDescription>
+                  {convertedImages.length} images ready for download
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {convertedImages.map((imageData, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
                     >
-                      <Download className="h-4 w-4 mr-1" />
-                      Download
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                <div className="text-center">
-                  <FileText className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    Converted images will appear here
-                  </p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 border rounded overflow-hidden">
+                          <img
+                            src={imageData || "/placeholder.svg"}
+                            alt={`Page ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">
+                            Page {index + 1}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {outputFormat.toUpperCase()}
+                          </p>
+                        </div>
+                      </div>
+                      <ActionButtons
+                        onDownload={() => downloadImage(imageData, index)}
+                        variant="outline"
+                        size="sm"
+                      />
+                    </div>
+                  ))}
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              </CardContent>
+            </Card>
+          </MotionDiv>
+        )}
+
+        <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
+          <ProcessingStatus
+            isProcessing={isProcessing}
+            isComplete={isComplete}
+            error={error}
+            onReset={clearAll}
+            processingText="Converting PDF to images..."
+            completeText="PDF converted to images successfully!"
+            errorText="Failed to convert PDF to images"
+          />
+        </MotionDiv>
+      </MotionDiv>
     </ToolLayout>
   );
 }

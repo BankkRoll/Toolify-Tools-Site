@@ -13,6 +13,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
 import { Download, Eye, EyeOff, Lock } from "lucide-react";
 import { m, useInView } from "motion/react";
@@ -37,6 +38,10 @@ export default function EncryptPdfPage() {
   const [encryptedPdf, setEncryptedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-encrypt-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -98,6 +103,7 @@ export default function EncryptPdfPage() {
       // In a real implementation, you would use a library that supports PDF encryption
       // For now, we'll simulate the process
       setEncryptedPdf(pdfBytes);
+      setHistory([selectedFile.name, ...history].slice(0, 10));
 
       toast.success("PDF encrypted successfully");
     } catch (error) {

@@ -53,7 +53,10 @@ export default function ImageMetadataPage() {
   const [metadata, setMetadata] = useState<ImageMetadata | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("image-metadata-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "image-metadata-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -132,6 +135,7 @@ export default function ImageMetadataPage() {
       }
 
       setMetadata(basicMetadata);
+      setHistory([`Metadata extracted: ${file.name}`, ...history].slice(0, 10));
       URL.revokeObjectURL(img.src);
     } catch (error) {
       toast.error("Failed to extract image metadata");

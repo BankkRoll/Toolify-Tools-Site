@@ -51,7 +51,10 @@ export default function PasswordGeneratorPage() {
   const [customSymbols, setCustomSymbols] = useState("!@#$%^&*");
 
   const { generateRandomPassword } = useRandomGenerator();
-  const [history] = useLocalStorage<string[]>("password-generator-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "password-generator-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -90,6 +93,9 @@ export default function PasswordGeneratorPage() {
 
     const newPassword = generateRandomPassword(length[0]);
     setPassword(newPassword);
+    setHistory(
+      [`Password generated: ${length[0]} chars`, ...history].slice(0, 10),
+    );
   };
 
   /**

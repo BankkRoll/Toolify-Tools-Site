@@ -266,6 +266,9 @@ dependencies:
   react-icons:
     specifier: ^5.5.0
     version: 5.5.0(react@19.1.1)
+  react-markdown:
+    specifier: ^10.1.0
+    version: 10.1.0(@types/react@18.3.23)(react@19.1.1)
   react-qr-code:
     specifier: ^2.0.18
     version: 2.0.18(react@19.1.1)
@@ -3340,6 +3343,22 @@ packages:
       "@types/ms": 2.1.0
     dev: false
 
+  /@types/estree-jsx@1.0.5:
+    resolution:
+      {
+        integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==,
+      }
+    dependencies:
+      "@types/estree": 1.0.8
+    dev: false
+
+  /@types/estree@1.0.8:
+    resolution:
+      {
+        integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==,
+      }
+    dev: false
+
   /@types/hast@2.3.10:
     resolution:
       {
@@ -3857,6 +3876,13 @@ packages:
     resolution:
       {
         integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==,
+      }
+    dev: false
+
+  /character-reference-invalid@2.0.1:
+    resolution:
+      {
+        integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==,
       }
     dev: false
 
@@ -4389,6 +4415,13 @@ packages:
     engines: { node: ">=6" }
     dev: false
 
+  /estree-util-is-identifier-name@3.0.0:
+    resolution:
+      {
+        integrity: sha512-hFtqIDZTIUZ9BXLb8y4pYGyk6+wekIivNVTcmvk8NoOh+VeRn5y6cEHzbURrWbfp1fIqdVipilzj+lfaadNZmg==,
+      }
+    dev: false
+
   /event-target-shim@5.0.1:
     resolution:
       {
@@ -4671,6 +4704,31 @@ packages:
       zwitch: 2.0.4
     dev: false
 
+  /hast-util-to-jsx-runtime@2.3.6:
+    resolution:
+      {
+        integrity: sha512-zl6s8LwNyo1P9uw+XJGvZtdFF1GdAkOg8ujOw+4Pyb76874fLps4ueHXDhXWdk6YHQ6OgUtinliG7RsYvCbbBg==,
+      }
+    dependencies:
+      "@types/estree": 1.0.8
+      "@types/hast": 3.0.4
+      "@types/unist": 3.0.3
+      comma-separated-tokens: 2.0.3
+      devlop: 1.1.0
+      estree-util-is-identifier-name: 3.0.0
+      hast-util-whitespace: 3.0.0
+      mdast-util-mdx-expression: 2.0.1
+      mdast-util-mdx-jsx: 3.2.0
+      mdast-util-mdxjs-esm: 2.0.1
+      property-information: 7.1.0
+      space-separated-tokens: 2.0.2
+      style-to-js: 1.1.17
+      unist-util-position: 5.0.0
+      vfile-message: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /hast-util-whitespace@3.0.0:
     resolution:
       {
@@ -4737,6 +4795,13 @@ packages:
       react-is: 16.13.1
     dev: false
 
+  /html-url-attributes@3.0.1:
+    resolution:
+      {
+        integrity: sha512-ol6UPyBWqsrO6EJySPz2O7ZSr856WDrEzM5zMqp+FJJLGMW35cLYmmZnl0vztAZxRUoNZJFTCohfjuIJ8I4QBQ==,
+      }
+    dev: false
+
   /html-void-elements@3.0.0:
     resolution:
       {
@@ -4783,6 +4848,13 @@ packages:
       }
     dev: false
 
+  /inline-style-parser@0.2.4:
+    resolution:
+      {
+        integrity: sha512-0aO8FkhNZlj/ZIbNi7Lxxr12obT7cL1moPfE4tg1LkX7LlLfC6DeX4l2ZEud1ukP9jNQyNnfzQVqwbwmAATY4Q==,
+      }
+    dev: false
+
   /input-otp@1.4.1(react-dom@19.1.1)(react@19.1.1):
     resolution:
       {
@@ -4811,6 +4883,13 @@ packages:
       }
     dev: false
 
+  /is-alphabetical@2.0.1:
+    resolution:
+      {
+        integrity: sha512-FWyyY60MeTNyeSRpkM2Iry0G9hpr7/9kD40mD/cGQEuilcZYS4okz8SN2Q6rLCJ8gbCt6fN+rC+6tMGS99LaxQ==,
+      }
+    dev: false
+
   /is-alphanumerical@1.0.4:
     resolution:
       {
@@ -4819,6 +4898,16 @@ packages:
     dependencies:
       is-alphabetical: 1.0.4
       is-decimal: 1.0.4
+    dev: false
+
+  /is-alphanumerical@2.0.1:
+    resolution:
+      {
+        integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==,
+      }
+    dependencies:
+      is-alphabetical: 2.0.1
+      is-decimal: 2.0.1
     dev: false
 
   /is-arrayish@0.3.2:
@@ -4836,6 +4925,13 @@ packages:
       }
     dev: false
 
+  /is-decimal@2.0.1:
+    resolution:
+      {
+        integrity: sha512-AAB9hiomQs5DXWcRB1rqsxGUstbRroFOPPVAomNk/3XHR5JyEZChOyTWe2oayKnsSsr/kcGqF+z6yuH6HHpN0A==,
+      }
+    dev: false
+
   /is-fullwidth-code-point@3.0.0:
     resolution:
       {
@@ -4848,6 +4944,13 @@ packages:
     resolution:
       {
         integrity: sha512-gyPJuv83bHMpocVYoqof5VDiZveEoGoFL8m3BXNb2VW8Xs+rz9kqO8LOQ5DH6EsuvilT1ApazU0pyl+ytbPtlw==,
+      }
+    dev: false
+
+  /is-hexadecimal@2.0.1:
+    resolution:
+      {
+        integrity: sha512-DgZQp241c8oO6cA1SbTEWiXeoxV42vlcJxgH+B3hi1AiqqKruZR3ZGF8In3fj4+/y/7rHvlOZLZtgJ/4ttYGZg==,
       }
     dev: false
 
@@ -5231,6 +5334,60 @@ packages:
       micromark-util-symbol: 2.0.1
       micromark-util-types: 2.0.2
       unist-util-stringify-position: 4.0.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /mdast-util-mdx-expression@2.0.1:
+    resolution:
+      {
+        integrity: sha512-J6f+9hUp+ldTZqKRSg7Vw5V6MqjATc+3E4gf3CFNcuZNWD8XdyI6zQ8GqH7f8169MM6P7hMBRDVGnn7oHB9kXQ==,
+      }
+    dependencies:
+      "@types/estree-jsx": 1.0.5
+      "@types/hast": 3.0.4
+      "@types/mdast": 4.0.4
+      devlop: 1.1.0
+      mdast-util-from-markdown: 2.0.2
+      mdast-util-to-markdown: 2.1.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /mdast-util-mdx-jsx@3.2.0:
+    resolution:
+      {
+        integrity: sha512-lj/z8v0r6ZtsN/cGNNtemmmfoLAFZnjMbNyLzBafjzikOM+glrjNHPlf6lQDOTccj9n5b0PPihEBbhneMyGs1Q==,
+      }
+    dependencies:
+      "@types/estree-jsx": 1.0.5
+      "@types/hast": 3.0.4
+      "@types/mdast": 4.0.4
+      "@types/unist": 3.0.3
+      ccount: 2.0.1
+      devlop: 1.1.0
+      mdast-util-from-markdown: 2.0.2
+      mdast-util-to-markdown: 2.1.2
+      parse-entities: 4.0.2
+      stringify-entities: 4.0.4
+      unist-util-stringify-position: 4.0.0
+      vfile-message: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /mdast-util-mdxjs-esm@2.0.1:
+    resolution:
+      {
+        integrity: sha512-EcmOpxsZ96CvlP03NghtH1EsLtr0n9Tm4lPUJUBccV9RwUOneqSycg19n5HGzCf+10LozMRSObtVr3ee1WoHtg==,
+      }
+    dependencies:
+      "@types/estree-jsx": 1.0.5
+      "@types/hast": 3.0.4
+      "@types/mdast": 4.0.4
+      devlop: 1.1.0
+      mdast-util-from-markdown: 2.0.2
+      mdast-util-to-markdown: 2.1.2
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -5807,6 +5964,21 @@ packages:
       is-hexadecimal: 1.0.4
     dev: false
 
+  /parse-entities@4.0.2:
+    resolution:
+      {
+        integrity: sha512-GG2AQYWoLgL877gQIKeRPGO1xF9+eG1ujIb5soS5gPvLQ1y2o8FL90w2QWNdf9I361Mpp7726c+lj3U0qK1uGw==,
+      }
+    dependencies:
+      "@types/unist": 2.0.11
+      character-entities-legacy: 3.0.0
+      character-reference-invalid: 2.0.1
+      decode-named-character-reference: 1.2.0
+      is-alphanumerical: 2.0.1
+      is-decimal: 2.0.1
+      is-hexadecimal: 2.0.1
+    dev: false
+
   /parse5@7.3.0:
     resolution:
       {
@@ -6300,6 +6472,32 @@ packages:
       }
     dev: false
 
+  /react-markdown@10.1.0(@types/react@18.3.23)(react@19.1.1):
+    resolution:
+      {
+        integrity: sha512-qKxVopLT/TyA6BX3Ue5NwabOsAzm0Q7kAPwq6L+wWDwisYs7R8vZ0nRXqq6rkueboxpkjvLGU9fWifiX/ZZFxQ==,
+      }
+    peerDependencies:
+      "@types/react": ">=18"
+      react: ">=18"
+    dependencies:
+      "@types/hast": 3.0.4
+      "@types/mdast": 4.0.4
+      "@types/react": 18.3.23
+      devlop: 1.1.0
+      hast-util-to-jsx-runtime: 2.3.6
+      html-url-attributes: 3.0.1
+      mdast-util-to-hast: 13.2.0
+      react: 19.1.1
+      remark-parse: 11.0.0
+      remark-rehype: 11.1.2
+      unified: 11.0.5
+      unist-util-visit: 5.0.0
+      vfile: 6.0.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /react-qr-code@2.0.18(react@19.1.1):
     resolution:
       {
@@ -6640,6 +6838,19 @@ packages:
       - supports-color
     dev: false
 
+  /remark-rehype@11.1.2:
+    resolution:
+      {
+        integrity: sha512-Dh7l57ianaEoIpzbp0PC9UKAdCSVklD8E5Rpw7ETfbTl3FqcOOgq5q2LVDhgGCkaBv7p24JXikPdvhhmHvKMsw==,
+      }
+    dependencies:
+      "@types/hast": 3.0.4
+      "@types/mdast": 4.0.4
+      mdast-util-to-hast: 13.2.0
+      unified: 11.0.5
+      vfile: 6.0.3
+    dev: false
+
   /remark-stringify@11.0.0:
     resolution:
       {
@@ -6975,6 +7186,24 @@ packages:
     engines: { node: ">=12" }
     dependencies:
       ansi-regex: 6.1.0
+    dev: false
+
+  /style-to-js@1.1.17:
+    resolution:
+      {
+        integrity: sha512-xQcBGDxJb6jjFCTzvQtfiPn6YvvP2O8U1MDIPNfJQlWMYfktPy+iGsHE7cssjs7y84d9fQaK4UF3RIJaAHSoYA==,
+      }
+    dependencies:
+      style-to-object: 1.0.9
+    dev: false
+
+  /style-to-object@1.0.9:
+    resolution:
+      {
+        integrity: sha512-G4qppLgKu/k6FwRpHiGiKPaPTFcG3g4wNVX/Qsfu+RqQM30E7Tyu/TEgxcL9PNLF5pdRLwQdE3YKKf+KF2Dzlw==,
+      }
+    dependencies:
+      inline-style-parser: 0.2.4
     dev: false
 
   /styled-jsx@5.1.6(react@19.1.1):

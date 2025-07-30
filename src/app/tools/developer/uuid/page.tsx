@@ -32,7 +32,10 @@ export default function UuidGeneratorPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("uuid-generator-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "uuid-generator-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -95,6 +98,12 @@ export default function UuidGeneratorPage() {
 
       setUuids(newUuids);
       setIsComplete(true);
+      setHistory(
+        [
+          `Generated ${count} UUID${count !== 1 ? "s" : ""} (${version})`,
+          ...history,
+        ].slice(0, 10),
+      );
       toast.success(`Generated ${count} UUID${count !== 1 ? "s" : ""}`);
     } catch (err) {
       const errorMessage =
@@ -240,7 +249,7 @@ export default function UuidGeneratorPage() {
   const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
-    <ToolLayout toolId="developer-uuid">
+    <ToolLayout toolId="dev-uuid">
       <MotionDiv
         ref={containerRef}
         className="space-y-6"

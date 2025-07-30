@@ -59,7 +59,10 @@ export default function CropImagePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("image-crop-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "image-crop-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -177,6 +180,12 @@ export default function CropImagePage() {
         setIsComplete(true);
         setIsProcessing(false);
 
+        setHistory(
+          [
+            `Image cropped to ${cropArea.width}x${cropArea.height}px`,
+            ...history,
+          ].slice(0, 10),
+        );
         toast.success(
           `Image cropped to ${cropArea.width}x${cropArea.height}px`,
         );
@@ -194,7 +203,7 @@ export default function CropImagePage() {
       setIsProcessing(false);
       toast.error("Failed to crop image");
     }
-  }, [selectedFiles, originalDimensions, cropArea, imageUrl]);
+  }, [selectedFiles, originalDimensions, cropArea, imageUrl, history]);
 
   /**
    * Clears all data and resets state

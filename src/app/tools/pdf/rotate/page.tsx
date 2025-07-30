@@ -1,8 +1,9 @@
 "use client";
 
 import { ToolLayout } from "@/components/layout/tool-layout";
+import { ActionButtons } from "@/components/tools/action-buttons";
 import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { Button } from "@/components/ui/button";
+import { ProcessingStatus } from "@/components/tools/processing-status";
 import {
   Card,
   CardContent,
@@ -19,11 +20,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Download, RotateCw } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useAnimations } from "@/stores/settings-store";
+import { RotateCw } from "lucide-react";
+import { m, useInView } from "motion/react";
 import { PDFDocument, degrees } from "pdf-lib";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * PDF rotation tool page
+ */
 export default function RotatePdfPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [rotationAngle, setRotationAngle] = useState("90");
@@ -32,59 +39,123 @@ export default function RotatePdfPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [rotatedPdf, setRotatedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isComplete, setIsComplete] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-rotate-history",
+    [],
+  );
+  const animationsEnabled = useAnimations();
+
+  // Refs for motion animations
+  const containerRef = useRef(null);
+  const uploadSectionRef = useRef(null);
+  const settingsSectionRef = useRef(null);
+  const resultsSectionRef = useRef(null);
+
+  // InView hooks
+  const containerInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const uploadSectionInView = useInView(uploadSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const settingsSectionInView = useInView(settingsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const resultsSectionInView = useInView(resultsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+
+  /**
+   * Handles file selection and initializes rotation
+   */
   const handleFileSelect = async (files: File[]) => {
     const file = files[0];
     if (file) {
       setSelectedFile(file);
+      setError(null);
+      setIsComplete(false);
+      setRotatedPdf(null);
+
       try {
         const arrayBuffer = await file.arrayBuffer();
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         setTotalPages(pdfDoc.getPageCount());
+        toast.success("PDF loaded successfully");
       } catch (error) {
+        setError("Failed to load PDF file");
         toast.error("Failed to load PDF file");
       }
     }
   };
 
+  /**
+   * Rotates the PDF pages according to the specified settings
+   */
   const rotatePdf = async () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !pageRange.trim()) {
+      toast.error("Please select a file and specify page range");
+      return;
+    }
 
     setIsProcessing(true);
+    setError(null);
+    setIsComplete(false);
+
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const pages = pdfDoc.getPages();
+      const pages = parsePageRange(pageRange, totalPages);
 
-      let pagesToRotate: number[] = [];
-
-      if (pageRange === "all") {
-        pagesToRotate = Array.from({ length: totalPages }, (_, i) => i);
-      } else if (pageRange === "custom" && customPages) {
-        pagesToRotate = parsePageRange(customPages, totalPages).map(
-          (p) => p - 1,
-        );
+      if (pages.length === 0) {
+        throw new Error("No valid pages specified");
       }
 
-      const rotation = Number.parseInt(rotationAngle);
+      // Rotate specified pages
+      pages.forEach((pageNum) => {
+        const page = pdfDoc.getPage(pageNum - 1);
+        const currentRotation = page.getRotation().angle;
+        const rotationValue = parseInt(rotationAngle);
+        let newRotation = currentRotation;
 
-      for (const pageIndex of pagesToRotate) {
-        if (pageIndex >= 0 && pageIndex < pages.length) {
-          pages[pageIndex].setRotation(degrees(rotation));
+        switch (rotationValue) {
+          case 90:
+            newRotation = currentRotation + 90;
+            break;
+          case 180:
+            newRotation = currentRotation + 180;
+            break;
+          case 270:
+            newRotation = currentRotation + 270;
+            break;
+          default:
+            newRotation = 0;
         }
-      }
+
+        page.setRotation(degrees(newRotation % 360));
+      });
 
       const pdfBytes = await pdfDoc.save();
       setRotatedPdf(pdfBytes);
-
-      toast.success(`Rotated ${pagesToRotate.length} pages by ${rotation}°`);
+      setIsComplete(true);
+      setHistory([selectedFile.name, ...history].slice(0, 10));
+      toast.success(`Rotated ${pages.length} pages successfully`);
     } catch (error) {
-      toast.error("Failed to rotate PDF pages");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to rotate PDF";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  /**
+   * Parses page range string into array of page numbers
+   */
   const parsePageRange = (range: string, maxPages: number): number[] => {
     const pages: number[] = [];
     const parts = range.split(",");
@@ -108,6 +179,9 @@ export default function RotatePdfPage() {
     return [...new Set(pages)].sort((a, b) => a - b);
   };
 
+  /**
+   * Downloads the rotated PDF
+   */
   const downloadRotatedPdf = () => {
     if (!rotatedPdf) return;
 
@@ -115,41 +189,142 @@ export default function RotatePdfPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `rotated-${selectedFile?.name || "document.pdf"}`;
+    a.download = `rotated-${selectedFile?.name || "pages"}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
+    toast.success("PDF downloaded successfully");
   };
+
+  /**
+   * Clears all data and resets state
+   */
+  const clearAll = () => {
+    setSelectedFile(null);
+    setRotationAngle("90");
+    setPageRange("all");
+    setCustomPages("");
+    setTotalPages(0);
+    setRotatedPdf(null);
+    setError(null);
+    setIsComplete(false);
+  };
+
+  /**
+   * Gets download data for the rotated PDF
+   */
+  const getDownloadData = () => {
+    return rotatedPdf || new Uint8Array();
+  };
+
+  /**
+   * Gets download filename for the rotated PDF
+   */
+  const getDownloadFilename = () => {
+    return `rotated-${selectedFile?.name || "pages"}.pdf`;
+  };
+
+  // Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Conditional motion components
+  const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
     <ToolLayout toolId="pdf-rotate">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <MotionDiv
+        ref={containerRef}
+        className="space-y-6"
+        variants={animationsEnabled ? containerVariants : undefined}
+        initial={animationsEnabled ? "hidden" : undefined}
+        animate={
+          animationsEnabled
+            ? containerInView
+              ? "visible"
+              : "hidden"
+            : undefined
+        }
+      >
+        <MotionDiv
+          ref={uploadSectionRef}
+          variants={animationsEnabled ? cardVariants : undefined}
+          initial={animationsEnabled ? "hidden" : undefined}
+          animate={
+            animationsEnabled
+              ? uploadSectionInView
+                ? "visible"
+                : "hidden"
+              : undefined
+          }
+        >
           <Card>
             <CardHeader>
-              <CardTitle>Upload PDF</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <RotateCw className="h-5 w-5" />
+                Upload PDF
+              </CardTitle>
               <CardDescription>
-                Select a PDF file to rotate pages
+                Select a PDF file to rotate its pages
               </CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf"
+                accept=".pdf,application/pdf"
+                multiple={false}
                 files={selectedFile ? [selectedFile] : []}
-                onRemoveFile={() => setSelectedFile(null)}
+                onRemoveFile={() => {
+                  setSelectedFile(null);
+                  setTotalPages(0);
+                  setError(null);
+                  setIsComplete(false);
+                  setRotatedPdf(null);
+                }}
               />
+              {totalPages > 0 && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Total pages: {totalPages}
+                </p>
+              )}
             </CardContent>
           </Card>
+        </MotionDiv>
 
-          {selectedFile && totalPages > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Rotation Settings</CardTitle>
-                <CardDescription>Total pages: {totalPages}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
+        <MotionDiv
+          ref={settingsSectionRef}
+          variants={animationsEnabled ? cardVariants : undefined}
+          initial={animationsEnabled ? "hidden" : undefined}
+          animate={
+            animationsEnabled
+              ? settingsSectionInView
+                ? "visible"
+                : "hidden"
+              : undefined
+          }
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>Rotation Settings</CardTitle>
+              <CardDescription>
+                Configure rotation angle and page range
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="angle">Rotation Angle</Label>
+                  <Label htmlFor="rotationAngle">Rotation Angle</Label>
                   <Select
                     value={rotationAngle}
                     onValueChange={setRotationAngle}
@@ -158,18 +333,17 @@ export default function RotatePdfPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="90">90° Clockwise</SelectItem>
-                      <SelectItem value="180">180° (Upside Down)</SelectItem>
+                      <SelectItem value="90">90° (Clockwise)</SelectItem>
+                      <SelectItem value="180">180°</SelectItem>
                       <SelectItem value="270">
-                        270° (90° Counter-clockwise)
+                        270° (Counter-clockwise)
                       </SelectItem>
-                      <SelectItem value="-90">90° Counter-clockwise</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pageRange">Pages to Rotate</Label>
+                  <Label htmlFor="pageRange">Page Range</Label>
                   <Select value={pageRange} onValueChange={setPageRange}>
                     <SelectTrigger>
                       <SelectValue />
@@ -180,77 +354,85 @@ export default function RotatePdfPage() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                {pageRange === "custom" && (
-                  <div className="space-y-2">
-                    <Label htmlFor="customPages">Page Range</Label>
-                    <Input
-                      id="customPages"
-                      placeholder="e.g., 1-3,5,7-9"
-                      value={customPages}
-                      onChange={(e) => setCustomPages(e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Enter page numbers separated by commas. Use hyphens for
-                      ranges.
-                    </p>
-                  </div>
-                )}
-
-                <Button
-                  onClick={rotatePdf}
-                  className="w-full"
-                  disabled={
-                    isProcessing || (pageRange === "custom" && !customPages)
-                  }
-                >
-                  <RotateCw className="h-4 w-4 mr-2" />
-                  {isProcessing ? "Rotating..." : "Rotate Pages"}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Rotated PDF
-              {rotatedPdf && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={downloadRotatedPdf}
-                >
-                  <Download className="h-4 w-4 mr-1" />
-                  Download
-                </Button>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {rotatedPdf ? (
-              <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg bg-green-50">
-                <div className="text-center">
-                  <RotateCw className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                  <p className="text-sm font-medium">
-                    PDF Rotated Successfully
-                  </p>
+              {pageRange === "custom" && (
+                <div className="space-y-2">
+                  <Label htmlFor="customPages">Custom Page Range</Label>
+                  <Input
+                    id="customPages"
+                    value={customPages}
+                    onChange={(e) => setCustomPages(e.target.value)}
+                    placeholder="1-3,5,7-9"
+                    className="font-mono"
+                  />
                   <p className="text-xs text-muted-foreground">
-                    Pages rotated by {rotationAngle}°
+                    Enter page numbers separated by commas. Use hyphens for
+                    ranges.
                   </p>
                 </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                <p className="text-muted-foreground">
-                  Rotated PDF will appear here
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+              )}
+
+              <ActionButtons
+                onGenerate={rotatePdf}
+                generateLabel="Rotate PDF"
+                onReset={clearAll}
+                resetLabel="Clear All"
+                variant="outline"
+                size="sm"
+                disabled={!selectedFile || isProcessing}
+                isGenerating={isProcessing}
+              />
+            </CardContent>
+          </Card>
+        </MotionDiv>
+
+        {rotatedPdf && (
+          <MotionDiv
+            ref={resultsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? resultsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>Rotated PDF</CardTitle>
+                <CardDescription>
+                  Your rotated PDF is ready for download
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ActionButtons
+                  downloadData={getDownloadData()}
+                  downloadFilename={getDownloadFilename()}
+                  downloadMimeType="application/pdf"
+                  onDownload={downloadRotatedPdf}
+                  variant="outline"
+                  size="sm"
+                />
+              </CardContent>
+            </Card>
+          </MotionDiv>
+        )}
+
+        <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
+          <ProcessingStatus
+            isProcessing={isProcessing}
+            isComplete={isComplete}
+            error={error}
+            onReset={clearAll}
+            processingText="Rotating pages..."
+            completeText="Pages rotated successfully!"
+            errorText="Failed to rotate pages"
+          />
+        </MotionDiv>
+      </MotionDiv>
     </ToolLayout>
   );
 }

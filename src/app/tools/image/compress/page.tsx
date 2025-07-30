@@ -43,7 +43,10 @@ export default function CompressImagePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("image-compress-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "image-compress-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -136,6 +139,12 @@ export default function CompressImagePage() {
           100
         ).toFixed(1);
 
+        setHistory(
+          [
+            `Image compressed: ${compressionRatio}% reduction`,
+            ...history,
+          ].slice(0, 10),
+        );
         toast.success(`Image compressed by ${compressionRatio}%`);
       };
 

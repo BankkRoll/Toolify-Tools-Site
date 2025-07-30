@@ -1,8 +1,9 @@
 "use client";
 
 import { ToolLayout } from "@/components/layout/tool-layout";
+import { ActionButtons } from "@/components/tools/action-buttons";
 import { FileUploadZone } from "@/components/tools/file-upload-zone";
-import { Button } from "@/components/ui/button";
+import { ProcessingStatus } from "@/components/tools/processing-status";
 import {
   Card,
   CardContent,
@@ -20,11 +21,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Droplets } from "lucide-react";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { useState } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useAnimations } from "@/stores/settings-store";
+import { Droplets, FileText } from "lucide-react";
+import { m, useInView } from "motion/react";
+import { degrees, PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * Interface for watermark settings
+ */
+interface WatermarkSettings {
+  text: string;
+  position: string;
+  opacity: number;
+  fontSize: number;
+  rotation: number;
+  color: string;
+}
+
+/**
+ * PDF watermark tool page
+ */
 export default function WatermarkPdfPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [watermarkText, setWatermarkText] = useState("CONFIDENTIAL");
@@ -35,78 +54,116 @@ export default function WatermarkPdfPage() {
   const [color, setColor] = useState("#FF0000");
   const [watermarkedPdf, setWatermarkedPdf] = useState<Uint8Array | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isComplete, setIsComplete] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-watermark-history",
+    [],
+  );
+  const animationsEnabled = useAnimations();
+
+  // Refs for motion animations
+  const containerRef = useRef(null);
+  const uploadSectionRef = useRef(null);
+  const settingsSectionRef = useRef(null);
+  const previewSectionRef = useRef(null);
+  const resultsSectionRef = useRef(null);
+
+  // InView hooks
+  const containerInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const uploadSectionInView = useInView(uploadSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const settingsSectionInView = useInView(settingsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const previewSectionInView = useInView(previewSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const resultsSectionInView = useInView(resultsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+
+  /**
+   * Handles file selection
+   */
   const handleFileSelect = (files: File[]) => {
     const file = files[0];
     if (file) {
       setSelectedFile(file);
+      setError(null);
+      setIsComplete(false);
+      setWatermarkedPdf(null);
+      toast.success("PDF loaded successfully");
     }
   };
 
+  /**
+   * Adds watermark to the PDF
+   */
   const addWatermark = async () => {
-    if (!selectedFile || !watermarkText.trim()) return;
+    if (!selectedFile) {
+      toast.error("Please select a PDF file");
+      return;
+    }
 
     setIsProcessing(true);
+    setError(null);
+    setIsComplete(false);
+
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
       const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const pages = pdfDoc.getPages();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const pages = pdfDoc.getPages();
 
       // Convert hex color to RGB
-      const hexColor = color.replace("#", "");
-      const r = Number.parseInt(hexColor.substr(0, 2), 16) / 255;
-      const g = Number.parseInt(hexColor.substr(2, 2), 16) / 255;
-      const b = Number.parseInt(hexColor.substr(4, 2), 16) / 255;
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result
+          ? {
+              r: parseInt(result[1], 16) / 255,
+              g: parseInt(result[2], 16) / 255,
+              b: parseInt(result[3], 16) / 255,
+            }
+          : { r: 1, g: 0, b: 0 }; // Default to red
+      };
 
-      for (const page of pages) {
+      const colorRgb = hexToRgb(color);
+
+      pages.forEach((page) => {
         const { width, height } = page.getSize();
-        const textWidth = font.widthOfTextAtSize(watermarkText, fontSize);
-        const textHeight = font.heightAtSize(fontSize);
-
-        let x, y;
+        let x = 0;
+        let y = 0;
 
         // Calculate position
         switch (position) {
           case "top-left":
             x = 50;
-            y = height - 50 - textHeight;
-            break;
-          case "top-center":
-            x = (width - textWidth) / 2;
-            y = height - 50 - textHeight;
+            y = height - 50;
             break;
           case "top-right":
-            x = width - textWidth - 50;
-            y = height - 50 - textHeight;
-            break;
-          case "center-left":
-            x = 50;
-            y = (height - textHeight) / 2;
-            break;
-          case "center":
-            x = (width - textWidth) / 2;
-            y = (height - textHeight) / 2;
-            break;
-          case "center-right":
-            x = width - textWidth - 50;
-            y = (height - textHeight) / 2;
+            x = width - 200;
+            y = height - 50;
             break;
           case "bottom-left":
             x = 50;
             y = 50;
             break;
-          case "bottom-center":
-            x = (width - textWidth) / 2;
-            y = 50;
-            break;
           case "bottom-right":
-            x = width - textWidth - 50;
+            x = width - 200;
             y = 50;
             break;
+          case "center":
           default:
-            x = (width - textWidth) / 2;
-            y = (height - textHeight) / 2;
+            x = (width - 200) / 2;
+            y = height / 2;
+            break;
         }
 
         page.drawText(watermarkText, {
@@ -114,26 +171,30 @@ export default function WatermarkPdfPage() {
           y,
           size: fontSize,
           font,
-          color: rgb(r, g, b),
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
           opacity: opacity / 100,
-          rotate: {
-            type: "degrees",
-            angle: rotation,
-          },
+          rotate: degrees(rotation),
         });
-      }
+      });
 
       const pdfBytes = await pdfDoc.save();
       setWatermarkedPdf(pdfBytes);
-
-      toast.success("Watermark added to PDF successfully");
+      setIsComplete(true);
+      setHistory([selectedFile.name, ...history].slice(0, 10));
+      toast.success("Watermark added successfully");
     } catch (error) {
-      toast.error("Failed to add watermark to PDF");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to add watermark";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  /**
+   * Downloads the watermarked PDF
+   */
   const downloadWatermarkedPdf = () => {
     if (!watermarkedPdf) return;
 
@@ -144,15 +205,85 @@ export default function WatermarkPdfPage() {
     a.download = `watermarked-${selectedFile?.name || "document.pdf"}`;
     a.click();
     URL.revokeObjectURL(url);
+    toast.success("PDF downloaded successfully");
   };
+
+  /**
+   * Clears all data and resets state
+   */
+  const clearAll = () => {
+    setSelectedFile(null);
+    setWatermarkedPdf(null);
+    setError(null);
+    setIsComplete(false);
+  };
+
+  /**
+   * Gets download data for the watermarked PDF
+   */
+  const getDownloadData = () => {
+    return watermarkedPdf || new Uint8Array();
+  };
+
+  /**
+   * Gets download filename for the watermarked PDF
+   */
+  const getDownloadFilename = () => {
+    return `watermarked-${selectedFile?.name || "document.pdf"}`;
+  };
+
+  // Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Conditional motion components
+  const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
     <ToolLayout toolId="pdf-watermark">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-6">
+      <MotionDiv
+        ref={containerRef}
+        className="space-y-6"
+        variants={animationsEnabled ? containerVariants : undefined}
+        initial={animationsEnabled ? "hidden" : undefined}
+        animate={
+          animationsEnabled
+            ? containerInView
+              ? "visible"
+              : "hidden"
+            : undefined
+        }
+      >
+        <MotionDiv
+          ref={uploadSectionRef}
+          variants={animationsEnabled ? cardVariants : undefined}
+          initial={animationsEnabled ? "hidden" : undefined}
+          animate={
+            animationsEnabled
+              ? uploadSectionInView
+                ? "visible"
+                : "hidden"
+              : undefined
+          }
+        >
           <Card>
             <CardHeader>
-              <CardTitle>Upload PDF</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Upload PDF
+              </CardTitle>
               <CardDescription>
                 Select a PDF file to add watermark
               </CardDescription>
@@ -160,14 +291,33 @@ export default function WatermarkPdfPage() {
             <CardContent>
               <FileUploadZone
                 onFilesSelected={handleFileSelect}
-                accept=".pdf"
+                accept=".pdf,application/pdf"
+                multiple={false}
                 files={selectedFile ? [selectedFile] : []}
-                onRemoveFile={() => setSelectedFile(null)}
+                onRemoveFile={() => {
+                  setSelectedFile(null);
+                  setWatermarkedPdf(null);
+                  setError(null);
+                  setIsComplete(false);
+                }}
               />
             </CardContent>
           </Card>
+        </MotionDiv>
 
-          {selectedFile && (
+        {selectedFile && (
+          <MotionDiv
+            ref={settingsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? settingsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
             <Card>
               <CardHeader>
                 <CardTitle>Watermark Settings</CardTitle>
@@ -262,81 +412,112 @@ export default function WatermarkPdfPage() {
                   />
                 </div>
 
-                <Button
-                  onClick={addWatermark}
-                  className="w-full"
-                  disabled={isProcessing || !watermarkText.trim()}
-                >
-                  <Droplets className="h-4 w-4 mr-2" />
-                  {isProcessing ? "Adding Watermark..." : "Add Watermark"}
-                </Button>
+                <ActionButtons
+                  onGenerate={addWatermark}
+                  generateLabel="Add Watermark"
+                  onReset={clearAll}
+                  resetLabel="Clear All"
+                  variant="outline"
+                  size="sm"
+                  disabled={
+                    !selectedFile || !watermarkText.trim() || isProcessing
+                  }
+                  isGenerating={isProcessing}
+                />
               </CardContent>
             </Card>
-          )}
-        </div>
+          </MotionDiv>
+        )}
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Preview</CardTitle>
-              <CardDescription>
-                Watermark preview with current settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="relative w-full h-64 bg-white border-2 border-dashed rounded-lg overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-gray-300 text-6xl">PDF</div>
-                </div>
-                {watermarkText && (
-                  <div
-                    className="absolute pointer-events-none select-none"
-                    style={{
-                      fontSize: `${Math.max(fontSize / 4, 12)}px`,
-                      color: color,
-                      opacity: opacity / 100,
-                      transform: `rotate(${rotation}deg)`,
-                      left: position.includes("left")
-                        ? "10%"
-                        : position.includes("right")
-                          ? "70%"
-                          : "50%",
-                      top: position.includes("top")
-                        ? "20%"
-                        : position.includes("bottom")
-                          ? "80%"
-                          : "50%",
-                      transformOrigin: "center",
-                      translate: position.includes("center")
-                        ? "-50% -50%"
-                        : "0 0",
-                    }}
-                  >
-                    {watermarkText}
+        {selectedFile && (
+          <MotionDiv
+            ref={previewSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? previewSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>Preview</CardTitle>
+                <CardDescription>
+                  Watermark preview with current settings
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="relative w-full h-64 bg-white border-2 border-dashed rounded-lg overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-gray-300 text-6xl">PDF</div>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  {watermarkText && (
+                    <div
+                      className="absolute pointer-events-none select-none"
+                      style={{
+                        fontSize: `${Math.max(fontSize / 4, 12)}px`,
+                        color: color,
+                        opacity: opacity / 100,
+                        transform: `rotate(${rotation}deg)`,
+                        left: position.includes("left")
+                          ? "10%"
+                          : position.includes("right")
+                            ? "70%"
+                            : "50%",
+                        top: position.includes("top")
+                          ? "20%"
+                          : position.includes("bottom")
+                            ? "80%"
+                            : "50%",
+                        transformOrigin: "center",
+                        translate: position.includes("center")
+                          ? "-50% -50%"
+                          : "0 0",
+                      }}
+                    >
+                      {watermarkText}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </MotionDiv>
+        )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Watermarked PDF
-                {watermarkedPdf && (
-                  <Button
+        {watermarkedPdf && (
+          <MotionDiv
+            ref={resultsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? resultsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Watermarked PDF
+                  <ActionButtons
+                    downloadData={getDownloadData()}
+                    downloadFilename={getDownloadFilename()}
+                    downloadMimeType="application/pdf"
+                    onDownload={downloadWatermarkedPdf}
                     variant="outline"
                     size="sm"
-                    onClick={downloadWatermarkedPdf}
-                  >
-                    <Download className="h-4 w-4 mr-1" />
-                    Download
-                  </Button>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {watermarkedPdf ? (
+                  />
+                </CardTitle>
+                <CardDescription>
+                  Your watermarked PDF is ready for download
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg bg-green-50">
                   <div className="text-center">
                     <Droplets className="h-8 w-8 mx-auto mb-2 text-green-600" />
@@ -348,17 +529,23 @@ export default function WatermarkPdfPage() {
                     </p>
                   </div>
                 </div>
-              ) : (
-                <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                  <p className="text-muted-foreground">
-                    Watermarked PDF will appear here
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+              </CardContent>
+            </Card>
+          </MotionDiv>
+        )}
+
+        <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
+          <ProcessingStatus
+            isProcessing={isProcessing}
+            isComplete={isComplete}
+            error={error}
+            onReset={clearAll}
+            processingText="Adding watermark to PDF..."
+            completeText="Watermark added successfully!"
+            errorText="Failed to add watermark"
+          />
+        </MotionDiv>
+      </MotionDiv>
     </ToolLayout>
   );
 }

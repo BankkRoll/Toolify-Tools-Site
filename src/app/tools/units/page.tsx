@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import {
   getActiveToolsByCategory,
   getToolsByCategory,
@@ -36,6 +37,9 @@ import { m, useInView } from "motion/react";
 import Link from "next/link";
 import { useRef } from "react";
 
+/**
+ * Icon mapping for unit converter tools
+ */
 const iconMap = {
   Ruler,
   Weight,
@@ -54,10 +58,16 @@ const iconMap = {
   Clock,
 };
 
+/**
+ * Unit converters tools page
+ */
 export default function UnitToolsPage() {
   const unitTools = getToolsByCategory("units");
   const activeTools = getActiveToolsByCategory("units");
   const animationsEnabled = useAnimations();
+
+  // Local storage for user preferences
+  const [recentlyUsed] = useLocalStorage<string[]>("units-recently-used", []);
 
   // Refs for motion animations
   const headerRef = useRef(null);
@@ -144,6 +154,7 @@ export default function UnitToolsPage() {
             const IconComponent =
               iconMap[tool.icon as keyof typeof iconMap] || Ruler;
             const isActive = tool.status === "active";
+            const isRecentlyUsed = recentlyUsed.includes(tool.id);
 
             return (
               <MotionDiv
@@ -152,18 +163,27 @@ export default function UnitToolsPage() {
                 custom={index}
               >
                 <Card
-                  className={`hover:shadow-md transition-shadow ${!isActive ? "opacity-75" : ""}`}
+                  className={`hover:shadow-md transition-shadow ${
+                    !isActive ? "opacity-75" : ""
+                  } ${isRecentlyUsed ? "ring-2 ring-primary/20" : ""}`}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <IconComponent className="h-6 w-6 text-primary" />
-                      <Badge variant={isActive ? "default" : "secondary"}>
-                        {isActive
-                          ? "Ready"
-                          : tool.status === "beta"
-                            ? "Beta"
-                            : "Coming Soon"}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        {isRecentlyUsed && (
+                          <Badge variant="secondary" className="text-xs">
+                            Recent
+                          </Badge>
+                        )}
+                        <Badge variant={isActive ? "default" : "secondary"}>
+                          {isActive
+                            ? "Ready"
+                            : tool.status === "beta"
+                              ? "Beta"
+                              : "Coming Soon"}
+                        </Badge>
+                      </div>
                     </div>
                     <CardTitle className="text-lg">{tool.name}</CardTitle>
                     <CardDescription className="text-sm">

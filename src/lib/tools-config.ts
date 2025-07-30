@@ -221,7 +221,7 @@ export const allTools: Tool[] = [
     href: "/tools/pdf/to-text",
     icon: "Type",
     category: "pdf",
-    status: "inactive",
+    status: "active",
     tags: ["pdf", "text", "extract"],
   },
   {
@@ -231,7 +231,7 @@ export const allTools: Tool[] = [
     href: "/tools/pdf/annotate",
     icon: "FileText",
     category: "pdf",
-    status: "inactive",
+    status: "active",
     tags: ["pdf", "annotate", "comments"],
   },
   {
@@ -241,7 +241,7 @@ export const allTools: Tool[] = [
     href: "/tools/pdf/form-filler",
     icon: "FileText",
     category: "pdf",
-    status: "inactive",
+    status: "active",
     tags: ["pdf", "forms", "fill"],
   },
   {
@@ -251,7 +251,7 @@ export const allTools: Tool[] = [
     href: "/tools/pdf/bookmarks",
     icon: "Bookmark",
     category: "pdf",
-    status: "inactive",
+    status: "active",
     tags: ["pdf", "bookmarks", "navigation"],
   },
   {
@@ -261,7 +261,7 @@ export const allTools: Tool[] = [
     href: "/tools/pdf/remove-password",
     icon: "ShieldX",
     category: "pdf",
-    status: "inactive",
+    status: "active",
     tags: ["pdf", "password", "remove"],
   },
 
@@ -325,7 +325,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/watermark",
     icon: "Droplets",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "watermark", "text"],
   },
   {
@@ -335,7 +335,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/palette",
     icon: "Palette",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "color", "palette"],
   },
   {
@@ -345,7 +345,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/thumbnail",
     icon: "ImageIcon",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "thumbnail", "preview"],
   },
   {
@@ -355,7 +355,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/exif-cleaner",
     icon: "Eraser",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "exif", "privacy"],
   },
 
@@ -366,7 +366,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/brightness",
     icon: "Sun",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "brightness", "contrast"],
   },
   {
@@ -376,7 +376,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/grayscale",
     icon: "Contrast",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "grayscale", "black-white"],
   },
   {
@@ -386,7 +386,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/blur",
     icon: "CloudyIcon",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "blur", "effect"],
   },
   {
@@ -396,7 +396,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/rotate",
     icon: "RotateCw",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "rotate", "angle"],
   },
   {
@@ -406,7 +406,7 @@ export const allTools: Tool[] = [
     href: "/tools/image/flip",
     icon: "FlipHorizontal",
     category: "image",
-    status: "inactive",
+    status: "active",
     tags: ["image", "flip", "mirror"],
   },
 
@@ -472,7 +472,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/checksum",
     icon: "CheckSquare",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["checksum", "hash", "md5", "sha"],
   },
   {
@@ -482,7 +482,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/cron-generator",
     icon: "Calendar",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["cron", "schedule", "generate"],
   },
   {
@@ -492,7 +492,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/cron-decoder",
     icon: "Calendar",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["cron", "decode", "explain"],
   },
   {
@@ -502,7 +502,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/sql-formatter",
     icon: "Database",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["sql", "format", "query"],
   },
   {
@@ -512,7 +512,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/js-minifier",
     icon: "Minimize",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["javascript", "typescript", "minify"],
   },
   {
@@ -522,7 +522,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/flexbox",
     icon: "Layout",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["css", "flexbox", "layout"],
   },
   {
@@ -532,7 +532,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/mock-data",
     icon: "Shuffle",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["mock", "data", "testing"],
   },
   {
@@ -542,7 +542,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/html-minifier",
     icon: "Minimize",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["html", "css", "minify"],
   },
   {
@@ -552,7 +552,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/url-parser",
     icon: "Globe",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["url", "parse", "analyze"],
   },
   {
@@ -562,7 +562,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/color-converter",
     icon: "Palette",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["color", "convert", "hex", "rgb"],
   },
   {
@@ -572,7 +572,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/api-mock",
     icon: "Server",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["api", "mock", "response"],
   },
   {
@@ -582,7 +582,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/code-diff",
     icon: "GitCompare",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["code", "diff", "compare"],
   },
   {
@@ -592,7 +592,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/yaml",
     icon: "FileText",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["yaml", "format", "validate"],
   },
   {
@@ -602,7 +602,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/graphql",
     icon: "Layers",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["graphql", "format", "query"],
   },
   {
@@ -612,7 +612,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/html-entity",
     icon: "Globe",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["html", "entity", "encode"],
   },
   {
@@ -622,7 +622,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/xml-formatter",
     icon: "FileText",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["xml", "format", "validate"],
   },
   {
@@ -632,7 +632,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/css-minifier",
     icon: "Minimize",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["css", "minify", "compress"],
   },
   {
@@ -642,7 +642,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/markdown-preview",
     icon: "FileText",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["markdown", "preview", "render"],
   },
   {
@@ -652,7 +652,7 @@ export const allTools: Tool[] = [
     href: "/tools/developer/json-to-csv",
     icon: "FileText",
     category: "developer",
-    status: "inactive",
+    status: "active",
     tags: ["json", "csv", "convert"],
   },
 

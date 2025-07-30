@@ -22,8 +22,8 @@ export default function ToolsLayout({
         <ToolsHeader />
         <main
           className={cn(
-            "w-full flex-1 overflow-auto p-6 mb-6",
-            compactMode ? "max-w-7xl mx-auto" : "mx-auto",
+            "container w-full flex-1 overflow-auto p-6 mb-6",
+            compactMode ? "max-w-6xl mx-auto" : "mx-auto",
           )}
         >
           {children}

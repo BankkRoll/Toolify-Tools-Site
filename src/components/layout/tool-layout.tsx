@@ -227,55 +227,6 @@ export function ToolLayout({
             )}
           </div>
         </MotionDiv>
-
-        {/* Quick Stats */}
-        {!isCategoryPage && (
-          <MotionDiv
-            variants={animationsEnabled ? itemVariants : undefined}
-            initial={animationsEnabled ? "hidden" : undefined}
-            animate={
-              animationsEnabled
-                ? headerInView
-                  ? "visible"
-                  : "hidden"
-                : undefined
-            }
-          >
-            <Card className="bg-muted/20">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500" />
-                      <span className="text-muted-foreground">Status</span>
-                      <span className="font-medium">
-                        {isCategoryPage
-                          ? "Category"
-                          : finalStatus === "active"
-                            ? "Active"
-                            : finalStatus === "beta"
-                              ? "Beta"
-                              : "In Development"}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">Category</span>
-                      <span className="font-medium capitalize">
-                        {finalCategory}
-                      </span>
-                    </div>
-                    {!isCategoryPage && finalPopular && (
-                      <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4 text-yellow-500" />
-                        <span className="font-medium">Popular Tool</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </MotionDiv>
-        )}
       </MotionSection>
 
       <Separator />

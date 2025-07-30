@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
 import { Download, Eye, EyeOff, FileText, Unlock } from "lucide-react";
 import { m, useInView } from "motion/react";
@@ -30,6 +31,10 @@ export default function DecryptPdfPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEncrypted, setIsEncrypted] = useState<boolean | null>(null);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-decrypt-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -89,6 +94,7 @@ export default function DecryptPdfPage() {
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         const pdfBytes = await pdfDoc.save();
         setDecryptedPdf(pdfBytes);
+        setHistory([selectedFile.name, ...history].slice(0, 10));
 
         toast.success("PDF decrypted successfully");
       } catch (error) {

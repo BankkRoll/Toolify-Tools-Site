@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
 import { Type } from "lucide-react";
 import { m, useInView } from "motion/react";
@@ -25,6 +26,10 @@ export default function CaseConverterPage() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "text-case-converter-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -61,6 +66,12 @@ export default function CaseConverterPage() {
       .join(" ");
 
     setOutputText(converted);
+    setHistory(
+      [`Text converted: ${inputText.substring(0, 20)}...`, ...history].slice(
+        0,
+        10,
+      ),
+    );
     toast.success("Text converted successfully");
   };
 

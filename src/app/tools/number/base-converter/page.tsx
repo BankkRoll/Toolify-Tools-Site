@@ -50,7 +50,7 @@ export default function BaseConverterPage() {
   const [inputBase, setInputBase] = useState("10");
   const [error, setError] = useState("");
 
-  const [history] = useLocalStorage<string[]>(
+  const [history, setHistory] = useLocalStorage<string[]>(
     "number-base-converter-history",
     [],
   );
@@ -170,6 +170,14 @@ export default function BaseConverterPage() {
       setError(`Invalid character for base ${base}`);
     } else {
       setError("");
+      // Save to history when we have a valid input
+      if (value.trim() && isValidForBase(value, base)) {
+        const baseName =
+          bases.find((b) => b.value === inputBase)?.name || "Unknown";
+        setHistory(
+          [`Converted: ${value} (${baseName})`, ...history].slice(0, 10),
+        );
+      }
     }
   };
 

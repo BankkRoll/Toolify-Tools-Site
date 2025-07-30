@@ -2,10 +2,9 @@
 
 import { ToolLayout } from "@/components/layout/tool-layout";
 import { ActionButtons } from "@/components/tools/action-buttons";
+import { FileUploadZone } from "@/components/tools/file-upload-zone";
 import { ProcessingStatus } from "@/components/tools/processing-status";
-import { FileUploadSection } from "@/components/tools/shared/file-upload-section";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,12 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileUtils } from "@/utils/file-utils";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useAnimations } from "@/stores/settings-store";
 import { ArrowDown, ArrowUp, FileText, Trash2 } from "lucide-react";
+import { m, useInView } from "motion/react";
 import { PDFDocument } from "pdf-lib";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
+/**
+ * PDF merge tool page
+ */
 export default function MergePdfPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [mergedPdf, setMergedPdf] = useState<Uint8Array | null>(null);
@@ -26,6 +30,36 @@ export default function MergePdfPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-merge-history",
+    [],
+  );
+  const animationsEnabled = useAnimations();
+
+  // Refs for motion animations
+  const containerRef = useRef(null);
+  const uploadSectionRef = useRef(null);
+  const filesSectionRef = useRef(null);
+  const resultsSectionRef = useRef(null);
+
+  // InView hooks
+  const containerInView = useInView(containerRef, { once: true, amount: 0.2 });
+  const uploadSectionInView = useInView(uploadSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const filesSectionInView = useInView(filesSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+  const resultsSectionInView = useInView(resultsSectionRef, {
+    once: true,
+    amount: 0.2,
+  });
+
+  /**
+   * Handles file selection for PDFs
+   */
   const handleFilesSelect = (files: File[]) => {
     setSelectedFiles(files);
     setError(null);
@@ -33,6 +67,9 @@ export default function MergePdfPage() {
     setMergedPdf(null);
   };
 
+  /**
+   * Removes a file from the selection
+   */
   const removeFile = (index: number) => {
     const newFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(newFiles);
@@ -41,6 +78,9 @@ export default function MergePdfPage() {
     setMergedPdf(null);
   };
 
+  /**
+   * Moves a file up or down in the list
+   */
   const moveFile = (index: number, direction: "up" | "down") => {
     if (
       (direction === "up" && index === 0) ||
@@ -62,9 +102,12 @@ export default function MergePdfPage() {
     setMergedPdf(null);
   };
 
+  /**
+   * Merges multiple PDF files into a single document
+   */
   const mergePdfs = async () => {
     if (selectedFiles.length < 2) {
-      setError("Please select at least 2 PDF files to merge");
+      toast.error("Please select at least 2 PDF files to merge");
       return;
     }
 
@@ -73,38 +116,35 @@ export default function MergePdfPage() {
     setIsComplete(false);
 
     try {
-      const mergedPdfDoc = await PDFDocument.create();
+      const mergedPdf = await PDFDocument.create();
 
       for (const file of selectedFiles) {
-        try {
-          const arrayBuffer = await file.arrayBuffer();
-          const pdfDoc = await PDFDocument.load(arrayBuffer);
-          const pages = await mergedPdfDoc.copyPages(
-            pdfDoc,
-            pdfDoc.getPageIndices(),
-          );
-          pages.forEach((page) => mergedPdfDoc.addPage(page));
-        } catch (err) {
-          throw new Error(
-            `Failed to process ${file.name}. Please ensure it's a valid PDF file.`,
-          );
-        }
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(arrayBuffer);
+        const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        pages.forEach((page) => mergedPdf.addPage(page));
       }
 
-      const mergedPdfBytes = await mergedPdfDoc.save();
-      setMergedPdf(mergedPdfBytes);
+      const pdfBytes = await mergedPdf.save();
+      setMergedPdf(pdfBytes);
       setIsComplete(true);
-      toast.success("PDFs merged successfully!");
-    } catch (err) {
+      setHistory(
+        [`${selectedFiles.length} files merged`, ...history].slice(0, 10),
+      );
+      toast.success("PDFs merged successfully");
+    } catch (error) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to merge PDFs";
+        error instanceof Error ? error.message : "Failed to merge PDFs";
       setError(errorMessage);
-      toast.error("Failed to merge PDFs");
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
     }
   };
 
+  /**
+   * Downloads the merged PDF
+   */
   const downloadMergedPdf = () => {
     if (!mergedPdf) return;
 
@@ -112,11 +152,15 @@ export default function MergePdfPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `merged-${selectedFiles.length}-files.pdf`;
+    a.download = "merged-pdfs.pdf";
     a.click();
     URL.revokeObjectURL(url);
+    toast.success("PDF downloaded successfully");
   };
 
+  /**
+   * Clears all data and resets state
+   */
   const clearAll = () => {
     setSelectedFiles([]);
     setMergedPdf(null);
@@ -124,57 +168,149 @@ export default function MergePdfPage() {
     setIsComplete(false);
   };
 
+  /**
+   * Gets download data for the merged PDF
+   */
   const getDownloadData = () => {
-    if (!mergedPdf) return null;
-    return new Blob([mergedPdf], { type: "application/pdf" });
+    return mergedPdf || new Uint8Array();
   };
 
+  /**
+   * Gets download filename for the merged PDF
+   */
   const getDownloadFilename = () => {
-    return `merged-${selectedFiles.length}-files.pdf`;
+    return "merged-pdfs.pdf";
   };
 
-  const totalSize = selectedFiles.reduce((sum, file) => sum + file.size, 0);
+  // Motion variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // Conditional motion components
+  const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
     <ToolLayout toolId="pdf-merge">
-      <div className="space-y-6">
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-6">
+      <MotionDiv
+        ref={containerRef}
+        className="space-y-6"
+        variants={animationsEnabled ? containerVariants : undefined}
+        initial={animationsEnabled ? "hidden" : undefined}
+        animate={
+          animationsEnabled
+            ? containerInView
+              ? "visible"
+              : "hidden"
+            : undefined
+        }
+      >
+        <MotionDiv
+          ref={uploadSectionRef}
+          variants={animationsEnabled ? cardVariants : undefined}
+          initial={animationsEnabled ? "hidden" : undefined}
+          animate={
+            animationsEnabled
+              ? uploadSectionInView
+                ? "visible"
+                : "hidden"
+              : undefined
+          }
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Upload PDFs
+              </CardTitle>
+              <CardDescription>
+                Select multiple PDF files to merge
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <FileUploadZone
+                onFilesSelected={handleFilesSelect}
+                accept=".pdf,application/pdf"
+                multiple={true}
+                files={selectedFiles}
+                onRemoveFile={removeFile}
+              />
+            </CardContent>
+          </Card>
+        </MotionDiv>
+
+        {selectedFiles.length > 0 && (
+          <MotionDiv
+            ref={filesSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? filesSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
             <Card>
               <CardHeader>
-                <CardTitle>PDF Merge</CardTitle>
+                <CardTitle>File Order</CardTitle>
                 <CardDescription>
-                  Combine multiple PDF files into a single document
+                  Arrange files in the order they'll appear in the merged PDF
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <FileUploadSection
-                  title="Upload PDF Files"
-                  description="Select multiple PDF files to merge (drag to reorder)"
-                  accept=".pdf,application/pdf"
-                  multiple={true}
-                  onFilesChange={handleFilesSelect}
-                  files={selectedFiles}
-                  showCard={false}
-                  compact={true}
-                />
-
-                {selectedFiles.length > 0 && (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Total Files:
-                      </span>
-                      <Badge variant="outline">{selectedFiles.length}</Badge>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {selectedFiles.map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 border rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Badge variant="secondary">{index + 1}</Badge>
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-medium truncate max-w-48">
+                            {file.name}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => moveFile(index, "up")}
+                          disabled={index === 0}
+                          className="p-1 hover:bg-muted rounded disabled:opacity-50"
+                        >
+                          <ArrowUp className="h-3 w-3" />
+                        </button>
+                        <button
+                          onClick={() => moveFile(index, "down")}
+                          disabled={index === selectedFiles.length - 1}
+                          className="p-1 hover:bg-muted rounded disabled:opacity-50"
+                        >
+                          <ArrowDown className="h-3 w-3" />
+                        </button>
+                        <button
+                          onClick={() => removeFile(index)}
+                          className="p-1 hover:bg-muted rounded text-red-500"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Total Size:</span>
-                      <span className="font-medium">
-                        {FileUtils.formatFileSize(totalSize)}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                  ))}
+                </div>
 
                 <ActionButtons
                   onGenerate={mergePdfs}
@@ -184,151 +320,59 @@ export default function MergePdfPage() {
                   variant="outline"
                   size="sm"
                   disabled={selectedFiles.length < 2 || isProcessing}
+                  isGenerating={isProcessing}
                 />
               </CardContent>
             </Card>
-
-            <ProcessingStatus
-              isProcessing={isProcessing}
-              isComplete={isComplete}
-              error={error}
-              onReset={clearAll}
-              processingText="Merging PDF files..."
-              completeText="PDF files merged successfully!"
-              errorText="Merge failed"
-            />
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>File Order</CardTitle>
-              <CardDescription>
-                Files will be merged in the order shown below
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {selectedFiles.length > 0 ? (
-                <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {selectedFiles.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline">#{index + 1}</Badge>
-                        <div>
-                          <div className="font-medium text-sm">{file.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {FileUtils.formatFileSize(file.size)}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => moveFile(index, "up")}
-                          disabled={index === 0}
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => moveFile(index, "down")}
-                          disabled={index === selectedFiles.length - 1}
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => removeFile(index)}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg">
-                  <div className="text-center">
-                    <FileText className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">
-                      Upload PDF files to get started
-                    </p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+          </MotionDiv>
+        )}
 
         {mergedPdf && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Merged PDF</CardTitle>
-              <CardDescription>
-                Your merged PDF is ready for download
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-lg bg-green-50">
-                  <div className="text-center">
-                    <FileText className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                    <p className="text-sm font-medium text-green-600">
-                      PDF Merged Successfully
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {FileUtils.formatFileSize(mergedPdf.length)}
-                    </p>
-                  </div>
-                </div>
-
+          <MotionDiv
+            ref={resultsSectionRef}
+            variants={animationsEnabled ? cardVariants : undefined}
+            initial={animationsEnabled ? "hidden" : undefined}
+            animate={
+              animationsEnabled
+                ? resultsSectionInView
+                  ? "visible"
+                  : "hidden"
+                : undefined
+            }
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle>Merged PDF</CardTitle>
+                <CardDescription>
+                  Your merged PDF is ready for download
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
                 <ActionButtons
-                  downloadData={getDownloadData()!}
+                  downloadData={getDownloadData()}
                   downloadFilename={getDownloadFilename()}
                   downloadMimeType="application/pdf"
+                  onDownload={downloadMergedPdf}
                   variant="outline"
                   size="sm"
                 />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </MotionDiv>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>About PDF Merging</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <h4 className="font-medium mb-2">How it works:</h4>
-                <p className="text-muted-foreground">
-                  PDF merging combines multiple PDF files into a single
-                  document, preserving the original formatting and content of
-                  each file.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-medium mb-2">Tips:</h4>
-                <ul className="text-muted-foreground space-y-1">
-                  <li>• Drag files to reorder them</li>
-                  <li>• Files are merged in the order shown</li>
-                  <li>• All files must be valid PDFs</li>
-                  <li>• Maximum file size may be limited</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <MotionDiv variants={animationsEnabled ? cardVariants : undefined}>
+          <ProcessingStatus
+            isProcessing={isProcessing}
+            isComplete={isComplete}
+            error={error}
+            onReset={clearAll}
+            processingText="Merging PDFs..."
+            completeText="PDFs merged successfully!"
+            errorText="Failed to merge PDFs"
+          />
+        </MotionDiv>
+      </MotionDiv>
     </ToolLayout>
   );
 }

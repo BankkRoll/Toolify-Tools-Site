@@ -164,9 +164,6 @@ export default function FavoritesPage() {
       >
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500 shadow-lg">
-              <Star className="h-6 w-6 text-white fill-current" />
-            </div>
             <div>
               <h1 className="text-4xl font-bold tracking-tight">Favorites</h1>
               <p className="text-muted-foreground">
@@ -175,92 +172,6 @@ export default function FavoritesPage() {
             </div>
           </div>
         </div>
-      </MotionSection>
-
-      {/* Stats Cards */}
-      <MotionSection
-        ref={statsRef}
-        initial={animationsEnabled ? "hidden" : undefined}
-        animate={
-          animationsEnabled ? (statsInView ? "visible" : "hidden") : undefined
-        }
-        variants={animationsEnabled ? sectionVariants : undefined}
-      >
-        <MotionDiv
-          variants={animationsEnabled ? staggerContainer : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (statsInView ? "visible" : "hidden") : undefined
-          }
-          className="grid grid-cols-2 gap-4 md:grid-cols-4"
-        >
-          <MotionDiv variants={animationsEnabled ? itemVariants : undefined}>
-            <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total Favorites
-                </CardTitle>
-                <Star className="h-4 w-4 text-muted-foreground group-hover:text-yellow-500 transition-colors fill-current" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">
-                  {favorites.length}
-                </div>
-                <p className="text-xs text-muted-foreground">Saved tools</p>
-              </CardContent>
-            </Card>
-          </MotionDiv>
-          <MotionDiv variants={animationsEnabled ? itemVariants : undefined}>
-            <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Active Tools
-                </CardTitle>
-                <Star className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">
-                  {filteredTools.filter((t) => t.status === "active").length}
-                </div>
-                <p className="text-xs text-muted-foreground">Ready to use</p>
-              </CardContent>
-            </Card>
-          </MotionDiv>
-          <MotionDiv variants={animationsEnabled ? itemVariants : undefined}>
-            <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Categories
-                </CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {new Set(filteredTools.map((t) => t.category)).size}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Different categories
-                </p>
-              </CardContent>
-            </Card>
-          </MotionDiv>
-          <MotionDiv variants={animationsEnabled ? itemVariants : undefined}>
-            <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Featured</CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {filteredTools.filter((t) => t.featured).length}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Hand-picked tools
-                </p>
-              </CardContent>
-            </Card>
-          </MotionDiv>
-        </MotionDiv>
       </MotionSection>
 
       {/* Advanced Search and Filters */}
@@ -427,23 +338,6 @@ export default function FavoritesPage() {
         variants={animationsEnabled ? sectionVariants : undefined}
         className="space-y-6"
       >
-        <MotionDiv
-          variants={animationsEnabled ? itemVariants : undefined}
-          initial={animationsEnabled ? "hidden" : undefined}
-          animate={
-            animationsEnabled ? (toolsInView ? "visible" : "hidden") : undefined
-          }
-          className="flex items-center justify-between"
-        >
-          <h2 className="text-2xl font-semibold">
-            {searchQuery
-              ? `Search Results`
-              : selectedCategory
-                ? `${toolCategories.find((c) => c.id === selectedCategory)?.name} Favorites`
-                : "Your Favorites"}
-          </h2>
-          <Badge variant="outline">{filteredTools.length} tools</Badge>
-        </MotionDiv>
         {filteredTools.length === 0 ? (
           <MotionDiv
             variants={animationsEnabled ? itemVariants : undefined}

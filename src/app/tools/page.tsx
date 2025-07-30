@@ -17,12 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import type { Tool } from "@/lib/tools-config";
 import {
   allTools,
   getAllActiveTools,
-  getFeaturedTools,
-  getPopularTools,
   getToolStats,
   searchTools,
   toolCategories,
@@ -40,15 +39,20 @@ import {
   Search,
   SortAsc,
   Star,
-  TrendingUp,
   Zap,
 } from "lucide-react";
 import { m, useInView } from "motion/react";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 
+/**
+ * Type for sort options
+ */
 type SortOption = "name" | "category" | "popular" | "recent";
 
+/**
+ * Main tools page component
+ */
 export default function ToolsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -58,6 +62,13 @@ export default function ToolsPage() {
 
   const { isFavorite, toggleFavorite } = useSettingsStore();
   const animationsEnabled = useAnimations();
+
+  // Local storage for user preferences
+  const [recentlyViewed] = useLocalStorage<string[]>(
+    "tools-recently-viewed",
+    [],
+  );
+  const [searchHistory] = useLocalStorage<string[]>("tools-search-history", []);
 
   // Refs for motion animations
   const headerRef = useRef(null);
@@ -100,9 +111,12 @@ export default function ToolsPage() {
   };
 
   // Conditional motion components
-  const MotionDiv = m.div;
-  const MotionSection = m.section;
+  const MotionDiv = animationsEnabled ? m.div : "div";
+  const MotionSection = animationsEnabled ? m.section : "section";
 
+  /**
+   * Filters and sorts tools based on current state
+   */
   const filteredTools = useMemo(() => {
     // Start with appropriate tool set based on showInactive toggle
     let tools: Tool[] = showInactive ? allTools : getAllActiveTools();
@@ -150,6 +164,9 @@ export default function ToolsPage() {
     return tools;
   }, [searchQuery, selectedCategory, showInactive, sortBy]);
 
+  /**
+   * Clears all active filters
+   */
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCategory(null);
@@ -160,6 +177,9 @@ export default function ToolsPage() {
   const hasActiveFilters =
     searchQuery || selectedCategory || showInactive || sortBy !== "name";
 
+  /**
+   * Handles favorite toggle for tools
+   */
   const handleToggleFavorite = (e: React.MouseEvent, toolId: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -407,85 +427,96 @@ export default function ToolsPage() {
                 : "grid-cols-1"
             }`}
           >
-            {filteredTools.map((tool, index) => (
-              <MotionDiv key={tool.id} variants={cardVariants} custom={index}>
-                <Link href={tool.href}>
-                  <Card
-                    className={`group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 ${
-                      viewMode === "list" ? "flex items-center" : ""
-                    }`}
-                  >
-                    <CardHeader
-                      className={`pb-3 ${viewMode === "list" ? "flex-1" : ""}`}
+            {filteredTools.map((tool, index) => {
+              const isRecentlyViewed = recentlyViewed.includes(tool.id);
+
+              return (
+                <MotionDiv key={tool.id} variants={cardVariants} custom={index}>
+                  <Link href={tool.href}>
+                    <Card
+                      className={`group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 ${
+                        viewMode === "list" ? "flex items-center" : ""
+                      } ${isRecentlyViewed ? "ring-2 ring-primary/20" : ""}`}
                     >
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline" className="capitalize">
-                          {tool.category}
-                        </Badge>
-                        <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50"
-                            onClick={(e) => handleToggleFavorite(e, tool.id)}
-                          >
-                            <Star
-                              className={`h-4 w-4 ${isFavorite(tool.id) ? "fill-current" : ""}`}
-                            />
-                          </Button>
-                          {tool.popular && (
-                            <Badge
-                              variant="secondary"
-                              className="bg-orange-100 text-orange-800"
+                      <CardHeader
+                        className={`pb-3 ${viewMode === "list" ? "flex-1" : ""}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <Badge variant="outline" className="capitalize">
+                            {tool.category}
+                          </Badge>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50"
+                              onClick={(e) => handleToggleFavorite(e, tool.id)}
                             >
-                              <Star className="mr-1 h-3 w-3" />
-                              Popular
-                            </Badge>
-                          )}
-                          {tool.featured && (
-                            <Badge
-                              variant="secondary"
-                              className="bg-primary/10 text-primary"
-                            >
-                              <Zap className="mr-1 h-3 w-3" />
-                              Featured
-                            </Badge>
-                          )}
-                          {tool.status !== "active" && (
-                            <Badge variant="outline" className="text-xs">
-                              {tool.status === "beta" ? "Beta" : "Soon"}
-                            </Badge>
-                          )}
+                              <Star
+                                className={`h-4 w-4 ${isFavorite(tool.id) ? "fill-current" : ""}`}
+                              />
+                            </Button>
+                            {isRecentlyViewed && (
+                              <Badge variant="secondary" className="text-xs">
+                                Recent
+                              </Badge>
+                            )}
+                            {tool.popular && (
+                              <Badge
+                                variant="secondary"
+                                className="bg-orange-100 text-orange-800"
+                              >
+                                <Star className="mr-1 h-3 w-3" />
+                                Popular
+                              </Badge>
+                            )}
+                            {tool.featured && (
+                              <Badge
+                                variant="secondary"
+                                className="bg-primary/10 text-primary"
+                              >
+                                <Zap className="mr-1 h-3 w-3" />
+                                Featured
+                              </Badge>
+                            )}
+                            {tool.status !== "active" && (
+                              <Badge variant="outline" className="text-xs">
+                                {tool.status === "beta" ? "Beta" : "Soon"}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <CardTitle
-                        className={`group-hover:text-primary transition-colors ${
-                          viewMode === "list" ? "text-lg" : "text-lg"
-                        }`}
+                        <CardTitle
+                          className={`group-hover:text-primary transition-colors ${
+                            viewMode === "list" ? "text-lg" : "text-lg"
+                          }`}
+                        >
+                          {tool.name}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent
+                        className={viewMode === "list" ? "flex-1" : ""}
                       >
-                        {tool.name}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent
-                      className={viewMode === "list" ? "flex-1" : ""}
-                    >
-                      <CardDescription
-                        className={`mb-4 ${viewMode === "list" ? "text-sm" : ""}`}
-                      >
-                        {tool.description}
-                      </CardDescription>
-                      <Button
-                        size="sm"
-                        className="w-full"
-                        disabled={tool.status !== "active"}
-                      >
-                        {tool.status === "active" ? "Use Tool" : "Coming Soon"}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </MotionDiv>
-            ))}
+                        <CardDescription
+                          className={`mb-4 ${viewMode === "list" ? "text-sm" : ""}`}
+                        >
+                          {tool.description}
+                        </CardDescription>
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          disabled={tool.status !== "active"}
+                        >
+                          {tool.status === "active"
+                            ? "Use Tool"
+                            : "Coming Soon"}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </MotionDiv>
+              );
+            })}
           </MotionDiv>
         )}
       </MotionSection>

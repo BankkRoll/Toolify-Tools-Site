@@ -47,7 +47,10 @@ export default function ImageResizePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("image-resize-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "image-resize-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -143,6 +146,9 @@ export default function ImageResizePage() {
         setIsComplete(true);
         setIsProcessing(false);
 
+        setHistory(
+          [`Image resized to ${width}x${height}px`, ...history].slice(0, 10),
+        );
         toast.success(`Successfully resized to ${width}x${height}px`);
       };
 

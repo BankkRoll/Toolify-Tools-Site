@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useStopwatch } from "@/hooks/use-stopwatch";
 import { useAnimations } from "@/stores/settings-store";
 import { Pause, Play, RotateCcw, Square } from "lucide-react";
@@ -32,6 +33,10 @@ export default function StopwatchPage() {
   const [laps, setLaps] = useState<LapTime[]>([]);
   const [lapCounter, setLapCounter] = useState(1);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "time-stopwatch-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -71,6 +76,12 @@ export default function StopwatchPage() {
 
     setLaps((prev) => [...prev, newLap]);
     setLapCounter((prev) => prev + 1);
+    setHistory(
+      [`Lap ${lapCounter}: ${formatTime(newLap.lapTime)}`, ...history].slice(
+        0,
+        10,
+      ),
+    );
   };
 
   /**

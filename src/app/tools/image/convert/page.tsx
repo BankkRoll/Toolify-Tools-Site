@@ -39,7 +39,10 @@ export default function ConvertImagePage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("image-convert-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "image-convert-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -107,6 +110,12 @@ export default function ConvertImagePage() {
         setIsComplete(true);
         setIsProcessing(false);
 
+        setHistory(
+          [
+            `Image converted to ${outputFormat.toUpperCase()}`,
+            ...history,
+          ].slice(0, 10),
+        );
         toast.success(`Image converted to ${outputFormat.toUpperCase()}`);
       };
 

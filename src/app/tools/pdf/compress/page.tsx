@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useAnimations } from "@/stores/settings-store";
 import { FileText } from "lucide-react";
 import { m, useInView } from "motion/react";
@@ -40,6 +41,10 @@ export default function CompressPdfPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "pdf-compress-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -112,6 +117,7 @@ export default function CompressPdfPage() {
       setCompressedPdf(pdfBytes);
       setCompressedSize(pdfBytes.length);
       setIsComplete(true);
+      setHistory([selectedFile.name, ...history].slice(0, 10));
 
       const compressionRatio = (
         ((originalSize - pdfBytes.length) / originalSize) *

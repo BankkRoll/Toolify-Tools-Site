@@ -33,7 +33,7 @@ export default function Base64EncoderPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("base64-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>("base64-history", []);
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -68,6 +68,12 @@ export default function Base64EncoderPage() {
       setOutputText(encoded);
       setError(null);
       setIsComplete(true);
+      setHistory(
+        [`Text encoded: ${inputText.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("Text encoded successfully");
     } catch (err) {
       setError("Failed to encode text");
@@ -89,6 +95,12 @@ export default function Base64EncoderPage() {
       setOutputText(decoded);
       setError(null);
       setIsComplete(true);
+      setHistory(
+        [`Text decoded: ${decoded.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("Text decoded successfully");
     } catch (err) {
       setError("Invalid Base64 string");
@@ -120,6 +132,7 @@ export default function Base64EncoderPage() {
 
       setFileOutput(encoded);
       setIsComplete(true);
+      setHistory([`File encoded: ${file.name}`, ...history].slice(0, 10));
       toast.success("File encoded successfully");
     } catch (err) {
       setError("Failed to encode file");
@@ -143,6 +156,12 @@ export default function Base64EncoderPage() {
       setFileOutput(decoded);
       setError(null);
       setIsComplete(true);
+      setHistory(
+        [`File decoded: ${inputText.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("File decoded successfully");
     } catch (err) {
       setError("Invalid Base64 data");
@@ -199,7 +218,7 @@ export default function Base64EncoderPage() {
   const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
-    <ToolLayout toolId="developer-base64">
+    <ToolLayout toolId="dev-base64">
       <MotionDiv
         ref={containerRef}
         className="space-y-6"

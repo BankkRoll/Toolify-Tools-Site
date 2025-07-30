@@ -44,7 +44,10 @@ export default function RegexTesterPage() {
   const [isComplete, setIsComplete] = useState(false);
   const [isValidRegex, setIsValidRegex] = useState<boolean | null>(null);
 
-  const [history] = useLocalStorage<string[]>("regex-tester-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "regex-tester-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -116,6 +119,12 @@ export default function RegexTesterPage() {
 
       setMatches(matches);
       setIsComplete(true);
+      setHistory(
+        [
+          `Regex tested: ${pattern} (${matches.length} matches)`,
+          ...history,
+        ].slice(0, 10),
+      );
       toast.success(
         `Found ${matches.length} match${matches.length !== 1 ? "es" : ""}`,
       );
@@ -200,7 +209,7 @@ export default function RegexTesterPage() {
   const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
-    <ToolLayout toolId="developer-regex">
+    <ToolLayout toolId="dev-regex">
       <MotionDiv
         ref={containerRef}
         className="space-y-6"

@@ -71,7 +71,10 @@ export default function QRGeneratorPage() {
     hidden: false,
   });
 
-  const [history] = useLocalStorage<string[]>("qr-generator-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "qr-generator-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -198,6 +201,9 @@ export default function QRGeneratorPage() {
       setQrCodeInstance(qrCode);
       setGeneratedQR("generated");
       setError("");
+      setHistory(
+        [`QR generated: ${qrType} (${qrSize[0]}px)`, ...history].slice(0, 10),
+      );
     } catch (err) {
       setError("Failed to generate QR code");
       console.error("QR generation error:", err);
@@ -258,7 +264,7 @@ export default function QRGeneratorPage() {
     switch (qrType) {
       case "wifi":
         return (
-          <m.div
+          <MotionDiv
             className="space-y-4"
             initial={animationsEnabled ? { opacity: 0, height: 0 } : undefined}
             animate={
@@ -325,7 +331,7 @@ export default function QRGeneratorPage() {
               />
               <Label htmlFor="hidden">Hidden Network</Label>
             </div>
-          </m.div>
+          </MotionDiv>
         );
       default:
         return (

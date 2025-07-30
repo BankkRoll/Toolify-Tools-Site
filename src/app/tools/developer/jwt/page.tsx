@@ -41,7 +41,10 @@ export default function JwtDebuggerPage() {
   const [error, setError] = useState<string | null>(null);
   const [isComplete, setIsComplete] = useState(false);
 
-  const [history] = useLocalStorage<string[]>("jwt-debugger-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "jwt-debugger-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -105,6 +108,12 @@ export default function JwtDebuggerPage() {
       });
 
       setIsComplete(true);
+      setHistory(
+        [`JWT decoded: ${jwtToken.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("JWT decoded successfully");
     } catch (err) {
       const errorMessage =
@@ -168,7 +177,7 @@ export default function JwtDebuggerPage() {
   const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
-    <ToolLayout toolId="developer-jwt">
+    <ToolLayout toolId="dev-jwt">
       <MotionDiv
         ref={containerRef}
         className="space-y-6"

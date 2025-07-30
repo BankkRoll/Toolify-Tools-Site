@@ -37,7 +37,10 @@ export default function JsonFormatterPage() {
     message: string;
   } | null>(null);
 
-  const [history] = useLocalStorage<string[]>("json-formatter-history", []);
+  const [history, setHistory] = useLocalStorage<string[]>(
+    "json-formatter-history",
+    [],
+  );
   const animationsEnabled = useAnimations();
 
   // Refs for motion animations
@@ -77,6 +80,12 @@ export default function JsonFormatterPage() {
       setOutputJson(formatted);
       setValidationResult({ isValid: true, message: "Valid JSON" });
       setIsComplete(true);
+      setHistory(
+        [`JSON formatted: ${inputJson.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("JSON formatted successfully");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Invalid JSON";
@@ -107,6 +116,12 @@ export default function JsonFormatterPage() {
       setOutputJson(minified);
       setValidationResult({ isValid: true, message: "Valid JSON" });
       setIsComplete(true);
+      setHistory(
+        [`JSON minified: ${inputJson.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("JSON minified successfully");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Invalid JSON";
@@ -135,6 +150,12 @@ export default function JsonFormatterPage() {
       JSON.parse(inputJson);
       setValidationResult({ isValid: true, message: "Valid JSON" });
       setIsComplete(true);
+      setHistory(
+        [`JSON validated: ${inputJson.substring(0, 20)}...`, ...history].slice(
+          0,
+          10,
+        ),
+      );
       toast.success("JSON is valid");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Invalid JSON";
@@ -162,6 +183,7 @@ export default function JsonFormatterPage() {
       setInputJson(text);
       setSelectedFiles(files);
       setIsComplete(true);
+      setHistory([`JSON file loaded: ${file.name}`, ...history].slice(0, 10));
       toast.success("File loaded successfully");
     } catch (err) {
       setError("Failed to read file");
@@ -216,7 +238,7 @@ export default function JsonFormatterPage() {
   const MotionDiv = animationsEnabled ? m.div : "div";
 
   return (
-    <ToolLayout toolId="developer-json-formatter">
+    <ToolLayout toolId="dev-json-formatter">
       <MotionDiv
         ref={containerRef}
         className="space-y-6"
