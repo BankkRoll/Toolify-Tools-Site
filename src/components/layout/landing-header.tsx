@@ -16,7 +16,7 @@ import {
   getAllActiveTools,
   toolCategories,
 } from "@/lib/tools-config";
-import { Code2, Github, Search, Zap } from "lucide-react";
+import { Code2, Search, Zap } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import GithubStarsButton from "../ui/github-stars-button";
@@ -117,7 +117,7 @@ export function LandingHeader() {
                           <div className="space-y-1.5">
                             {allTools
                               .filter((tool) => tool.featured)
-                              .slice(0, 5)
+                              .slice(0, 15)
                               .map((tool) => (
                                 <Link
                                   key={tool.id}
@@ -182,18 +182,20 @@ export function LandingHeader() {
                                       </Link>
                                     </div>
                                   </div>
-                                  <div className="space-y-1 ml-5">
-                                    {activeTools.map((tool) => (
-                                      <Link
-                                        key={tool.id}
-                                        href={tool.href}
-                                        className="group/tool flex items-center gap-1.5 p-1 rounded-sm hover:bg-accent transition-all duration-200 hover:translate-x-1 text-xs"
-                                      >
-                                        <p className="text-muted-foreground group-hover/tool:text-primary transition-colors truncate">
-                                          {tool.name}
-                                        </p>
-                                      </Link>
-                                    ))}
+                                  <div className="ml-5">
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                                      {activeTools.slice(0, 10).map((tool) => (
+                                        <Link
+                                          key={tool.id}
+                                          href={tool.href}
+                                          className="group/tool flex items-center gap-1.5 p-1 rounded-sm hover:bg-accent transition-all duration-200 hover:translate-x-1 text-xs"
+                                        >
+                                          <p className="text-muted-foreground group-hover/tool:text-primary transition-colors truncate">
+                                            {tool.name}
+                                          </p>
+                                        </Link>
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
                               );

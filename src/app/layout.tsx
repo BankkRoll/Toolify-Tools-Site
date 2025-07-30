@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "@/providers";
 
 export const metadata: Metadata = {
   title: "Toolify",
@@ -28,16 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${GeistSans.className} antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AnalyticsProvider>
-            <MotionProvider>{children}</MotionProvider>
-          </AnalyticsProvider>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -98,7 +98,7 @@ export function ToolsSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith("/tools")}
+                isActive={pathname === "/tools"}
                 className="justify-start"
               >
                 <Link href="/tools">
@@ -113,7 +113,7 @@ export function ToolsSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith("/tools/favorites")}
+                isActive={pathname === "/tools/favorites"}
                 className="justify-start"
               >
                 <Link href="/tools/favorites">
@@ -143,6 +143,7 @@ export function ToolsSidebar() {
                       {/* Left side - Category link */}
                       <SidebarMenuButton
                         asChild
+                        isActive={pathname === category.href}
                         className="flex-1 justify-start rounded-none rounded-l-md"
                       >
                         <Link href={category.href}>

@@ -1542,7 +1542,7 @@ export const allTools: Tool[] = [
     tags: ["text", "speech", "audio"],
   },
 
-  // Web3 & Crypto Tools (8 tools)
+  // Web3 & Crypto Tools (5 tools)
   {
     id: "web3-wallet-overview",
     name: "Wallet Portfolio",
@@ -1583,7 +1583,7 @@ export const allTools: Tool[] = [
     href: "/tools/web3/transaction-decoder",
     icon: "Search",
     category: "web3",
-    status: "inactive",
+    status: "active",
     tags: ["transaction", "decode", "blockchain"],
   },
   {
@@ -1593,7 +1593,7 @@ export const allTools: Tool[] = [
     href: "/tools/web3/address-validator",
     icon: "CheckCircle",
     category: "web3",
-    status: "inactive",
+    status: "active",
     tags: ["address", "validate", "crypto"],
   },
 ];
