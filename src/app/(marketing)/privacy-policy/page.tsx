@@ -70,7 +70,6 @@ export default function PrivacyPage() {
               "relative rounded-3xl mx-auto px-4 py-10 border shadow-sm",
             )}
           >
-            {/* Tape decorations */}
             <div className="hidden md:block absolute -top-4 -left-8 w-[80px] h-[36px] scale-75">
               {tape}
             </div>

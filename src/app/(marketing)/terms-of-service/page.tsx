@@ -68,7 +68,12 @@ export default function TermsPage() {
               "relative rounded-3xl mx-auto px-4 py-10 border shadow-sm",
             )}
           >
-            {" "}
+            <div className="hidden md:block absolute -top-4 -left-8 w-[80px] h-[36px] scale-75">
+              {tape}
+            </div>
+            <div className="hidden md:block absolute top-0 -right-2 rotate-270 w-[80px] h-[36px] scale-75">
+              {tape}
+            </div>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
