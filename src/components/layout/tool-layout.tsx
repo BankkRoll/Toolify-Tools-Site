@@ -278,12 +278,18 @@ export function ToolLayout({
           <span>
             Created by:{" "}
             <a
-              href="https://toolify.app"
+              href={
+                toolData?.authorGithubUsername
+                  ? toolData.authorGithubUsername === "Toolify"
+                    ? "https://toolify-tools-site.vercel.app"
+                    : `https://github.com/${toolData?.authorGithubUsername}`
+                  : "https://toolify-tools-site.vercel.app"
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary"
             >
-              Toolify
+              {toolData?.authorGithubUsername || "Toolify"}
             </a>
           </span>
         </div>

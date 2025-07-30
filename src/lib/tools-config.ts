@@ -3,6 +3,7 @@
  */
 export interface Tool {
   id: string;
+  authorGithubUsername: string;
   name: string;
   description: string;
   href: string;
@@ -111,6 +112,7 @@ export const allTools: Tool[] = [
   // PDF Utilities (16 tools)
   {
     id: "pdf-extract-pages",
+    authorGithubUsername: "Toolify",
     name: "Extract Pages",
     description: "Extract specific pages from PDF documents",
     href: "/tools/pdf/extract-pages",
@@ -123,6 +125,8 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-merge",
+    authorGithubUsername: "Toolify",
+
     name: "Merge PDF",
     description: "Combine multiple PDF files into one",
     href: "/tools/pdf/merge",
@@ -135,6 +139,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-compress",
+    authorGithubUsername: "Toolify",
     name: "Compress PDF",
     description: "Reduce PDF file size while maintaining quality",
     href: "/tools/pdf/compress",
@@ -145,6 +150,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-encrypt",
+    authorGithubUsername: "Toolify",
     name: "Encrypt PDF",
     description: "Add password protection to PDF files",
     href: "/tools/pdf/encrypt",
@@ -155,6 +161,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-decrypt",
+    authorGithubUsername: "Toolify",
     name: "Decrypt PDF",
     description: "Remove password protection from PDF files",
     href: "/tools/pdf/decrypt",
@@ -165,6 +172,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-rotate",
+    authorGithubUsername: "Toolify",
     name: "Rotate PDF",
     description: "Rotate pages in PDF documents",
     href: "/tools/pdf/rotate",
@@ -175,6 +183,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-reorder",
+    authorGithubUsername: "Toolify",
     name: "Reorder Pages",
     description: "Rearrange pages in PDF documents",
     href: "/tools/pdf/reorder",
@@ -185,6 +194,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-to-image",
+    authorGithubUsername: "Toolify",
     name: "PDF to Image",
     description: "Convert PDF pages to image files",
     href: "/tools/pdf/to-image",
@@ -195,6 +205,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-from-image",
+    authorGithubUsername: "Toolify",
     name: "Image to PDF",
     description: "Convert images to PDF documents",
     href: "/tools/pdf/from-image",
@@ -206,6 +217,7 @@ export const allTools: Tool[] = [
 
   {
     id: "pdf-split",
+    authorGithubUsername: "Toolify",
     name: "Split PDF",
     description: "Split PDF documents into multiple files",
     href: "/tools/pdf/split",
@@ -216,6 +228,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-to-text",
+    authorGithubUsername: "Toolify",
     name: "PDF to Text",
     description: "Extract text content from PDF files",
     href: "/tools/pdf/to-text",
@@ -226,6 +239,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-annotate",
+    authorGithubUsername: "Toolify",
     name: "Annotate PDF",
     description: "Add annotations and comments to PDFs",
     href: "/tools/pdf/annotate",
@@ -236,6 +250,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-form-filler",
+    authorGithubUsername: "Toolify",
     name: "Form Filler",
     description: "Fill out PDF forms programmatically",
     href: "/tools/pdf/form-filler",
@@ -246,6 +261,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-bookmarks",
+    authorGithubUsername: "Toolify",
     name: "Bookmark Creator",
     description: "Add bookmarks and navigation to PDFs",
     href: "/tools/pdf/bookmarks",
@@ -256,6 +272,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "pdf-remove-password",
+    authorGithubUsername: "Toolify",
     name: "Remove Password",
     description: "Remove password protection from PDFs",
     href: "/tools/pdf/remove-password",
@@ -268,6 +285,7 @@ export const allTools: Tool[] = [
   // Image Tools (15 tools)
   {
     id: "image-resize",
+    authorGithubUsername: "Toolify",
     name: "Resize Image",
     description: "Resize images while maintaining aspect ratio",
     href: "/tools/image/resize",
@@ -280,6 +298,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-crop",
+    authorGithubUsername: "Toolify",
     name: "Crop Image",
     description: "Crop images to specific dimensions or aspect ratios",
     href: "/tools/image/crop",
@@ -290,6 +309,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-convert",
+    authorGithubUsername: "Toolify",
     name: "Convert Format",
     description: "Convert between different image formats",
     href: "/tools/image/convert",
@@ -300,6 +320,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-compress",
+    authorGithubUsername: "Toolify",
     name: "Compress Image",
     description: "Reduce image file size while maintaining quality",
     href: "/tools/image/compress",
@@ -310,6 +331,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-metadata",
+    authorGithubUsername: "Toolify",
     name: "Metadata Viewer",
     description: "View and extract EXIF data from images",
     href: "/tools/image/metadata",
@@ -320,6 +342,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-watermark",
+    authorGithubUsername: "Toolify",
     name: "Add Watermark",
     description: "Add text or image watermarks to photos",
     href: "/tools/image/watermark",
@@ -330,6 +353,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-palette",
+    authorGithubUsername: "Toolify",
     name: "Color Palette",
     description: "Extract color palettes from images",
     href: "/tools/image/palette",
@@ -340,6 +364,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-thumbnail",
+    authorGithubUsername: "Toolify",
     name: "Create Thumbnail",
     description: "Generate thumbnails from images",
     href: "/tools/image/thumbnail",
@@ -350,6 +375,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-exif-cleaner",
+    authorGithubUsername: "Toolify",
     name: "EXIF Cleaner",
     description: "Remove metadata and EXIF data from images",
     href: "/tools/image/exif-cleaner",
@@ -361,6 +387,7 @@ export const allTools: Tool[] = [
 
   {
     id: "image-brightness",
+    authorGithubUsername: "Toolify",
     name: "Brightness/Contrast",
     description: "Adjust image brightness and contrast",
     href: "/tools/image/brightness",
@@ -371,6 +398,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-grayscale",
+    authorGithubUsername: "Toolify",
     name: "Grayscale",
     description: "Convert images to grayscale",
     href: "/tools/image/grayscale",
@@ -381,6 +409,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-blur",
+    authorGithubUsername: "Toolify",
     name: "Blur Tool",
     description: "Apply blur effects to images",
     href: "/tools/image/blur",
@@ -391,6 +420,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-rotate",
+    authorGithubUsername: "Toolify",
     name: "Rotation Tool",
     description: "Rotate images by any angle",
     href: "/tools/image/rotate",
@@ -401,6 +431,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "image-flip",
+    authorGithubUsername: "Toolify",
     name: "Flip Tool",
     description: "Flip images horizontally or vertically",
     href: "/tools/image/flip",
@@ -413,6 +444,7 @@ export const allTools: Tool[] = [
   // Developer Tools (25 tools)
   {
     id: "dev-json-formatter",
+    authorGithubUsername: "Toolify",
     name: "JSON Formatter",
     description: "Format, validate, and minify JSON data",
     href: "/tools/developer/json-formatter",
@@ -425,6 +457,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-regex",
+    authorGithubUsername: "Toolify",
     name: "Regex Tester",
     description: "Test and debug regular expressions",
     href: "/tools/developer/regex",
@@ -436,6 +469,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-jwt",
+    authorGithubUsername: "Toolify",
     name: "JWT Debugger",
     description: "Decode and verify JSON Web Tokens",
     href: "/tools/developer/jwt",
@@ -446,6 +480,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-base64",
+    authorGithubUsername: "Toolify",
     name: "Base64 Encoder",
     description: "Encode and decode Base64 data",
     href: "/tools/developer/base64",
@@ -457,6 +492,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-uuid",
+    authorGithubUsername: "Toolify",
     name: "UUID Generator",
     description: "Generate universally unique identifiers",
     href: "/tools/developer/uuid",
@@ -467,6 +503,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-checksum",
+    authorGithubUsername: "Toolify",
     name: "Checksum Generator",
     description: "Generate MD5, SHA1, SHA256 checksums",
     href: "/tools/developer/checksum",
@@ -477,6 +514,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-cron-generator",
+    authorGithubUsername: "Toolify",
     name: "Cron Generator",
     description: "Generate cron expressions with visual interface",
     href: "/tools/developer/cron-generator",
@@ -487,6 +525,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-cron-decoder",
+    authorGithubUsername: "Toolify",
     name: "Cron Decoder",
     description: "Decode and explain cron expressions",
     href: "/tools/developer/cron-decoder",
@@ -497,6 +536,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-sql-formatter",
+    authorGithubUsername: "Toolify",
     name: "SQL Formatter",
     description: "Format and beautify SQL queries",
     href: "/tools/developer/sql-formatter",
@@ -507,6 +547,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-js-minifier",
+    authorGithubUsername: "Toolify",
     name: "JS/TS Minifier",
     description: "Minify JavaScript and TypeScript code",
     href: "/tools/developer/js-minifier",
@@ -517,6 +558,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-flexbox",
+    authorGithubUsername: "Toolify",
     name: "CSS Flexbox",
     description: "Visual CSS Flexbox generator",
     href: "/tools/developer/flexbox",
@@ -527,6 +569,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-mock-data",
+    authorGithubUsername: "Toolify",
     name: "Mock Data",
     description: "Generate mock data for testing",
     href: "/tools/developer/mock-data",
@@ -537,6 +580,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-html-minifier",
+    authorGithubUsername: "Toolify",
     name: "HTML/CSS Minifier",
     description: "Minify HTML and CSS code",
     href: "/tools/developer/html-minifier",
@@ -547,6 +591,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-url-parser",
+    authorGithubUsername: "Toolify",
     name: "URL Parser",
     description: "Parse and analyze URLs",
     href: "/tools/developer/url-parser",
@@ -557,6 +602,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-color-converter",
+    authorGithubUsername: "Toolify",
     name: "Color Converter",
     description: "Convert between color formats",
     href: "/tools/developer/color-converter",
@@ -567,6 +613,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-api-mock",
+    authorGithubUsername: "Toolify",
     name: "API Mock",
     description: "Create mock API responses",
     href: "/tools/developer/api-mock",
@@ -577,6 +624,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-code-diff",
+    authorGithubUsername: "Toolify",
     name: "Code Diff",
     description: "Compare code differences",
     href: "/tools/developer/code-diff",
@@ -587,6 +635,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-yaml",
+    authorGithubUsername: "Toolify",
     name: "YAML Formatter",
     description: "Format and validate YAML files",
     href: "/tools/developer/yaml",
@@ -597,6 +646,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-graphql",
+    authorGithubUsername: "Toolify",
     name: "GraphQL Formatter",
     description: "Format GraphQL queries and schemas",
     href: "/tools/developer/graphql",
@@ -607,6 +657,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-html-entity",
+    authorGithubUsername: "Toolify",
     name: "HTML Entity",
     description: "Encode and decode HTML entities",
     href: "/tools/developer/html-entity",
@@ -617,6 +668,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-xml-formatter",
+    authorGithubUsername: "Toolify",
     name: "XML Formatter",
     description: "Format and validate XML documents",
     href: "/tools/developer/xml-formatter",
@@ -627,6 +679,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-css-minifier",
+    authorGithubUsername: "Toolify",
     name: "CSS Minifier",
     description: "Minify CSS stylesheets",
     href: "/tools/developer/css-minifier",
@@ -637,6 +690,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-markdown-preview",
+    authorGithubUsername: "Toolify",
     name: "Markdown Preview",
     description: "Preview Markdown with live rendering",
     href: "/tools/developer/markdown-preview",
@@ -647,6 +701,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "dev-json-to-csv",
+    authorGithubUsername: "Toolify",
     name: "JSON to CSV",
     description: "Convert JSON data to CSV format",
     href: "/tools/developer/json-to-csv",
@@ -659,6 +714,7 @@ export const allTools: Tool[] = [
   // Text Utilities (20 tools)
   {
     id: "text-case-converter",
+    authorGithubUsername: "Toolify",
     name: "Case Converter",
     description: "Convert text between different cases",
     href: "/tools/text/case-converter",
@@ -670,6 +726,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-word-counter",
+    authorGithubUsername: "Toolify",
     name: "Word Counter",
     description: "Count words, characters, and paragraphs",
     href: "/tools/text/word-counter",
@@ -681,6 +738,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-find-replace",
+    authorGithubUsername: "Toolify",
     name: "Find & Replace",
     description: "Search and replace text with advanced options",
     href: "/tools/text/find-replace",
@@ -691,6 +749,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-lorem",
+    authorGithubUsername: "Toolify",
     name: "Lorem Generator",
     description: "Generate Lorem Ipsum placeholder text",
     href: "/tools/text/lorem",
@@ -701,6 +760,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-split",
+    authorGithubUsername: "Toolify",
     name: "Text Splitter",
     description: "Split text by delimiters or patterns",
     href: "/tools/text/split",
@@ -711,6 +771,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-reverse",
+    authorGithubUsername: "Toolify",
     name: "Reverse Text",
     description: "Reverse text character by character",
     href: "/tools/text/reverse",
@@ -721,6 +782,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-trim",
+    authorGithubUsername: "Toolify",
     name: "Trim Text",
     description: "Remove whitespace and clean text",
     href: "/tools/text/trim",
@@ -731,6 +793,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-remove-duplicates",
+    authorGithubUsername: "Toolify",
     name: "Remove Duplicates",
     description: "Remove duplicate lines from text",
     href: "/tools/text/remove-duplicates",
@@ -741,6 +804,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-sort",
+    authorGithubUsername: "Toolify",
     name: "Sort Words",
     description: "Sort text lines alphabetically",
     href: "/tools/text/sort",
@@ -751,6 +815,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-extract-html",
+    authorGithubUsername: "Toolify",
     name: "Extract from HTML",
     description: "Extract text content from HTML",
     href: "/tools/text/extract-html",
@@ -761,6 +826,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-url-encode",
+    authorGithubUsername: "Toolify",
     name: "URL Encoding",
     description: "Encode text for URL usage",
     href: "/tools/text/url-encode",
@@ -771,6 +837,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-url-decode",
+    authorGithubUsername: "Toolify",
     name: "URL Decoding",
     description: "Decode URL-encoded text",
     href: "/tools/text/url-decode",
@@ -781,6 +848,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-regex-generator",
+    authorGithubUsername: "Toolify",
     name: "Regex Generator",
     description: "Generate regular expressions from text",
     href: "/tools/text/regex-generator",
@@ -791,6 +859,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-morse",
+    authorGithubUsername: "Toolify",
     name: "Morse Code",
     description: "Convert text to/from Morse code",
     href: "/tools/text/morse",
@@ -801,6 +870,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-binary",
+    authorGithubUsername: "Toolify",
     name: "Binary Converter",
     description: "Convert text to/from binary",
     href: "/tools/text/binary",
@@ -811,6 +881,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-frequency",
+    authorGithubUsername: "Toolify",
     name: "Word Frequency",
     description: "Analyze word frequency in text",
     href: "/tools/text/frequency",
@@ -821,6 +892,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-diff",
+    authorGithubUsername: "Toolify",
     name: "Text Diff",
     description: "Compare differences between texts",
     href: "/tools/text/diff",
@@ -832,6 +904,7 @@ export const allTools: Tool[] = [
 
   {
     id: "text-remove-breaks",
+    authorGithubUsername: "Toolify",
     name: "Remove Line Breaks",
     description: "Remove or normalize line breaks",
     href: "/tools/text/remove-breaks",
@@ -842,6 +915,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "text-indent",
+    authorGithubUsername: "Toolify",
     name: "Indent Text",
     description: "Add or remove text indentation",
     href: "/tools/text/indent",
@@ -854,6 +928,7 @@ export const allTools: Tool[] = [
   // Number Tools (18 tools)
   {
     id: "number-base-converter",
+    authorGithubUsername: "Toolify",
     name: "Base Converter",
     description: "Convert numbers between different bases",
     href: "/tools/number/base-converter",
@@ -864,6 +939,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-formatter",
+    authorGithubUsername: "Toolify",
     name: "Number Formatter",
     description: "Format numbers with separators and locales",
     href: "/tools/number/formatter",
@@ -874,6 +950,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-random",
+    authorGithubUsername: "Toolify",
     name: "Random Generator",
     description: "Generate random numbers with constraints",
     href: "/tools/number/random",
@@ -884,6 +961,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-prime",
+    authorGithubUsername: "Toolify",
     name: "Prime Checker",
     description: "Check if numbers are prime",
     href: "/tools/number/prime",
@@ -894,6 +972,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-percentage",
+    authorGithubUsername: "Toolify",
     name: "Percentage Calc",
     description: "Calculate percentages and ratios",
     href: "/tools/number/percentage",
@@ -904,6 +983,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-ratio",
+    authorGithubUsername: "Toolify",
     name: "Ratio Simplifier",
     description: "Simplify mathematical ratios",
     href: "/tools/number/ratio",
@@ -914,6 +994,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-sequence",
+    authorGithubUsername: "Toolify",
     name: "Sequence Generator",
     description: "Generate number sequences",
     href: "/tools/number/sequence",
@@ -924,6 +1005,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-rounding",
+    authorGithubUsername: "Toolify",
     name: "Rounding Tool",
     description: "Round numbers to specified precision",
     href: "/tools/number/rounding",
@@ -934,6 +1016,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-factorization",
+    authorGithubUsername: "Toolify",
     name: "Factorization",
     description: "Find prime factors of numbers",
     href: "/tools/number/factorization",
@@ -944,6 +1027,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-roman",
+    authorGithubUsername: "Toolify",
     name: "Roman Numerals",
     description: "Convert to/from Roman numerals",
     href: "/tools/number/roman",
@@ -954,6 +1038,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-matrix",
+    authorGithubUsername: "Toolify",
     name: "Matrix Calculator",
     description: "Perform matrix operations",
     href: "/tools/number/matrix",
@@ -964,6 +1049,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-scientific",
+    authorGithubUsername: "Toolify",
     name: "Scientific Notation",
     description: "Convert to scientific notation",
     href: "/tools/number/scientific",
@@ -974,6 +1060,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-significant",
+    authorGithubUsername: "Toolify",
     name: "Significant Figures",
     description: "Round to significant figures",
     href: "/tools/number/significant",
@@ -984,6 +1071,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-gcd-lcm",
+    authorGithubUsername: "Toolify",
     name: "GCD/LCM",
     description: "Find greatest common divisor and least common multiple",
     href: "/tools/number/gcd-lcm",
@@ -994,6 +1082,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-factorial",
+    authorGithubUsername: "Toolify",
     name: "Factorial",
     description: "Calculate factorials and combinations",
     href: "/tools/number/factorial",
@@ -1004,6 +1093,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-quadratic",
+    authorGithubUsername: "Toolify",
     name: "Quadratic Solver",
     description: "Solve quadratic equations",
     href: "/tools/number/quadratic",
@@ -1014,6 +1104,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-to-words",
+    authorGithubUsername: "Toolify",
     name: "Number to Words",
     description: "Convert numbers to written words",
     href: "/tools/number/to-words",
@@ -1024,6 +1115,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "number-shuffle",
+    authorGithubUsername: "Toolify",
     name: "Sequence Shuffler",
     description: "Shuffle and randomize number sequences",
     href: "/tools/number/shuffle",
@@ -1036,6 +1128,7 @@ export const allTools: Tool[] = [
   // Time Utilities (15 tools)
   {
     id: "time-timezone",
+    authorGithubUsername: "Toolify",
     name: "Timezone Converter",
     description: "Convert time between different timezones",
     href: "/tools/time/timezone",
@@ -1047,6 +1140,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-stopwatch",
+    authorGithubUsername: "Toolify",
     name: "Stopwatch",
     description: "Precise stopwatch with lap timing",
     href: "/tools/time/stopwatch",
@@ -1057,6 +1151,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-duration",
+    authorGithubUsername: "Toolify",
     name: "Duration Calculator",
     description: "Calculate time differences and durations",
     href: "/tools/time/duration",
@@ -1067,6 +1162,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-countdown",
+    authorGithubUsername: "Toolify",
     name: "Countdown Timer",
     description: "Create countdown timers for events",
     href: "/tools/time/countdown",
@@ -1077,6 +1173,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-timestamp",
+    authorGithubUsername: "Toolify",
     name: "Timestamp Converter",
     description: "Convert Unix timestamps to readable dates",
     href: "/tools/time/timestamp",
@@ -1087,6 +1184,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-format",
+    authorGithubUsername: "Toolify",
     name: "Time Format",
     description: "Format time in different formats",
     href: "/tools/time/format",
@@ -1097,6 +1195,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-age",
+    authorGithubUsername: "Toolify",
     name: "Age Calculator",
     description: "Calculate age and time since birth",
     href: "/tools/time/age",
@@ -1107,6 +1206,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-iso8601",
+    authorGithubUsername: "Toolify",
     name: "ISO 8601 Formatter",
     description: "Format dates in ISO 8601 standard",
     href: "/tools/time/iso8601",
@@ -1117,6 +1217,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-calendar",
+    authorGithubUsername: "Toolify",
     name: "Calendar Calculator",
     description: "Calculate dates and calendar operations",
     href: "/tools/time/calendar",
@@ -1127,6 +1228,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-unit-converter",
+    authorGithubUsername: "Toolify",
     name: "Time Unit Converter",
     description: "Convert between time units",
     href: "/tools/time/unit-converter",
@@ -1137,6 +1239,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-business-days",
+    authorGithubUsername: "Toolify",
     name: "Business Days",
     description: "Calculate business days between dates",
     href: "/tools/time/business-days",
@@ -1147,6 +1250,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-leap-year",
+    authorGithubUsername: "Toolify",
     name: "Leap Year Checker",
     description: "Check if years are leap years",
     href: "/tools/time/leap-year",
@@ -1157,6 +1261,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-world-clock",
+    authorGithubUsername: "Toolify",
     name: "World Clock",
     description: "Display time in multiple timezones",
     href: "/tools/time/world-clock",
@@ -1167,6 +1272,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-date-formatter",
+    authorGithubUsername: "Toolify",
     name: "Date Formatter",
     description: "Format dates in various formats",
     href: "/tools/time/date-formatter",
@@ -1177,6 +1283,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "time-timezone-offset",
+    authorGithubUsername: "Toolify",
     name: "Timezone Offset",
     description: "Calculate timezone offsets",
     href: "/tools/time/timezone-offset",
@@ -1189,6 +1296,7 @@ export const allTools: Tool[] = [
   // Unit Converters (15 tools)
   {
     id: "units-length",
+    authorGithubUsername: "Toolify",
     name: "Length Converter",
     description: "Convert between meters, feet, inches, and more",
     href: "/tools/units/length",
@@ -1199,6 +1307,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-weight",
+    authorGithubUsername: "Toolify",
     name: "Weight Converter",
     description: "Convert between kilograms, pounds, ounces, and more",
     href: "/tools/units/weight",
@@ -1209,6 +1318,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-temperature",
+    authorGithubUsername: "Toolify",
     name: "Temperature",
     description: "Convert between Celsius, Fahrenheit, and Kelvin",
     href: "/tools/units/temperature",
@@ -1219,6 +1329,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-area",
+    authorGithubUsername: "Toolify",
     name: "Area Converter",
     description: "Convert between square meters, acres, hectares",
     href: "/tools/units/area",
@@ -1229,6 +1340,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-volume",
+    authorGithubUsername: "Toolify",
     name: "Volume Converter",
     description: "Convert between liters, gallons, cups, and more",
     href: "/tools/units/volume",
@@ -1239,6 +1351,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-data",
+    authorGithubUsername: "Toolify",
     name: "Data Storage",
     description: "Convert between bytes, KB, MB, GB, TB",
     href: "/tools/units/data",
@@ -1249,6 +1362,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-angle",
+    authorGithubUsername: "Toolify",
     name: "Angle Converter",
     description: "Convert between degrees, radians, gradians",
     href: "/tools/units/angle",
@@ -1259,6 +1373,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-pressure",
+    authorGithubUsername: "Toolify",
     name: "Pressure Converter",
     description: "Convert between PSI, bar, pascal, and more",
     href: "/tools/units/pressure",
@@ -1269,6 +1384,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-energy",
+    authorGithubUsername: "Toolify",
     name: "Energy Converter",
     description: "Convert between joules, calories, BTU",
     href: "/tools/units/energy",
@@ -1279,6 +1395,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-power",
+    authorGithubUsername: "Toolify",
     name: "Power Converter",
     description: "Convert between watts, horsepower, BTU/hr",
     href: "/tools/units/power",
@@ -1289,6 +1406,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-speed",
+    authorGithubUsername: "Toolify",
     name: "Speed Converter",
     description: "Convert between mph, km/h, m/s, knots",
     href: "/tools/units/speed",
@@ -1299,6 +1417,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-frequency",
+    authorGithubUsername: "Toolify",
     name: "Frequency",
     description: "Convert between Hz, kHz, MHz, GHz",
     href: "/tools/units/frequency",
@@ -1309,6 +1428,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-fuel",
+    authorGithubUsername: "Toolify",
     name: "Fuel Efficiency",
     description: "Convert between MPG, L/100km, km/L",
     href: "/tools/units/fuel",
@@ -1319,6 +1439,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-currency",
+    authorGithubUsername: "Toolify",
     name: "Currency (Offline)",
     description: "Basic currency conversion without live rates",
     href: "/tools/units/currency",
@@ -1329,6 +1450,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "units-time",
+    authorGithubUsername: "Toolify",
     name: "Time Converter",
     description: "Convert between seconds, minutes, hours, days",
     href: "/tools/units/time",
@@ -1341,6 +1463,7 @@ export const allTools: Tool[] = [
   // General Utilities (20 tools)
   {
     id: "general-password-generator",
+    authorGithubUsername: "Toolify",
     name: "Password Generator",
     description: "Generate secure passwords with custom options",
     href: "/tools/general/password-generator",
@@ -1353,6 +1476,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-qr-generator",
+    authorGithubUsername: "Toolify",
     name: "QR Code Generator",
     description: "Generate QR codes for text, URLs, and data",
     href: "/tools/general/qr-generator",
@@ -1363,6 +1487,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-password-checker",
+    authorGithubUsername: "Toolify",
     name: "Password Checker",
     description: "Check password strength and security",
     href: "/tools/general/password-checker",
@@ -1373,6 +1498,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-barcode",
+    authorGithubUsername: "Toolify",
     name: "Barcode Generator",
     description: "Generate various types of barcodes",
     href: "/tools/general/barcode",
@@ -1383,6 +1509,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-color-picker",
+    authorGithubUsername: "Toolify",
     name: "Color Picker",
     description: "Pick and convert colors between formats",
     href: "/tools/general/color-picker",
@@ -1393,6 +1520,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-file-hash",
+    authorGithubUsername: "Toolify",
     name: "File Hash",
     description: "Generate MD5, SHA1, SHA256 hashes for files",
     href: "/tools/general/file-hash",
@@ -1403,6 +1531,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-random-color",
+    authorGithubUsername: "Toolify",
     name: "Random Color",
     description: "Generate random colors and palettes",
     href: "/tools/general/random-color",
@@ -1413,6 +1542,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-file-compressor",
+    authorGithubUsername: "Toolify",
     name: "File Compressor",
     description: "Compress files and create archives",
     href: "/tools/general/file-compressor",
@@ -1423,6 +1553,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-csv-json",
+    authorGithubUsername: "Toolify",
     name: "CSV to JSON",
     description: "Convert CSV data to JSON format",
     href: "/tools/general/csv-json",
@@ -1433,6 +1564,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-image-base64",
+    authorGithubUsername: "Toolify",
     name: "Image to Base64",
     description: "Convert images to Base64 data URLs",
     href: "/tools/general/image-base64",
@@ -1443,6 +1575,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-storage",
+    authorGithubUsername: "Toolify",
     name: "Storage Explorer",
     description: "Explore browser storage (localStorage, sessionStorage)",
     href: "/tools/general/storage",
@@ -1453,6 +1586,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-unit-test",
+    authorGithubUsername: "Toolify",
     name: "Unit Test Generator",
     description: "Generate unit test templates",
     href: "/tools/general/unit-test",
@@ -1463,6 +1597,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-ascii-art",
+    authorGithubUsername: "Toolify",
     name: "ASCII Art",
     description: "Convert text to ASCII art",
     href: "/tools/general/ascii-art",
@@ -1473,6 +1608,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-gradient",
+    authorGithubUsername: "Toolify",
     name: "Gradient Generator",
     description: "Create CSS gradients visually",
     href: "/tools/general/gradient",
@@ -1483,6 +1619,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-compatibility",
+    authorGithubUsername: "Toolify",
     name: "Browser Compatibility",
     description: "Check browser feature compatibility",
     href: "/tools/general/compatibility",
@@ -1493,6 +1630,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-counter",
+    authorGithubUsername: "Toolify",
     name: "Counter Tool",
     description: "Simple click counter with history",
     href: "/tools/general/counter",
@@ -1503,6 +1641,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-text-merger",
+    authorGithubUsername: "Toolify",
     name: "Text Merger",
     description: "Merge multiple text files or inputs",
     href: "/tools/general/text-merger",
@@ -1513,6 +1652,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-search-query",
+    authorGithubUsername: "Toolify",
     name: "Google Search Query",
     description: "Build advanced Google search queries",
     href: "/tools/general/search-query",
@@ -1523,6 +1663,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-speech-to-text",
+    authorGithubUsername: "Toolify",
     name: "Speech to Text",
     description: "Convert speech to text using browser API",
     href: "/tools/general/speech-to-text",
@@ -1533,6 +1674,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "general-text-to-speech",
+    authorGithubUsername: "Toolify",
     name: "Text to Speech",
     description: "Convert text to speech audio",
     href: "/tools/general/text-to-speech",
@@ -1545,6 +1687,7 @@ export const allTools: Tool[] = [
   // Web3 & Crypto Tools (5 tools)
   {
     id: "web3-wallet-overview",
+    authorGithubUsername: "Toolify",
     name: "Wallet Portfolio",
     description: "Overview and analytics for SOLANA wallets",
     href: "/tools/web3/wallet-overview",
@@ -1557,6 +1700,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "web3-vanity-generator",
+    authorGithubUsername: "Toolify",
     name: "Vanity Address Generator",
     description: "Generate custom SOLANA addresses",
     href: "/tools/web3/vanity-generator",
@@ -1568,6 +1712,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "web3-wallet-generator",
+    authorGithubUsername: "Toolify",
     name: "Wallet Generator",
     description: "Generate new SOLANA wallets",
     href: "/tools/web3/wallet-generator",
@@ -1578,6 +1723,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "web3-transaction-decoder",
+    authorGithubUsername: "Toolify",
     name: "Transaction Decoder",
     description: "Decode and analyze SOLANA transactions",
     href: "/tools/web3/transaction-decoder",
@@ -1588,6 +1734,7 @@ export const allTools: Tool[] = [
   },
   {
     id: "web3-address-validator",
+    authorGithubUsername: "Toolify",
     name: "Address Validator",
     description: "Validate SOLANA addresses",
     href: "/tools/web3/address-validator",
