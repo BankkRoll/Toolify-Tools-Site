@@ -162,11 +162,11 @@ export default function TransactionDecoderPage() {
           // Versioned transaction (MessageV0)
           const accountKeys = message.getAccountKeys();
           staticAccountKeys = accountKeys.staticAccountKeys;
-          instructions = message.compiledInstructions || [];
+          instructions = (message as any).compiledInstructions || [];
         } else {
           // Legacy transaction (Message)
-          staticAccountKeys = message.accountKeys;
-          instructions = message.instructions || [];
+          staticAccountKeys = (message as any).accountKeys;
+          instructions = (message as any).instructions || [];
         }
 
         const decoded: DecodedTransaction = {
