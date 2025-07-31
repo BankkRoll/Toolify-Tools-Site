@@ -1,4 +1,4 @@
-<img width="1280" height="853" alt="e481c648-28c0-482e-96f4-e7667f519b16-Photoroom" src="https://github.com/user-attachments/assets/40e2740d-a141-4965-b6cf-48b6dad24065" />
+![Site-Preview](https://api.microlink.io/?url=https://toolify-tools-site.vercel.app/&screenshot=true&embed=screenshot.url)
 
 # Toolify - Ultimate Developer Toolkit
 
@@ -16,7 +16,7 @@ A comprehensive browser-based developer toolkit providing professional tools for
 developers, designers, and content creators. No downloads, no installations -
 just powerful tools that work instantly in your browser.
 
-[Live Demo](https://toolify.dev) • [Documentation](https://toolify.dev/docs) •
+[Live Demo](https://toolify-tools-site.vercel.app/) • [Documentation](https://toolify-tools-site.vercel.app//docs) •
 [Report Bug](https://github.com/BankkRoll/Toolify-Tools-Site/issues) •
 [Request Feature](https://github.com/BankkRoll/Toolify-Tools-Site/issues)
 
