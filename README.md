@@ -1,5 +1,3 @@
-![Site-Preview](https://api.microlink.io/?url=https://toolify-tools-site.vercel.app/&screenshot=true&embed=screenshot.url)
-
 # Toolify - Ultimate Developer Toolkit
 
 ![GitHub stars](https://img.shields.io/github/stars/BankkRoll/Toolify-Tools-Site?style=social)
