@@ -107,7 +107,7 @@
     "image-conversion": "^2.1.1",
     "input-otp": "1.4.1",
     "jsbarcode": "^3.12.1",
-    "jspdf": "^3.0.1",
+    "jspdf": "^3.0.2",
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.454.0",
