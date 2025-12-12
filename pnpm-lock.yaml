@@ -109,13 +109,13 @@ dependencies:
     version: 0.9.27(@solana/web3.js@1.98.2)
   '@solana/wallet-adapter-react':
     specifier: ^0.15.39
-    version: 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1)
+    version: 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1)
   '@solana/wallet-adapter-react-ui':
     specifier: ^0.9.39
-    version: 0.9.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1)
+    version: 0.9.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1)
   '@solana/wallet-adapter-wallets':
     specifier: ^0.19.37
-    version: 0.19.37(@babel/runtime@7.28.4)(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(@types/react@18.3.23)(bs58@5.0.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)(zod@3.25.76)
+    version: 0.19.37(@babel/runtime@7.28.4)(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(@types/react@18.3.23)(bs58@5.0.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)(zod@3.25.76)
   '@solana/web3.js':
     specifier: ^1.98.2
     version: 1.98.2(typescript@5.8.3)
@@ -136,7 +136,7 @@ dependencies:
     version: 10.0.0
   '@vercel/analytics':
     specifier: ^1.5.0
-    version: 1.5.0(next@15.4.8)(react@19.2.1)
+    version: 1.5.0(next@15.4.9)(react@19.2.1)
   ace-builds:
     specifier: ^1.43.2
     version: 1.43.2
@@ -181,7 +181,7 @@ dependencies:
     version: 2.0.5
   geist:
     specifier: ^1.3.1
-    version: 1.4.2(next@15.4.8)
+    version: 1.4.2(next@15.4.9)
   highlight.js:
     specifier: ^11.11.1
     version: 11.11.1
@@ -222,8 +222,8 @@ dependencies:
     specifier: ^5.1.5
     version: 5.1.5
   next:
-    specifier: 15.4.8
-    version: 15.4.8(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
+    specifier: 15.4.9
+    version: 15.4.9(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
   next-themes:
     specifier: ^0.4.6
     version: 0.4.6(react-dom@19.2.1)(react@19.2.1)
@@ -262,7 +262,7 @@ dependencies:
     version: 14.0.1(react-dom@19.2.1)(react@19.2.1)
   react-beautiful-dnd:
     specifier: ^13.1.1
-    version: 13.1.1(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1)
+    version: 13.1.1(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1)
   react-color:
     specifier: ^2.19.3
     version: 2.19.3(react@19.2.1)
@@ -1198,7 +1198,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       jest-mock: 29.7.0
     dev: false
 
@@ -1208,7 +1208,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -1251,7 +1251,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       '@types/yargs': 17.0.35
       chalk: 4.1.2
     dev: false
@@ -1433,8 +1433,8 @@ packages:
     engines: {node: '>= 10.*'}
     dev: false
 
-  /@next/env@15.4.8:
-    resolution: {integrity: sha512-LydLa2MDI1NMrOFSkO54mTc8iIHSttj6R6dthITky9ylXV2gCGi0bHQjVCtLGRshdRPjyh2kXbxJukDtBWQZtQ==}
+  /@next/env@15.4.9:
+    resolution: {integrity: sha512-OYR0RulK5phnbxxzcLE4/ECgfx1PL3EHrDbjyelJ7jauaO+/Qvj5gG8JPMltB51CygC2KrZ0aAfYLjPYjYY17A==}
     dev: false
 
   /@next/swc-darwin-arm64@15.4.8:
@@ -3311,24 +3311,24 @@ packages:
     resolution: {integrity: sha512-HPwpGIzkl28mWyZqG52jiqDJ12waP11Pa1lGoiyUkIEuMLBP0oeK/C89esbXrxsky5we7dfd8U58nm0SgAWpVw==}
     dev: false
 
-  /@react-native-async-storage/async-storage@1.24.0(react-native@0.82.1):
+  /@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0):
     resolution: {integrity: sha512-W4/vbwUOYOjco0x3toB8QCr7EjIP6nE9G7o8PMguvvjYT5Awg09lyV4enACRx4s++PPulBiBSjL0KTFx2u0Z/g==}
     requiresBuild: true
     peerDependencies:
       react-native: ^0.0.0-0 || >=0.60 <1.0
     dependencies:
       merge-options: 3.0.4
-      react-native: 0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
+      react-native: 0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
     dev: false
     optional: true
 
-  /@react-native/assets-registry@0.82.1:
-    resolution: {integrity: sha512-B1SRwpntaAcckiatxbjzylvNK562Ayza05gdJCjDQHTiDafa1OABmyB5LHt7qWDOpNkaluD+w11vHF7pBmTpzQ==}
+  /@react-native/assets-registry@0.83.0:
+    resolution: {integrity: sha512-EmGSKDvmnEnBrTK75T+0Syt6gy/HACOTfziw5+392Kr1Bb28Rv26GyOIkvptnT+bb2VDHU0hx9G0vSy5/S3rmQ==}
     engines: {node: '>= 20.19.4'}
     dev: false
 
-  /@react-native/codegen@0.82.1(@babel/core@7.28.5):
-    resolution: {integrity: sha512-ezXTN70ygVm9l2m0i+pAlct0RntoV4afftWMGUIeAWLgaca9qItQ54uOt32I/9dBJvzBibT33luIR/pBG0dQvg==}
+  /@react-native/codegen@0.83.0(@babel/core@7.28.5):
+    resolution: {integrity: sha512-3fvMi/pSJHhikjwMZQplU4Ar9ANoR2GSBxotbkKIMI6iNduh+ln1FTvB2me69FA68aHtVZOO+cO+QpGCcvgaMA==}
     engines: {node: '>= 20.19.4'}
     peerDependencies:
       '@babel/core': '*'
@@ -3342,8 +3342,8 @@ packages:
       yargs: 17.7.2
     dev: false
 
-  /@react-native/community-cli-plugin@0.82.1:
-    resolution: {integrity: sha512-H/eMdtOy9nEeX7YVeEG1N2vyCoifw3dr9OV8++xfUElNYV7LtSmJ6AqxZUUfxGJRDFPQvaU/8enmJlM/l11VxQ==}
+  /@react-native/community-cli-plugin@0.83.0:
+    resolution: {integrity: sha512-bJD5pLURgKY2YK0R6gUsFWHiblSAFt1Xyc2fsyCL8XBnB7kJfVhLAKGItk6j1QZbwm1Io41ekZxBmZdyQqIDrg==}
     engines: {node: '>= 20.19.4'}
     peerDependencies:
       '@react-native-community/cli': '*'
@@ -3354,7 +3354,7 @@ packages:
       '@react-native/metro-config':
         optional: true
     dependencies:
-      '@react-native/dev-middleware': 0.82.1
+      '@react-native/dev-middleware': 0.83.0
       debug: 4.4.3
       invariant: 2.2.4
       metro: 0.83.3
@@ -3367,26 +3367,26 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@react-native/debugger-frontend@0.82.1:
-    resolution: {integrity: sha512-a2O6M7/OZ2V9rdavOHyCQ+10z54JX8+B+apYKCQ6a9zoEChGTxUMG2YzzJ8zZJVvYf1ByWSNxv9Se0dca1hO9A==}
+  /@react-native/debugger-frontend@0.83.0:
+    resolution: {integrity: sha512-7XVbkH8nCjLKLe8z5DS37LNP62/QNNya/YuLlVoLfsiB54nR/kNZij5UU7rS0npAZ3WN7LR0anqLlYnzDd0JHA==}
     engines: {node: '>= 20.19.4'}
     dev: false
 
-  /@react-native/debugger-shell@0.82.1:
-    resolution: {integrity: sha512-fdRHAeqqPT93bSrxfX+JHPpCXHApfDUdrXMXhoxlPgSzgXQXJDykIViKhtpu0M6slX6xU/+duq+AtP/qWJRpBw==}
+  /@react-native/debugger-shell@0.83.0:
+    resolution: {integrity: sha512-rJJxRRLLsKW+cqd0ALSBoqwL5SQTmwpd5SGl6rq9sY+fInCUKfkLEIc5HWQ0ppqoPyDteQVWbQ3a5VN84aJaNg==}
     engines: {node: '>= 20.19.4'}
     dependencies:
       cross-spawn: 7.0.6
       fb-dotslash: 0.5.8
     dev: false
 
-  /@react-native/dev-middleware@0.82.1:
-    resolution: {integrity: sha512-wuOIzms/Qg5raBV6Ctf2LmgzEOCqdP3p1AYN4zdhMT110c39TVMbunpBaJxm0Kbt2HQ762MQViF9naxk7SBo4w==}
+  /@react-native/dev-middleware@0.83.0:
+    resolution: {integrity: sha512-HWn42tbp0h8RWttua6d6PjseaSr3IdwkaoqVxhiM9kVDY7Ro00eO7tdlVgSzZzhIibdVS2b2C3x+sFoWhag1fA==}
     engines: {node: '>= 20.19.4'}
     dependencies:
       '@isaacs/ttlcache': 1.4.1
-      '@react-native/debugger-frontend': 0.82.1
-      '@react-native/debugger-shell': 0.82.1
+      '@react-native/debugger-frontend': 0.83.0
+      '@react-native/debugger-shell': 0.83.0
       chrome-launcher: 0.15.2
       chromium-edge-launcher: 0.2.0
       connect: 3.7.0
@@ -3395,32 +3395,32 @@ packages:
       nullthrows: 1.1.1
       open: 7.4.2
       serve-static: 1.16.2
-      ws: 6.2.3
+      ws: 7.5.10
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
     dev: false
 
-  /@react-native/gradle-plugin@0.82.1:
-    resolution: {integrity: sha512-KkF/2T1NSn6EJ5ALNT/gx0MHlrntFHv8YdooH9OOGl9HQn5NM0ZmQSr86o5utJsGc7ME3R6p3SaQuzlsFDrn8Q==}
+  /@react-native/gradle-plugin@0.83.0:
+    resolution: {integrity: sha512-BXZRmfsbgPhEPkrRPjk2njA2AzhSelBqhuoklnv3DdLTdxaRjKYW+LW0zpKo1k3qPKj7kG1YGI3miol6l1GB5g==}
     engines: {node: '>= 20.19.4'}
     dev: false
 
-  /@react-native/js-polyfills@0.82.1:
-    resolution: {integrity: sha512-tf70X7pUodslOBdLN37J57JmDPB/yiZcNDzS2m+4bbQzo8fhx3eG9QEBv5n4fmzqfGAgSB4BWRHgDMXmmlDSVA==}
+  /@react-native/js-polyfills@0.83.0:
+    resolution: {integrity: sha512-cVB9BMqlfbQR0v4Wxi5M2yDhZoKiNqWgiEXpp7ChdZIXI0SEnj8WwLwE3bDkyOfF8tCHdytpInXyg/al2O+dLQ==}
     engines: {node: '>= 20.19.4'}
     dev: false
 
-  /@react-native/normalize-colors@0.82.1:
-    resolution: {integrity: sha512-CCfTR1uX+Z7zJTdt3DNX9LUXr2zWXsNOyLbwupW2wmRzrxlHRYfmLgTABzRL/cKhh0Ubuwn15o72MQChvCRaHw==}
+  /@react-native/normalize-colors@0.83.0:
+    resolution: {integrity: sha512-DG1ELOqQ6RS82R1zEUGTWa/pfSPOf+vwAnQB7Ao1vRuhW/xdd2OPQJyqx5a5QWMYpGrlkCb7ERxEVX6p2QODCA==}
     dev: false
 
-  /@react-native/virtualized-lists@0.82.1(@types/react@18.3.23)(react-native@0.82.1)(react@19.2.1):
-    resolution: {integrity: sha512-f5zpJg9gzh7JtCbsIwV+4kP3eI0QBuA93JGmwFRd4onQ3DnCjV2J5pYqdWtM95sjSKK1dyik59Gj01lLeKqs1Q==}
+  /@react-native/virtualized-lists@0.83.0(@types/react@18.3.23)(react-native@0.83.0)(react@19.2.1):
+    resolution: {integrity: sha512-AVnDppwPidQrPrzA4ETr4o9W+40yuijg3EVgFt2hnMldMZkqwPRrgJL2GSreQjCYe1NfM5Yn4Egyy4Kd0yp4Lw==}
     engines: {node: '>= 20.19.4'}
     peerDependencies:
-      '@types/react': ^19.1.1
+      '@types/react': ^19.2.0
       react: '*'
       react-native: '*'
     peerDependenciesMeta:
@@ -3431,7 +3431,7 @@ packages:
       invariant: 2.2.4
       nullthrows: 1.1.1
       react: 19.2.1
-      react-native: 0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
+      react-native: 0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
     dev: false
 
   /@reown/appkit-common@1.7.2(typescript@5.8.3)(zod@3.22.4):
@@ -3750,12 +3750,12 @@ packages:
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
     dev: false
 
-  /@solana-mobile/mobile-wallet-adapter-protocol-web3js@2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1):
+  /@solana-mobile/mobile-wallet-adapter-protocol-web3js@2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-XmLJrEdkAJ3CBV+bkYDKSBqF6QfjGTIeX+tFGPcwcc9rQ68sE1MPhpUKV9ehRwDLrZXcin2UDMOpWB/S6FJWBQ==}
     peerDependencies:
       '@solana/web3.js': ^1.58.0
     dependencies:
-      '@solana-mobile/mobile-wallet-adapter-protocol': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1)
+      '@solana-mobile/mobile-wallet-adapter-protocol': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
       bs58: 5.0.0
       js-base64: 3.7.7
@@ -3765,7 +3765,7 @@ packages:
       - react-native
     dev: false
 
-  /@solana-mobile/mobile-wallet-adapter-protocol@2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1):
+  /@solana-mobile/mobile-wallet-adapter-protocol@2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-ZJVwPVXmIfoqEhPRbpj/atnyIkcxOrJcLOqIQSaRfgmGGhCAcXmC8dTxlrtjVisxkZviXEshmBVxvOD/kqLQOw==}
     peerDependencies:
       react-native: '>0.69'
@@ -3774,7 +3774,7 @@ packages:
       '@solana/wallet-standard-util': 1.1.2
       '@wallet-standard/core': 1.1.1
       js-base64: 3.7.7
-      react-native: 0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
+      react-native: 0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
     transitivePeerDependencies:
       - '@solana/wallet-adapter-base'
       - '@solana/web3.js'
@@ -3782,30 +3782,30 @@ packages:
       - react
     dev: false
 
-  /@solana-mobile/wallet-adapter-mobile@2.2.2(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1):
+  /@solana-mobile/wallet-adapter-mobile@2.2.2(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-4whHagJRduFDWUjLi1kQc4k7LKPjnDn+mLigAd/cv9iPjk0NYNtQOqdGMT+5ENRm3q1XX3DO5jBVd++ckDPJvw==}
     peerDependencies:
       '@solana/web3.js': ^1.58.0
     dependencies:
-      '@solana-mobile/mobile-wallet-adapter-protocol-web3js': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1)
-      '@solana-mobile/wallet-standard-mobile': 0.2.0(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1)
+      '@solana-mobile/mobile-wallet-adapter-protocol-web3js': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1)
+      '@solana-mobile/wallet-standard-mobile': 0.2.0(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1)
       '@solana/wallet-adapter-base': 0.9.27(@solana/web3.js@1.98.2)
       '@solana/wallet-standard-features': 1.3.0
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
       js-base64: 3.7.7
     optionalDependencies:
-      '@react-native-async-storage/async-storage': 1.24.0(react-native@0.82.1)
+      '@react-native-async-storage/async-storage': 1.24.0(react-native@0.83.0)
     transitivePeerDependencies:
       - react
       - react-native
     dev: false
 
-  /@solana-mobile/wallet-standard-mobile@0.2.0(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1):
+  /@solana-mobile/wallet-standard-mobile@0.2.0(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-vAv95mID0682O8wLMzsbnMzfwL8EBtJVUOQiywjnwuTxMlYhSdjp0jJw05Otm/j9N1lbkZ9tbgANGHHL8wRmjw==}
     peerDependencies:
       '@solana/web3.js': ^1.58.0
     dependencies:
-      '@solana-mobile/mobile-wallet-adapter-protocol-web3js': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1)
+      '@solana-mobile/mobile-wallet-adapter-protocol-web3js': 2.2.2(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1)
       '@solana/wallet-standard-chains': 1.1.1
       '@solana/wallet-standard-features': 1.3.0
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
@@ -4569,14 +4569,14 @@ packages:
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
     dev: false
 
-  /@solana/wallet-adapter-base-ui@0.1.6(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1):
+  /@solana/wallet-adapter-base-ui@0.1.6(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-OuxLBOXA2z3dnmuGP0agEb7xhsT3+Nttd+gAkSLgJRX2vgNEAy3Fvw8IKPXv1EE2vRdw/U6Rq0Yjpp3McqVZhw==}
     engines: {node: '>=20'}
     peerDependencies:
       '@solana/web3.js': ^1.98.0
       react: '*'
     dependencies:
-      '@solana/wallet-adapter-react': 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1)
+      '@solana/wallet-adapter-react': 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
       react: 19.2.1
     transitivePeerDependencies:
@@ -4809,7 +4809,7 @@ packages:
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
     dev: false
 
-  /@solana/wallet-adapter-react-ui@0.9.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1):
+  /@solana/wallet-adapter-react-ui@0.9.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-B6GdOobwVuIgEX1qjcbTQEeo+0UGs3WPuBeUlR0dDCzQh9J3IAWRRyL/47FYSHYRp26LAu4ImWy4+M2TFD5OJg==}
     engines: {node: '>=20'}
     peerDependencies:
@@ -4818,8 +4818,8 @@ packages:
       react-dom: '*'
     dependencies:
       '@solana/wallet-adapter-base': 0.9.27(@solana/web3.js@1.98.2)
-      '@solana/wallet-adapter-base-ui': 0.1.6(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1)
-      '@solana/wallet-adapter-react': 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1)
+      '@solana/wallet-adapter-base-ui': 0.1.6(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1)
+      '@solana/wallet-adapter-react': 0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
@@ -4828,14 +4828,14 @@ packages:
       - react-native
     dev: false
 
-  /@solana/wallet-adapter-react@0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.82.1)(react@19.2.1):
+  /@solana/wallet-adapter-react@0.15.39(@solana/web3.js@1.98.2)(bs58@5.0.0)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-WXtlo88ith5m22qB+qiGw301/Zb9r5pYr4QdXWmlXnRNqwST5MGmJWhG+/RVrzc+OG7kSb3z1gkVNv+2X/Y0Gg==}
     engines: {node: '>=20'}
     peerDependencies:
       '@solana/web3.js': ^1.98.0
       react: '*'
     dependencies:
-      '@solana-mobile/wallet-adapter-mobile': 2.2.2(@solana/web3.js@1.98.2)(react-native@0.82.1)(react@19.2.1)
+      '@solana-mobile/wallet-adapter-mobile': 2.2.2(@solana/web3.js@1.98.2)(react-native@0.83.0)(react@19.2.1)
       '@solana/wallet-adapter-base': 0.9.27(@solana/web3.js@1.98.2)
       '@solana/wallet-standard-wallet-adapter-react': 1.1.4(@solana/wallet-adapter-base@0.9.27)(@solana/web3.js@1.98.2)(bs58@5.0.0)(react@19.2.1)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
@@ -4963,7 +4963,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@solana/wallet-adapter-trezor@0.1.6(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
+  /@solana/wallet-adapter-trezor@0.1.6(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
     resolution: {integrity: sha512-jItXhzaNq/UxSSPKVxgrUamx4mr2voMDjcEBHVUqOQhcujmzoPpBSahWKgpsDIegeX6zDCmuTAULnTpLs6YuzA==}
     engines: {node: '>=20'}
     peerDependencies:
@@ -4971,7 +4971,7 @@ packages:
     dependencies:
       '@solana/wallet-adapter-base': 0.9.27(@solana/web3.js@1.98.2)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
-      '@trezor/connect-web': 9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
+      '@trezor/connect-web': 9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
       buffer: 6.0.3
     transitivePeerDependencies:
       - '@solana/sysvars'
@@ -5049,7 +5049,7 @@ packages:
       - zod
     dev: false
 
-  /@solana/wallet-adapter-wallets@0.19.37(@babel/runtime@7.28.4)(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(@types/react@18.3.23)(bs58@5.0.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)(zod@3.25.76):
+  /@solana/wallet-adapter-wallets@0.19.37(@babel/runtime@7.28.4)(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(@types/react@18.3.23)(bs58@5.0.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)(zod@3.25.76):
     resolution: {integrity: sha512-LUHK2Zh6gELt0+kt+viIMxqc/bree65xZgTPXXBzjhbJNKJaV4D4wanYG2LM9O35/avehZ5BTLMHltbkibE+GA==}
     engines: {node: '>=20'}
     peerDependencies:
@@ -5086,7 +5086,7 @@ packages:
       '@solana/wallet-adapter-tokenary': 0.1.16(@solana/web3.js@1.98.2)
       '@solana/wallet-adapter-tokenpocket': 0.4.23(@solana/web3.js@1.98.2)
       '@solana/wallet-adapter-torus': 0.11.32(@babel/runtime@7.28.4)(@solana/web3.js@1.98.2)(typescript@5.8.3)
-      '@solana/wallet-adapter-trezor': 0.1.6(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
+      '@solana/wallet-adapter-trezor': 0.1.6(@solana/sysvars@2.3.0)(@solana/web3.js@1.98.2)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
       '@solana/wallet-adapter-trust': 0.1.17(@solana/web3.js@1.98.2)
       '@solana/wallet-adapter-unsafe-burner': 0.1.11(@solana/web3.js@1.98.2)
       '@solana/wallet-adapter-walletconnect': 0.1.21(@solana/web3.js@1.98.2)(@types/react@18.3.23)(react@19.2.1)(typescript@5.8.3)(zod@3.25.76)
@@ -5633,12 +5633,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@trezor/analytics@1.4.2(react-native@0.82.1)(tslib@2.8.1):
+  /@trezor/analytics@1.4.2(react-native@0.83.0)(tslib@2.8.1):
     resolution: {integrity: sha512-FgjJekuDvx1TjiDemvpnPiRck7Kp/v1ZeppsBYpQR3yGKyKzbG1pVpcl0RyI2237raXxbORaz7XV8tcyjq4BXg==}
     peerDependencies:
       tslib: ^2.6.2
     dependencies:
-      '@trezor/env-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/env-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/utils': 9.4.2(tslib@2.8.1)
       tslib: 2.8.1
     transitivePeerDependencies:
@@ -5657,14 +5657,14 @@ packages:
       tslib: 2.8.1
     dev: false
 
-  /@trezor/blockchain-link-utils@1.4.2(react-native@0.82.1)(tslib@2.8.1):
+  /@trezor/blockchain-link-utils@1.4.2(react-native@0.83.0)(tslib@2.8.1):
     resolution: {integrity: sha512-PBEBrdtHn0dn/c9roW6vjdHI/CucMywJm5gthETZAZmzBOtg6ZDpLTn+qL8+jZGIbwcAkItrQ3iHrHhR6xTP5g==}
     peerDependencies:
       tslib: ^2.6.2
     dependencies:
       '@mobily/ts-belt': 3.13.1
       '@stellar/stellar-sdk': 13.3.0
-      '@trezor/env-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/env-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/utils': 9.4.2(tslib@2.8.1)
       tslib: 2.8.1
       xrpl: 4.4.0
@@ -5678,7 +5678,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@trezor/blockchain-link@2.5.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
+  /@trezor/blockchain-link@2.5.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
     resolution: {integrity: sha512-/egUnIt/fR57QY33ejnkPMhZwRvVRS/pUCoqdVIGitN1Q7QZsdopoR4hw37hdK/Ux/q1ZLH6LZz7U2UFahjppw==}
     peerDependencies:
       tslib: ^2.6.2
@@ -5690,8 +5690,8 @@ packages:
       '@solana/rpc-types': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)
       '@stellar/stellar-sdk': 13.3.0
       '@trezor/blockchain-link-types': 1.4.2(tslib@2.8.1)
-      '@trezor/blockchain-link-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
-      '@trezor/env-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/blockchain-link-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
+      '@trezor/env-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/utils': 9.4.2(tslib@2.8.1)
       '@trezor/utxo-lib': 2.4.2(tslib@2.8.1)
       '@trezor/websocket-client': 1.2.2(tslib@2.8.1)
@@ -5715,12 +5715,12 @@ packages:
       - ws
     dev: false
 
-  /@trezor/connect-analytics@1.3.5(react-native@0.82.1)(tslib@2.8.1):
+  /@trezor/connect-analytics@1.3.5(react-native@0.83.0)(tslib@2.8.1):
     resolution: {integrity: sha512-Aoi+EITpZZycnELQJEp9XV0mHFfaCQ6JE0Ka5mWuHtOny3nJdFLBrih4ipcEXJdJbww6pBxRJB09sJ19cTyacA==}
     peerDependencies:
       tslib: ^2.6.2
     dependencies:
-      '@trezor/analytics': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/analytics': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - encoding
@@ -5729,12 +5729,12 @@ packages:
       - react-native
     dev: false
 
-  /@trezor/connect-common@0.4.2(react-native@0.82.1)(tslib@2.8.1):
+  /@trezor/connect-common@0.4.2(react-native@0.83.0)(tslib@2.8.1):
     resolution: {integrity: sha512-ND5TTjrTPnJdfl8Wlhl9YtFWnY2u6FHM1dsPkNYCmyUKIMoflJ5cLn95Xabl6l1btHERYn3wTUvgEYQG7r8OVQ==}
     peerDependencies:
       tslib: ^2.6.2
     dependencies:
-      '@trezor/env-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/env-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/utils': 9.4.2(tslib@2.8.1)
       tslib: 2.8.1
     transitivePeerDependencies:
@@ -5744,13 +5744,13 @@ packages:
       - react-native
     dev: false
 
-  /@trezor/connect-web@9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
+  /@trezor/connect-web@9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
     resolution: {integrity: sha512-QGuCjX8Bx9aCq1Pg52KifbbzYn00FQu9mCTDSgCVGH/HAzbxhcRkDKc86kFwW8z9NdJxw+XeVJq5Ky/js3iEDA==}
     peerDependencies:
       tslib: ^2.6.2
     dependencies:
-      '@trezor/connect': 9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
-      '@trezor/connect-common': 0.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/connect': 9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
+      '@trezor/connect-common': 0.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/utils': 9.4.2(tslib@2.8.1)
       '@trezor/websocket-client': 1.2.2(tslib@2.8.1)
       tslib: 2.8.1
@@ -5769,7 +5769,7 @@ packages:
       - ws
     dev: false
 
-  /@trezor/connect@9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
+  /@trezor/connect@9.6.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3):
     resolution: {integrity: sha512-XsSERBK+KnF6FPsATuhB9AEM0frekVLwAwFo35MRV9I4P+mdv6tnUiZUq8O8aoPbfJwDjtNJSYv+PMsKuRH6rg==}
     peerDependencies:
       tslib: ^2.6.2
@@ -5785,14 +5785,14 @@ packages:
       '@solana-program/token': 0.5.1(@solana/kit@2.3.0)
       '@solana-program/token-2022': 0.4.2(@solana/kit@2.3.0)(@solana/sysvars@2.3.0)
       '@solana/kit': 2.3.0(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.8.3)(ws@8.18.3)
-      '@trezor/blockchain-link': 2.5.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.82.1)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
+      '@trezor/blockchain-link': 2.5.2(@solana/sysvars@2.3.0)(fastestsmallesttextencoderdecoder@1.0.22)(react-native@0.83.0)(tslib@2.8.1)(typescript@5.8.3)(ws@8.18.3)
       '@trezor/blockchain-link-types': 1.4.2(tslib@2.8.1)
-      '@trezor/blockchain-link-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
-      '@trezor/connect-analytics': 1.3.5(react-native@0.82.1)(tslib@2.8.1)
-      '@trezor/connect-common': 0.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/blockchain-link-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
+      '@trezor/connect-analytics': 1.3.5(react-native@0.83.0)(tslib@2.8.1)
+      '@trezor/connect-common': 0.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/crypto-utils': 1.1.4(tslib@2.8.1)
       '@trezor/device-utils': 1.1.2
-      '@trezor/env-utils': 1.4.2(react-native@0.82.1)(tslib@2.8.1)
+      '@trezor/env-utils': 1.4.2(react-native@0.83.0)(tslib@2.8.1)
       '@trezor/protobuf': 1.4.2(tslib@2.8.1)
       '@trezor/protocol': 1.2.8(tslib@2.8.1)
       '@trezor/schema-utils': 1.3.4(tslib@2.8.1)
@@ -5833,7 +5833,7 @@ packages:
     resolution: {integrity: sha512-R3AJvAo+a3wYVmcGZO2VNl9PZOmDEzCZIlmCJn0BlSRWWd8G9u1qyo/fL9zOwij/YhCaJyokmSHmIEmbY9qpgw==}
     dev: false
 
-  /@trezor/env-utils@1.4.2(react-native@0.82.1)(tslib@2.8.1):
+  /@trezor/env-utils@1.4.2(react-native@0.83.0)(tslib@2.8.1):
     resolution: {integrity: sha512-lQvrqcNK5I4dy2MuiLyMuEm0KzY59RIu2GLtc9GsvqyxSPZkADqVzGeLJjXj/vI2ajL8leSpMvmN4zPw3EK8AA==}
     peerDependencies:
       expo-constants: '*'
@@ -5848,7 +5848,7 @@ packages:
       react-native:
         optional: true
     dependencies:
-      react-native: 0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
+      react-native: 0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
       tslib: 2.8.1
       ua-parser-js: 2.0.4
     transitivePeerDependencies:
@@ -6051,7 +6051,7 @@ packages:
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
     dev: false
 
   /@types/hast@2.3.10:
@@ -6120,6 +6120,12 @@ packages:
     resolution: {integrity: sha512-LCCV0HdSZZZb34qifBsyWlUmok6W7ouER+oQIGBScS8EsZsQbrtFTUrDX4hOl+CS6p7cnNC4td+qrSVGSCTUfQ==}
     dependencies:
       undici-types: 6.21.0
+
+  /@types/node@22.19.2:
+    resolution: {integrity: sha512-LPM2G3Syo1GLzXLGJAKdqoU35XvrWzGJ21/7sgZTUpbkBaOasTj8tjwn6w+hCkqaa1TfJ/w67rJSwYItlJ2mYw==}
+    dependencies:
+      undici-types: 6.21.0
+    dev: false
 
   /@types/pako@2.0.4:
     resolution: {integrity: sha512-VWDCbrLeVXJM9fihYodcLiIv0ku+AlOa/TQ1SvYOaBuyrSKgEcro95LJyIsJ4vSo6BXIxOKxiJAat04CmST9Fw==}
@@ -6220,7 +6226,7 @@ packages:
   /@ungap/structured-clone@1.3.0:
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
-  /@vercel/analytics@1.5.0(next@15.4.8)(react@19.2.1):
+  /@vercel/analytics@1.5.0(next@15.4.9)(react@19.2.1):
     resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
     peerDependencies:
       '@remix-run/react': ^2
@@ -6246,7 +6252,7 @@ packages:
       vue-router:
         optional: true
     dependencies:
-      next: 15.4.8(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
+      next: 15.4.9(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
       react: 19.2.1
     dev: false
 
@@ -7090,10 +7096,6 @@ packages:
       util: 0.12.5
     dev: false
 
-  /async-limiter@1.0.1:
-    resolution: {integrity: sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==}
-    dev: false
-
   /async-mutex@0.5.0:
     resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
     dependencies:
@@ -7521,7 +7523,7 @@ packages:
     hasBin: true
     dependencies:
       baseline-browser-mapping: 2.9.0
-      caniuse-lite: 1.0.30001759
+      caniuse-lite: 1.0.30001760
       electron-to-chromium: 1.5.264
       node-releases: 2.0.27
       update-browserslist-db: 1.2.1(browserslist@4.28.1)
@@ -7650,6 +7652,10 @@ packages:
     resolution: {integrity: sha512-Pzfx9fOKoKvevQf8oCXoyNRQ5QyxJj+3O0Rqx2V5oxT61KGx8+n6hV/IUyJeifUci2clnmmKVpvtiqRzgiWjSw==}
     dev: false
 
+  /caniuse-lite@1.0.30001760:
+    resolution: {integrity: sha512-7AAMPcueWELt1p3mi13HR/LHH0TJLT11cnwDJEs3xA4+CK/PLKeO9Kl1oru24htkyUKtkGCvAx4ohB0Ttry8Dw==}
+    dev: false
+
   /canvg@3.0.11:
     resolution: {integrity: sha512-5ON+q7jCTgMp9cjpu4Jo6XbvfYwSB2Ow3kzHKfIyJfaCAOHLbdKPQqGKgfED/R5B+3TFFfe8pegYA+b423SRyA==}
     engines: {node: '>=10.0.0'}
@@ -7741,7 +7747,7 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
     dependencies:
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -7752,7 +7758,7 @@ packages:
   /chromium-edge-launcher@0.2.0:
     resolution: {integrity: sha512-JfJjUnq25y9yg4FABRRVPmBGWPZZi+AQXT4mxupb67766/0UlhG8PAZCz6xzEMXTbW3CsSoE8PcCWA49n35mKg==}
     dependencies:
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -8326,8 +8332,8 @@ packages:
       csstype: 3.1.3
     dev: false
 
-  /dompurify@3.3.0:
-    resolution: {integrity: sha512-r+f6MYR1gGN1eJv0TVQbhA7if/U7P87cdPl3HN5rikqaBSBxLiCb/b9O+2eG0cxz0ghyU+mU1QkbsOwERMYlWQ==}
+  /dompurify@3.3.1:
+    resolution: {integrity: sha512-qkdCKzLNtrgPFP1Vo+98FRzJnBRGe4ffyCea9IwHB1fyxPOeNTHpLKYGd4Uk9xvNoH0ZoOjwZxNptyMwqrId1Q==}
     requiresBuild: true
     optionalDependencies:
       '@types/trusted-types': 2.0.7
@@ -8976,12 +8982,12 @@ packages:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
     dev: false
 
-  /geist@1.4.2(next@15.4.8):
+  /geist@1.4.2(next@15.4.9):
     resolution: {integrity: sha512-OQUga/KUc8ueijck6EbtT07L4tZ5+TZgjw8PyWfxo16sL5FWk7gNViPNU8hgCFjy6bJi9yuTP+CRpywzaGN8zw==}
     peerDependencies:
       next: '>=13.2.0'
     dependencies:
-      next: 15.4.8(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
+      next: 15.4.9(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1)
     dev: false
 
   /gensync@1.0.0-beta.2:
@@ -9264,8 +9270,8 @@ packages:
     resolution: {integrity: sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg==}
     dev: false
 
-  /hermes-compiler@0.0.0:
-    resolution: {integrity: sha512-boVFutx6ME/Km2mB6vvsQcdnazEYYI/jV1pomx1wcFUG/EVqTkr5CU0CW9bKipOA/8Hyu3NYwW3THg2Q1kNCfA==}
+  /hermes-compiler@0.14.0:
+    resolution: {integrity: sha512-clxa193o+GYYwykWVFfpHduCATz8fR5jvU7ngXpfKHj+E9hr9vjLNtdLSEe8MUbObvVexV3wcyxQ00xTPIrB1Q==}
     dev: false
 
   /hermes-estree@0.32.0:
@@ -9691,7 +9697,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       jest-mock: 29.7.0
       jest-util: 29.7.0
     dev: false
@@ -9707,7 +9713,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -9740,7 +9746,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       jest-util: 29.7.0
     dev: false
 
@@ -9754,7 +9760,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -9777,7 +9783,7 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 22.19.1
+      '@types/node': 22.19.2
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -9884,7 +9890,7 @@ packages:
     optionalDependencies:
       canvg: 3.0.11
       core-js: 3.47.0
-      dompurify: 3.3.0
+      dompurify: 3.3.1
       html2canvas: 1.4.1
     dev: false
 
@@ -10909,8 +10915,8 @@ packages:
       react-dom: 19.2.1(react@19.2.1)
     dev: false
 
-  /next@15.4.8(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1):
-    resolution: {integrity: sha512-jwOXTz/bo0Pvlf20FSb6VXVeWRssA2vbvq9SdrOPEg9x8E1B27C2rQtvriAn600o9hH61kjrVRexEffv3JybuA==}
+  /next@15.4.9(@babel/core@7.28.5)(react-dom@19.2.1)(react@19.2.1):
+    resolution: {integrity: sha512-/NedNmbiH4Umt/7SohT9VKxEdBt02Lj33xHrukE7d8Li6juT+75sEq4a4U06jggrvdbklKgr78OZEyWZ8XRrtw==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
     peerDependencies:
@@ -10930,9 +10936,9 @@ packages:
       sass:
         optional: true
     dependencies:
-      '@next/env': 15.4.8
+      '@next/env': 15.4.9
       '@swc/helpers': 0.5.15
-      caniuse-lite: 1.0.30001759
+      caniuse-lite: 1.0.30001760
       postcss: 8.4.31
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
@@ -11749,7 +11755,7 @@ packages:
       react-dom: 19.2.1(react@19.2.1)
     dev: false
 
-  /react-beautiful-dnd@13.1.1(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1):
+  /react-beautiful-dnd@13.1.1(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-0Lvs4tq2VcrEjEgDXHjT98r+63drkKEgqyxdA7qD3mvKwga6a5SscbdLPO2IExotU1jW8L0Ksdl0Cj2AF67nPQ==}
     deprecated: 'react-beautiful-dnd is now deprecated. Context and options: https://github.com/atlassian/react-beautiful-dnd/issues/2672'
     peerDependencies:
@@ -11762,7 +11768,7 @@ packages:
       raf-schd: 4.0.3
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
-      react-redux: 7.2.9(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1)
+      react-redux: 7.2.9(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1)
       redux: 4.2.1
       use-memo-one: 1.1.3(react@19.2.1)
     transitivePeerDependencies:
@@ -11918,25 +11924,25 @@ packages:
       warning: 4.0.3
     dev: false
 
-  /react-native@0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1):
-    resolution: {integrity: sha512-tFAqcU7Z4g49xf/KnyCEzI4nRTu1Opcx05Ov2helr8ZTg1z7AJR/3sr2rZ+AAVlAs2IXk+B0WOxXGmdD3+4czA==}
+  /react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1):
+    resolution: {integrity: sha512-a8wPjGfkktb1+Mjvzkky3d0u6j6zdWAzftZ2LdQtgRgqkMMfgQxD9S+ri3RNlfAFQpuCAOYUIyrNHiVkUQChxA==}
     engines: {node: '>= 20.19.4'}
     hasBin: true
     peerDependencies:
       '@types/react': ^19.1.1
-      react: ^19.1.1
+      react: ^19.2.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
     dependencies:
       '@jest/create-cache-key-function': 29.7.0
-      '@react-native/assets-registry': 0.82.1
-      '@react-native/codegen': 0.82.1(@babel/core@7.28.5)
-      '@react-native/community-cli-plugin': 0.82.1
-      '@react-native/gradle-plugin': 0.82.1
-      '@react-native/js-polyfills': 0.82.1
-      '@react-native/normalize-colors': 0.82.1
-      '@react-native/virtualized-lists': 0.82.1(@types/react@18.3.23)(react-native@0.82.1)(react@19.2.1)
+      '@react-native/assets-registry': 0.83.0
+      '@react-native/codegen': 0.83.0(@babel/core@7.28.5)
+      '@react-native/community-cli-plugin': 0.83.0
+      '@react-native/gradle-plugin': 0.83.0
+      '@react-native/js-polyfills': 0.83.0
+      '@react-native/normalize-colors': 0.83.0
+      '@react-native/virtualized-lists': 0.83.0(@types/react@18.3.23)(react-native@0.83.0)(react@19.2.1)
       '@types/react': 18.3.23
       abort-controller: 3.0.0
       anser: 1.4.10
@@ -11947,7 +11953,7 @@ packages:
       commander: 12.1.0
       flow-enums-runtime: 0.0.6
       glob: 7.2.3
-      hermes-compiler: 0.0.0
+      hermes-compiler: 0.14.0
       invariant: 2.2.4
       jest-environment-node: 29.7.0
       memoize-one: 5.2.1
@@ -11960,11 +11966,11 @@ packages:
       react-devtools-core: 6.1.5
       react-refresh: 0.14.2
       regenerator-runtime: 0.13.11
-      scheduler: 0.26.0
+      scheduler: 0.27.0
       semver: 7.7.3
       stacktrace-parser: 0.1.11
       whatwg-fetch: 3.6.20
-      ws: 6.2.3
+      ws: 7.5.10
       yargs: 17.7.2
     transitivePeerDependencies:
       - '@babel/core'
@@ -11998,7 +12004,7 @@ packages:
       webrtc-adapter: 7.7.1
     dev: false
 
-  /react-redux@7.2.9(react-dom@19.2.1)(react-native@0.82.1)(react@19.2.1):
+  /react-redux@7.2.9(react-dom@19.2.1)(react-native@0.83.0)(react@19.2.1):
     resolution: {integrity: sha512-Gx4L3uM182jEEayZfRbI/G11ZpYdNAnBs70lFVMNdHJI76XYtR+7m0MN+eAs7UHBPhWXcnFPaS+9owSCJQHNpQ==}
     peerDependencies:
       react: ^16.8.3 || ^17 || ^18
@@ -12018,7 +12024,7 @@ packages:
       react: 19.2.1
       react-dom: 19.2.1(react@19.2.1)
       react-is: 17.0.2
-      react-native: 0.82.1(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
+      react-native: 0.83.0(@babel/core@7.28.5)(@types/react@18.3.23)(react@19.2.1)
     dev: false
 
   /react-refresh@0.14.2:
@@ -12477,10 +12483,6 @@ packages:
       '@project-serum/sol-wallet-adapter': 0.2.6(@solana/web3.js@1.98.2)
       '@solana/web3.js': 1.98.2(typescript@5.8.3)
       eventemitter3: 4.0.7
-    dev: false
-
-  /scheduler@0.26.0:
-    resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
     dev: false
 
   /scheduler@0.27.0:
@@ -13783,20 +13785,6 @@ packages:
     dependencies:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
-    dev: false
-
-  /ws@6.2.3:
-    resolution: {integrity: sha512-jmTjYU0j60B+vHey6TfR3Z7RD61z/hmxBS3VMSGIrroOWXQEneK1zNuotOUrGyBHQj0yrpsLHPWtigEFd13ndA==}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dependencies:
-      async-limiter: 1.0.1
     dev: false
 
   /ws@7.5.10:
